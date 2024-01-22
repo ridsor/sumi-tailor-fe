@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import Footer from "@/components/layouts/Main/Footer";
 import { josenfin_sans, quicksand } from "@/fonts";
 
+const enableNavbar = ["/", "/about", "/gallery", "/service", "/login"];
+
 export default function RootLayout({
   children,
 }: {
@@ -19,9 +21,9 @@ export default function RootLayout({
         className={`${quicksand.variable} ${josenfin_sans.variable}`}
         suppressHydrationWarning={true}
       >
-        <Header pathname={pathname} />
+        {enableNavbar.includes(pathname) && <Header pathname={pathname} />}
         {children}
-        <Footer />
+        {enableNavbar.includes(pathname) && <Footer />}
       </body>
     </html>
   );
