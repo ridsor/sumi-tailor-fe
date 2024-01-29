@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${quicksand.variable} ${josenfin_sans.variable}`}
+        className={`${quicksand.variable} ${josenfin_sans.variable} overflow-x-hidden`}
         suppressHydrationWarning={true}
       >
         <Header pathname={pathname} />
