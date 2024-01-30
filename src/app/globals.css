@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply text-sm font-two;
+  @apply text-sm font-two text-one;
 }
 
 * {
