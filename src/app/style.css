@@ -1,0 +1,47 @@
+.animate-contact-us {
+  width: 0;
+  padding: 0px;
+  left: 1rem;
+  opacity: 0;
+  z-index: -10;
+}
+
+.animate-contact-us-in {
+  animation: contactUsIn 2s ease-in forwards;
+}
+
+@keyframes contactUsIn {
+  0% {
+    width: 0;
+    padding: 0px;
+    left: 1rem;
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    width: 120px;
+    padding: 12px;
+    left: -7.4rem;
+  }
+}
+
+.animate-contact-us-out {
+  animation: contactUsOut 2s ease-out forwards;
+}
+
+@keyframes contactUsOut {
+  0% {
+    opacity: 1;
+    width: 120px;
+    padding: 12px;
+    left: -7.4rem;
+  }
+
+  100% {
+    width: 0;
+    padding: 0px;
+    left: 1rem;
+    opacity: 0;
+  }
+}
