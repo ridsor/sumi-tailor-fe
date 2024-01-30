@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 const HomePage = () => {
   return (
-    <>
+    <main>
       <section className="bg-three">
         <div className="container">
           <div className="row pt-36 min-h-[600px] h-auto px-4 flex flex-wrap">
@@ -71,7 +71,7 @@ const HomePage = () => {
         </div>
       </section>
       <WaButton />
-    </>
+    </main>
   );
 };
 
