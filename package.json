@@ -9,10 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@googlemaps/js-api-loader": "^1.16.2",
-    "@types/react-slick": "^0.23.13",
     "next": "14.0.4",
     "react": "^18",
+    "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
     "react-icons": "^5.0.1",
     "react-slick": "^0.29.0",
