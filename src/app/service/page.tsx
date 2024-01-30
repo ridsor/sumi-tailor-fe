@@ -4,7 +4,7 @@ import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 
 const ServicePage = () => {
   return (
-    <>
+    <main>
       <section className="bg-[#E4EEDD]">
         <div className="container">
           <div className="px-4 pb-16 pt-36">
@@ -101,7 +101,7 @@ const ServicePage = () => {
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 };
 
