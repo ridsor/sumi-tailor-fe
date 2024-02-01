@@ -134,13 +134,21 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 </li>
                 <li>
                   <Link
+<<<<<<< HEAD
                     href="/admin"
+=======
+                    href="/account"
+>>>>>>> f64b3452b8b4bb8030e1bd6d454a9eff2ee6accb
                     className="flex items-center hover:bg-four rounded-md active:ring active:ring-three"
                   >
                     <div className="p-3">
                       <RiShieldUserFill className="text-xl" />
                     </div>
+<<<<<<< HEAD
                     {isSidebar ? "Admin" : ""}
+=======
+                    {isSidebar ? "Account" : ""}
+>>>>>>> f64b3452b8b4bb8030e1bd6d454a9eff2ee6accb
                   </Link>
                 </li>
               </ul>
