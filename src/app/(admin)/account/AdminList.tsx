@@ -1,6 +1,10 @@
 import AdminItem from "./AdminItem";
 
-export default function AdminList() {
+interface Props {
+  opencloseModal: (value: boolean) => void;
+}
+
+export default function AdminList(props: Props) {
   return (
     <div className="w-full min-w-fit overflow-auto">
       <table className="w-full">
@@ -17,7 +21,7 @@ export default function AdminList() {
           </tr>
         </thead>
         <tbody>
-          <AdminItem />
+          <AdminItem opencloseModal={props.opencloseModal} />
         </tbody>
       </table>
     </div>

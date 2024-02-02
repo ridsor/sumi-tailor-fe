@@ -7,11 +7,11 @@ import AdminInput from "./AdminInput";
 import { useCallback, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 
-const index = () => {
-  const [isModal, setIsModal] = useState<boolean>(false);
+const AccountPage = () => {
+  const [isModal, setModal] = useState<boolean>(false);
 
-  const closeModal = useCallback(() => {
-    setIsModal(false);
+  const opencloseModal = useCallback((value: boolean) => {
+    setModal(value);
   }, []);
 
   return (
@@ -23,12 +23,11 @@ const index = () => {
               Admin
             </h1>
             <button
-              onClick={() => setIsModal(true)}
-              className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40"
-            >
+              onClick={() => setModal(true)}
+              className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
               <FaPlus />
             </button>
-            <AdminInput active={isModal} close={closeModal} />
+            <AdminInput active={isModal} opencloseModal={opencloseModal} />
             <div className="search relative w-full max-w-[400px] mb-3">
               <input
                 type="text"
@@ -39,7 +38,7 @@ const index = () => {
                 <FaSearch />
               </button>
             </div>
-            <AdminList />
+            <AdminList opencloseModal={opencloseModal} />
           </div>
         </div>
       </section>
@@ -47,4 +46,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default AccountPage;
