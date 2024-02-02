@@ -6,14 +6,14 @@ type Props = {
 
 const GalleryItem = (props: Props) => {
   return (
-    <div className="overflow-hidden shadow-md rounded-xl">
+    <div className="shadow-md mb-4">
       <Image
         src={`/image/gallery${props.image}.jpg`}
         alt="gallery-pertama"
         priority
         width={400}
         height={400}
-        className="object-cover w-full"
+        className="w-full rounded-xl"
       />
     </div>
   );

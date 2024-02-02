@@ -1,11 +1,11 @@
 import { FaXmark } from "react-icons/fa6";
-import Modal from "../../components/Modal";
+import Modal from "../../components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useCallback, useState } from "react";
 
 type Props = {
   active: boolean;
-  close: () => void;
+  openclose: (value: boolean) => void;
 };
 
 type Input = {
@@ -17,7 +17,7 @@ type Input = {
 
 type Validate = Input;
 
-export default ({ active, close }: Props) => {
+export default function OrderInput({ active, openclose }: Props) {
   const [inputs, setInputs] = useState<Input>({
     name: "",
     category: "",
@@ -113,7 +113,7 @@ export default ({ active, close }: Props) => {
       e.preventDefault();
       if (onValidate(inputs)) return;
     },
-    [inputs]
+    [inputs, onValidate]
   );
 
   const onChangeEventHanlder = useCallback(
@@ -127,15 +127,13 @@ export default ({ active, close }: Props) => {
   );
 
   return (
-    <Modal active={active} close={close}>
+    <Modal active={active} openclose={openclose}>
       <div className="container max-w-full">
         <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
           Buat Pesanan
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
-            tabIndex={active ? 1 : undefined}
-            onClick={() => close()}
-          >
+            onClick={() => openclose(false)}>
             <FaXmark />
           </button>
         </div>
@@ -155,8 +153,7 @@ export default ({ active, close }: Props) => {
               <div className="absolute top-0 right-0 left-0 bottom-0">
                 <button
                   type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20"
-                >
+                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
                   <FaExclamationCircle />
                 </button>
                 <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
@@ -182,8 +179,7 @@ export default ({ active, close }: Props) => {
               <div className="absolute top-0 right-0 left-0 bottom-0">
                 <button
                   type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20"
-                >
+                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
                   <FaExclamationCircle />
                 </button>
                 <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
@@ -209,8 +205,7 @@ export default ({ active, close }: Props) => {
               <div className="absolute top-0 right-0 left-0 bottom-0">
                 <button
                   type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20"
-                >
+                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
                   <FaExclamationCircle />
                 </button>
                 <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
@@ -230,14 +225,12 @@ export default ({ active, close }: Props) => {
                 validate.description ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
               onChange={onChangeEventHanlder}
-              value={inputs.description}
-            ></textarea>
+              value={inputs.description}></textarea>
             {validate.description ? (
               <div className="absolute top-0 right-0 left-0 bottom-0">
                 <button
                   type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20"
-                >
+                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
                   <FaExclamationCircle />
                 </button>
                 <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
@@ -257,4 +250,4 @@ export default ({ active, close }: Props) => {
       </div>
     </Modal>
   );
-};
+}
