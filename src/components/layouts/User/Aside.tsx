@@ -4,9 +4,9 @@ import { RiShieldUserFill } from "react-icons/ri";
 import { FaPlay } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
-import user_img from "@/assets/img/user-img.svg";
 import Link from "next/link";
 import Image from "next/image";
+import personIcon from "@/assets/img/icons/person.png";
 
 interface Props {
   isSidebar: boolean;
@@ -52,10 +52,13 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
             <div>
               <div className="brand flex items-center mb-3">
                 <div className={`p-1.5`}>
-                  <img
+                  <Image
                     src={"/sumi-tailor.svg"}
                     alt="logo"
                     className="h-8 aspect-square"
+                    priority
+                    width={32}
+                    height={32}
                   />
                 </div>
                 {isSidebar ? (
@@ -73,9 +76,12 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                     isSidebar ? "w-[70px]" : "w-[44px]"
                   } user-img aspect-square mx-auto mb-1`}>
                   <Image
-                    src={user_img}
+                    src={personIcon}
+                    width={70}
+                    height={70}
                     alt="user_img"
                     className="w-full h-full object-cover object-center rounded-full shadow-sm border-2 border-[#d7d3cc]"
+                    priority
                   />
                 </div>
                 {isSidebar ? (
