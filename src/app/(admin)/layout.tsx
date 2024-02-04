@@ -1,6 +1,6 @@
 "use client";
 
-import Aside from "@/components/layouts/User/Aside";
+import Aside from "@/components/layouts/UserLayout/Aside";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
