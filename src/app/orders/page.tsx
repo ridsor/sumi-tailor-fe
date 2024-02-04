@@ -13,7 +13,7 @@ export default function OrdersPage() {
   }, []);
 
   return (
-    <>
+    <main>
       <section className="pt-36 pb-16 bg-[#E5E9EC]">
         <div className="container">
           <article className="px-4">
@@ -31,6 +31,6 @@ export default function OrdersPage() {
           </article>
         </div>
       </section>
-    </>
+    </main>
   );
 }

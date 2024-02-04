@@ -5,6 +5,7 @@ import "./style.css";
 import Order from "./OrderItem";
 import Pagination from "@/components/fragments/Paginate";
 import { getOrders } from "@/services/orders";
+import OrderLoading from "./OrderLoading";
 
 interface Order {
   id: number;
@@ -32,7 +33,7 @@ export default function OrderList() {
   }>({
     data: [],
     pagination: {
-      totalItems: 1,
+      totalItems: 2,
       totalPages: 1,
       page: 1,
     },
@@ -45,7 +46,7 @@ export default function OrderList() {
   }>({
     data: [],
     pagination: {
-      totalItems: 1,
+      totalItems: 2,
       totalPages: 1,
       page: 1,
     },
@@ -64,111 +65,117 @@ export default function OrderList() {
     []
   );
 
-  const handlePageOrderFinished = useCallback(async (page: number) => {
-    const result = await getOrders({
-      page: page,
-      totalItems: ordersFinished.pagination.totalItems,
-      status: "finished",
-    });
+  const handlePageOrderFinished = useCallback(
+    async (page: number) => {
+      const result = await getOrders({
+        page: page,
+        totalItems: ordersFinished.pagination.totalItems,
+        status: "finished",
+      });
 
-    setOrderFinished({
-      data: result.data,
-      pagination: result.pagination,
-      loading: false,
-    });
-  }, []);
+      setOrderFinished({
+        data: result.data,
+        pagination: result.pagination,
+        loading: false,
+      });
+    },
+    [ordersFinished.pagination.totalItems]
+  );
 
-  const handlePageOrderUnfinished = useCallback(async (page: number) => {
-    const result = await getOrders({
-      page: page,
-      totalItems: ordersUnfinished.pagination.totalItems,
-      status: "unfinished",
-    });
+  const handlePageOrderUnfinished = useCallback(
+    async (page: number) => {
+      const result = await getOrders({
+        page: page,
+        totalItems: ordersUnfinished.pagination.totalItems,
+        status: "unfinished",
+      });
 
-    setOrderUnfinished({
-      data: result.data,
-      pagination: result.pagination,
-      loading: false,
-    });
-  }, []);
+      setOrderUnfinished({
+        data: result.data,
+        pagination: result.pagination,
+        loading: false,
+      });
+    },
+    [ordersUnfinished.pagination.totalItems]
+  );
 
   useEffect(() => {
     handlePageOrderFinished(1);
     handlePageOrderUnfinished(1);
-  }, []);
+  }, [handlePageOrderFinished, handlePageOrderUnfinished]);
 
   return (
     <Slider {...sliderSettings}>
-      <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
-        {ordersUnfinished.data.length > 0 ? (
-          <Pagination
-            totalPages={ordersUnfinished.pagination.totalPages}
-            currentPage={ordersUnfinished.pagination.page}
-            handleChangeCurrentPage={handlePageOrderUnfinished}
-          />
-        ) : (
-          ""
-        )}
-        {ordersUnfinished.data.length > 0 ? (
-          ordersUnfinished.data.map((order) => (
-            <Order
-              key={order.id}
-              timestamp={order.updated_at}
-              name={order.name}
-              category={order.category}
-              price={order.price}
-              description={order.description}
-              finished={order.finished}
+      {ordersUnfinished.loading ? (
+        <OrderLoading />
+      ) : (
+        <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
+          {ordersUnfinished.data.length > 0 && (
+            <Pagination
+              totalPages={ordersUnfinished.pagination.totalPages}
+              currentPage={ordersUnfinished.pagination.page}
+              handleChangeCurrentPage={handlePageOrderUnfinished}
             />
-          ))
-        ) : (
-          <>Data Pesanan tidak ditemukan</>
-        )}
-        {ordersUnfinished.data.length > 0 ? (
-          <Pagination
-            totalPages={ordersUnfinished.pagination.totalPages}
-            currentPage={ordersUnfinished.pagination.page}
-            handleChangeCurrentPage={handlePageOrderUnfinished}
-          />
-        ) : (
-          ""
-        )}
-      </div>
-      <div className="orders finished !flex flex-col gap-2 pb-10 w-full p-1">
-        {ordersFinished.data.length > 0 ? (
-          <Pagination
-            totalPages={ordersFinished.pagination.totalPages}
-            currentPage={ordersFinished.pagination.page}
-            handleChangeCurrentPage={handlePageOrderFinished}
-          />
-        ) : (
-          ""
-        )}
-        {ordersFinished.data.length > 0 ? (
-          ordersFinished.data.map((order) => (
-            <Order
-              key={order.id}
-              timestamp={order.updated_at}
-              name={order.name}
-              category={order.category}
-              price={order.price}
-              description={order.description}
-              finished={order.finished}
+          )}
+          {ordersUnfinished.data.length > 0 ? (
+            ordersUnfinished.data.map((order) => (
+              <Order
+                key={order.id}
+                timestamp={order.updated_at}
+                name={order.name}
+                category={order.category}
+                price={order.price}
+                description={order.description}
+                finished={order.finished}
+              />
+            ))
+          ) : (
+            <>Data Pesanan tidak ditemukan</>
+          )}
+          {ordersUnfinished.data.length > 0 && (
+            <Pagination
+              totalPages={ordersUnfinished.pagination.totalPages}
+              currentPage={ordersUnfinished.pagination.page}
+              handleChangeCurrentPage={handlePageOrderUnfinished}
             />
-          ))
-        ) : (
-          <>Data Pesanan tidak ditemukan</>
-        )}
-        {ordersFinished.data.length > 0 ? (
-          <Pagination
-            totalPages={ordersFinished.pagination.totalPages}
-            currentPage={ordersFinished.pagination.page}
-            handleChangeCurrentPage={handlePageOrderFinished}
-          />
-        ) : (
-          ""
-        )}
-      </div>
+          )}
+        </div>
+      )}
+      {ordersFinished.loading ? (
+        <OrderLoading />
+      ) : (
+        <div className="orders finished !flex flex-col gap-2 pb-10 w-full p-1">
+          {ordersFinished.data.length > 0 && (
+            <Pagination
+              totalPages={ordersFinished.pagination.totalPages}
+              currentPage={ordersFinished.pagination.page}
+              handleChangeCurrentPage={handlePageOrderFinished}
+            />
+          )}
+          {ordersFinished.data.length > 0 ? (
+            ordersFinished.data.map((order) => (
+              <Order
+                key={order.id}
+                timestamp={order.updated_at}
+                name={order.name}
+                category={order.category}
+                price={order.price}
+                description={order.description}
+                finished={order.finished}
+              />
+            ))
+          ) : (
+            <>Data Pesanan tidak ditemukan</>
+          )}
+          {ordersFinished.data.length > 0 && (
+            <Pagination
+              totalPages={ordersFinished.pagination.totalPages}
+              currentPage={ordersFinished.pagination.page}
+              handleChangeCurrentPage={handlePageOrderFinished}
+            />
+          )}
+        </div>
+      )}
     </Slider>
   );
 }

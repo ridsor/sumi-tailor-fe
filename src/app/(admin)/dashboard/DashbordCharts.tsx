@@ -1,75 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { abbreviateNumber } from "@/utils/dashboard";
 import { ApexOptions } from "apexcharts";
-import { abbreviateNumber, getMonthForChart } from "@/utils/dashboard";
 import Chart from "react-apexcharts";
 
-export default function ChartDashboard() {
-  const [chartOrder] = useState<{
+interface Props {
+  chartOrder: {
     options: ApexOptions;
-    series: any;
-  }>({
-    series: [
-      {
-        name: "Pesanan",
-        data: [31, 40, 28, 51, 42, 109],
-      },
-    ],
-    options: {
-      title: {
-        text: "Pesanan",
-      },
-      colors: ["#445E36", "#E91E63", "#9C27B0"],
-      fill: {
-        colors: ["#B3CBA6", "#E91E63", "#9C27B0"],
-      },
-      stroke: {
-        curve: "smooth",
-      },
-      xaxis: {
-        categories: getMonthForChart(),
-      },
-      dataLabels: {
-        enabled: false,
-      },
-    },
-  });
+    series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
+  };
+  chartIncome: {
+    options: ApexOptions;
+    series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
+  };
+}
 
-  const [chartIncome] = useState<{
-    options: ApexOptions;
-    series: any;
-  }>({
-    series: [
-      {
-        name: "Penghasilan",
-        data: [400000, 1000000, 2000000, 1500000, 4200000, 1090000],
-      },
-    ],
-    options: {
-      title: {
-        text: "Penghasilan",
-      },
-      colors: ["#445E36", "#E91E63", "#9C27B0"],
-      fill: {
-        colors: ["#B3CBA6", "#E91E63", "#9C27B0"],
-      },
-      stroke: {
-        curve: "smooth",
-      },
-      xaxis: {
-        categories: getMonthForChart(),
-      },
-      yaxis: {
-        labels: {
-          formatter: (value) => "Rp. " + abbreviateNumber(value),
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
+export default function ChartDashboard(props: Props) {
+  props.chartIncome.options.yaxis = {
+    labels: {
+      formatter: (value) => "Rp. " + abbreviateNumber(value),
     },
-  });
+  };
 
   return (
     <div className="flex flex-wrap lg:flex-nowrap gap-5">
@@ -77,8 +28,8 @@ export default function ChartDashboard() {
         <div className="mx-auto overflow-x-auto overflow-hidden">
           <div className="w-[400px] lg:w-full lg:max-w-[500px] mx-auto">
             <Chart
-              options={chartOrder.options}
-              series={chartOrder.series}
+              options={props.chartOrder.options}
+              series={props.chartOrder.series}
               type="area"
             />
           </div>
@@ -88,8 +39,8 @@ export default function ChartDashboard() {
         <div className="mx-auto overflow-x-auto overflow-hidden">
           <div className="w-[400px] lg:w-full lg:max-w-[500px] mx-auto">
             <Chart
-              options={chartIncome.options}
-              series={chartIncome.series}
+              options={props.chartIncome.options}
+              series={props.chartIncome.series}
               type="area"
             />
           </div>
