@@ -18,7 +18,7 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
     <aside
       className={`${
         isSidebar ? "right-0" : ""
-      } fixed top-0 bottom-0 left-0 md:right-auto z-50`}>
+      } fixed top-0 bottom-0 left-0 md:right-auto z-40`}>
       <div className="relative w-full h-full">
         {isSidebar ? (
           <div

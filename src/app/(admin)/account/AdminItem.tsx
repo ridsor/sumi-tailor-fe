@@ -10,11 +10,11 @@ interface Props {
 export default function AdminItem(props: Props) {
   return (
     <tr className="border-b">
-      <td className="py-3">1</td>
-      <td>Ryan</td>
-      <td>ryan@gmail.com</td>
-      <td>Aktif</td>
-      <td className="align-middle">
+      <td className="px-2 text-center">1</td>
+      <td className="px-2">Ryan</td>
+      <td className="px-2">risorgamerz000001@gmail.com</td>
+      <td className="px-2">Aktif</td>
+      <td className="align-middle px-2">
         <div className="flex">
           <button
             className="bg-yellow-500 px-2 py-2  rounded-md text-white mr-1"

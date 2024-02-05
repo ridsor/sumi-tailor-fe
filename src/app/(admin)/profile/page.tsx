@@ -6,7 +6,7 @@ import FormProfilDetail from "./FormProfileDetail";
 import FormProfilPassword from "./FormProfilePassword";
 import Image from "next/image";
 
-const index = () => {
+const ProfilePage = () => {
   const [isChangePassword, setIsChangePassword] = useState<boolean>(false);
 
   return (
@@ -37,8 +37,7 @@ const index = () => {
             </form>
             <button
               onClick={() => setIsChangePassword((prev) => !prev)}
-              className="px-3 mb-4 py-2 bg-gray-200 text-one rounded-md font-semibold hover:bg-gray-300 focus:ring focus:ring-[rgba(209,213,219,.5)]"
-            >
+              className="px-3 mb-4 py-2 bg-gray-200 text-one rounded-md font-semibold hover:bg-gray-300 focus:ring focus:ring-[rgba(209,213,219,.5)]">
               {isChangePassword ? "Ubah Detail" : "Ubah Password"}
             </button>
             {isChangePassword ? <FormProfilPassword /> : <FormProfilDetail />}
@@ -49,4 +48,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default ProfilePage;

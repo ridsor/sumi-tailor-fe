@@ -1,7 +1,6 @@
 export default function Loading() {
   return (
-    <main
-      className={`md:left-[250px] md:w-[calc(100%-250px)] left-[60px] w-[calc(100%-60px)] relative bg-three min-h-screen h-fit`}>
+    <>
       <section className="pt-10">
         <div className="container max-w-full">
           <div className="p-4">
@@ -23,6 +22,6 @@ export default function Loading() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

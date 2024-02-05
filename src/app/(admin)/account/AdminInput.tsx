@@ -151,7 +151,7 @@ export default function AdminInput({ active, opencloseModal }: Props) {
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
             tabIndex={active ? 1 : undefined}
-            onClick={close}>
+            onClick={() => opencloseModal(false)}>
             <FaXmark />
           </button>
         </div>
