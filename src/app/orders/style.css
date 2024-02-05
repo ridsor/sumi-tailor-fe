@@ -57,7 +57,8 @@
 }
 
 .slick-dots > li.slick-active > button:after {
-  background-color: #fff !important;
+  background-color: #445e36 !important;
+  color: #fff !important;
 }
 
 .slick-dots > li > button {

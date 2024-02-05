@@ -1,8 +1,77 @@
-import Chart from "./DashbordCharts";
 import { FaArrowDownLong, FaArrowUpLong } from "react-icons/fa6";
-import { abbreviateNumber } from "@/utils/dashboard";
+import { abbreviateNumber, getMonthForChart } from "@/utils/dashboard";
+import dynamic from "next/dynamic";
+import { ApexOptions } from "apexcharts";
+const DashboardChart = dynamic(
+  () => {
+    return import("./DashbordCharts");
+  },
+  {
+    ssr: false,
+  }
+);
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const chartOrder: {
+    options: ApexOptions;
+    series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
+  } = {
+    series: [
+      {
+        name: "Pesanan",
+        data: [31, 40, 28, 51, 42, 109],
+      },
+    ],
+    options: {
+      title: {
+        text: "Pesanan",
+      },
+      colors: ["#445E36", "#E91E63", "#9C27B0"],
+      fill: {
+        colors: ["#B3CBA6", "#E91E63", "#9C27B0"],
+      },
+      stroke: {
+        curve: "smooth",
+      },
+      xaxis: {
+        categories: getMonthForChart(),
+      },
+      dataLabels: {
+        enabled: false,
+      },
+    },
+  };
+
+  const chartIncome: {
+    options: ApexOptions;
+    series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
+  } = {
+    series: [
+      {
+        name: "Penghasilan",
+        data: [400000, 1000000, 2000000, 1500000, 4200000, 1090000],
+      },
+    ],
+    options: {
+      title: {
+        text: "Penghasilan",
+      },
+      colors: ["#445E36", "#E91E63", "#9C27B0"],
+      fill: {
+        colors: ["#B3CBA6", "#E91E63", "#9C27B0"],
+      },
+      stroke: {
+        curve: "smooth",
+      },
+      xaxis: {
+        categories: getMonthForChart(),
+      },
+      dataLabels: {
+        enabled: false,
+      },
+    },
+  };
+
   return (
     <>
       <section className="pt-10">
@@ -57,7 +126,7 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-            <Chart />
+            <DashboardChart chartIncome={chartIncome} chartOrder={chartOrder} />
           </div>
         </div>
       </section>

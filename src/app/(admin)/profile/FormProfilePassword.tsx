@@ -8,7 +8,7 @@ type Input = {
 
 type Validate = Input;
 
-export default () => {
+export default function FormProfilePassword() {
   const [inputs, setInputs] = useState<Input>({
     oldPassword: "",
     newPassword: "",
@@ -71,7 +71,7 @@ export default () => {
 
       if (onValidate(inputs)) return;
     },
-    [inputs]
+    [inputs, onValidate]
   );
 
   const onChangeEventHandler = useCallback(
@@ -102,8 +102,7 @@ export default () => {
             <div className="absolute top-0 right-0 left-0 bottom-0">
               <button
                 type={"button"}
-                className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20"
-              >
+                className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
                 <FaExclamationCircle />
               </button>
               <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
@@ -134,8 +133,7 @@ export default () => {
             <div className="absolute top-0 right-0 left-0 bottom-0">
               <button
                 type={"button"}
-                className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20"
-              >
+                className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
                 <FaExclamationCircle />
               </button>
               <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
@@ -154,4 +152,4 @@ export default () => {
       </div>
     </form>
   );
-};
+}

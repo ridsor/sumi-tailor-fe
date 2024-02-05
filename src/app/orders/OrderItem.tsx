@@ -16,14 +16,14 @@ interface Props {
   finished: number;
 }
 
-export default ({
+export default function OrderItem({
   timestamp,
   name,
   category,
   price,
   description,
   finished,
-}: Props) => {
+}: Props) {
   const handleBtnActionOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.currentTarget.nextElementSibling?.classList.contains("active")) {
       e.currentTarget.nextElementSibling?.classList.remove(
@@ -72,8 +72,7 @@ export default ({
       <div className="order-3 lg:order-4 text-lg self-center mx-3 lg:mx-6 flex relative">
         <button
           className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative"
-          onClick={handleBtnActionOrder}
-        >
+          onClick={handleBtnActionOrder}>
           <FaEllipsisVertical />
         </button>
         <div className="absolute top-[calc(100%+.5rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in z-10">
@@ -82,8 +81,7 @@ export default ({
               <li>
                 <button
                   className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
-                  onClick={() => {}}
-                >
+                  onClick={() => {}}>
                   <FaArrowRotateLeft />
                   Belum Selesai
                 </button>
@@ -92,8 +90,7 @@ export default ({
               <li>
                 <button
                   className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
-                  onClick={() => {}}
-                >
+                  onClick={() => {}}>
                   <FaCircleCheck />
                   Selesai
                 </button>
@@ -108,8 +105,7 @@ export default ({
             <li>
               <button
                 className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
-                onClick={() => {}}
-              >
+                onClick={() => {}}>
                 <FaTimesCircle />
                 Batalkan
               </button>
@@ -119,4 +115,4 @@ export default ({
       </div>
     </div>
   );
-};
+}

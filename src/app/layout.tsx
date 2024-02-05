@@ -1,9 +1,9 @@
 "use client";
 
 import "./globals.css";
-import Header from "@/components/layouts/Main/Header";
+import Header from "@/components/layouts/MainLayout/Header";
 import { usePathname } from "next/navigation";
-import Footer from "@/components/layouts/Main/Footer";
+import Footer from "@/components/layouts/MainLayout/Footer";
 import { josenfin_sans, quicksand } from "@/fonts";
 
 const enableNavbar = [
