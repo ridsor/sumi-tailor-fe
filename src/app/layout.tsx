@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${quicksand.variable} ${josenfin_sans.variable} overflow-x-hidden`}
+        className={`${quicksand.variable} ${josenfin_sans.variable}`}
         suppressHydrationWarning={true}>
         {enableNavbar.includes(pathname) && <Header pathname={pathname} />}
         {children}

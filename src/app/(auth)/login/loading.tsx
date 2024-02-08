@@ -1,6 +1,6 @@
 export default function loading() {
   return (
-    <>
+    <main>
       <section className="pt-24 md:pb-4 bg-three">
         <div className="container max-w-full">
           <div className="min-h-[500px] flex flex-wrap justify-center">
@@ -31,6 +31,6 @@ export default function loading() {
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 }
