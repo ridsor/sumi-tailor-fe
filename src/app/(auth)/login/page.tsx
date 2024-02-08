@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
 const LoginPage = () => {
   return (
-    <>
+    <main>
       <section className="pt-24 md:pb-4 bg-three">
         <div className="container max-w-full">
           <div className="min-h-[500px] flex flex-wrap justify-center">
@@ -63,7 +63,7 @@ const LoginPage = () => {
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 };
 
