@@ -1,0 +1,70 @@
+{
+  "orders": [
+    {
+      "id": 1,
+      "code": "ST0001",
+      "name": "Nama",
+      "category": "Baju",
+      "price": "50000",
+      "description": "ini adalah deskripsi",
+      "finished": "1",
+      "created_at": "2024-01-26T02:10:19.727Z",
+      "updated_at": "2024-01-26T02:10:19.727Z"
+    },
+    {
+      "id": 3,
+      "code": "ST0003",
+      "name": "Nama",
+      "category": "Baju",
+      "price": "50000",
+      "description": "ini adalah deskripsi",
+      "finished": "1",
+      "created_at": "2024-01-26T02:10:19.727Z",
+      "updated_at": "2024-01-26T02:10:19.727Z"
+    },
+    {
+      "id": 2,
+      "code": "ST0002",
+      "name": "Nama",
+      "category": "Celana",
+      "price": "50000",
+      "description": "ini adalah deskripsi",
+      "finished": "0",
+      "created_at": "2024-02-26T02:10:19.727Z",
+      "updated_at": "2024-02-26T02:10:19.727Z"
+    },
+    {
+      "id": 4,
+      "code": "ST0004",
+      "name": "Nama",
+      "category": "Celana",
+      "price": "50000",
+      "description": "ini adalah deskripsi",
+      "finished": "0",
+      "created_at": "2024-02-26T02:10:19.727Z",
+      "updated_at": "2024-02-26T02:10:19.727Z"
+    },
+    {
+      "id": 5,
+      "code": "ST0005",
+      "name": "Nama",
+      "category": "Celana",
+      "price": "50000",
+      "description": "ini adalah deskripsi",
+      "finished": "0",
+      "created_at": "2024-02-26T02:10:19.727Z",
+      "updated_at": "2024-02-26T02:10:19.727Z"
+    },
+    {
+      "id": 6,
+      "code": "ST0006",
+      "name": "Nama",
+      "category": "Celana",
+      "price": "50000",
+      "description": "ini adalah deskripsi",
+      "finished": "0",
+      "created_at": "2024-02-26T02:10:19.727Z",
+      "updated_at": "2024-02-26T02:10:19.727Z"
+    }
+  ]
+}

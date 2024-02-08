@@ -2,7 +2,7 @@
 
 import { FaArrowUpLong } from "react-icons/fa6";
 import logoWhatsapp from "@/assets/img/icons/logo-whatsapp.svg";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import "./style.css";
 
@@ -11,7 +11,7 @@ export default function WaButton() {
   const [isAnimationContactUs, setAnimationContactUs] =
     useState<string>("mode1");
 
-  const getFormatChatWa = () => {
+  const getFormatChatWa = useCallback(() => {
     let result = null;
     const now = Date.now();
     const time = parseInt(
@@ -31,7 +31,7 @@ export default function WaButton() {
     }
 
     setChatWa(`Selamat ${result} Pak/Ibu`);
-  };
+  }, []);
 
   useEffect(() => {
     const animationContactUs = setInterval(() => {
@@ -65,8 +65,7 @@ export default function WaButton() {
               ? "animate-contact-us-out"
               : "animate-contact-us-in"
             : ""
-        }`}
-      >
+        }`}>
         <div className="absolute block w-5 rotate-45 -translate-y-1/2 bg-white aspect-square right-2.5 top-1/2 scale-90"></div>
         <div className="px-3 py-1 text-[#0f0f0f] bg-white overflow-hidden whitespace-nowrap rounded-xl [box-shadow:0_0_.5rem_0rem_rgba(0,0,0,.2)]">
           <span className="relative z-10">Contact Us</span>

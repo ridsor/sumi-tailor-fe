@@ -7,6 +7,7 @@ import { FaArrowRightFromBracket } from "react-icons/fa6";
 import Link from "next/link";
 import Image from "next/image";
 import personIcon from "@/assets/img/icons/person.png";
+import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 
 interface Props {
   isSidebar: boolean;
@@ -51,14 +52,14 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
             className={`bg-[#E4EEDD] w-full h-full grid px-2 py-4 overflow-auto rounded-tr-2xl rounded-br-2xl`}>
             <div>
               <div className="brand flex items-center mb-3">
-                <div className={`p-1.5`}>
+                <div>
                   <Image
-                    src={"/sumi-tailor.svg"}
+                    src={sumi_tailor}
                     alt="logo"
-                    className="h-8 aspect-square"
+                    className="w-[44px] aspect-square"
                     priority
-                    width={32}
-                    height={32}
+                    width={60}
+                    height={60}
                   />
                 </div>
                 {isSidebar ? (
@@ -129,12 +130,12 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 </li>
                 <li>
                   <Link
-                    href="/account"
+                    href="/accounts"
                     className="flex items-center hover:bg-four rounded-md active:ring active:ring-three">
                     <div className="p-3">
                       <RiShieldUserFill className="text-xl" />
                     </div>
-                    {isSidebar ? "Account" : ""}
+                    {isSidebar ? "Akun" : ""}
                   </Link>
                 </li>
               </ul>
