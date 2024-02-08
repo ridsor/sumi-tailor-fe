@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dummy": "json-server db.json -p 8000"
   },
   "dependencies": {
     "apexcharts": "^3.45.2",

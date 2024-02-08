@@ -1,6 +1,32 @@
 import login1 from "@/assets/img/login1.png";
 import Image from "next/image";
 import FormLogin from "./FormLogin";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  icons: {
+    icon: ["/favicon.ico"],
+    apple: ["/apple-touch-icon.png"],
+    shortcut: ["/apple-touch-icon.png"],
+  },
+  title: "Sumi Tailor",
+  description:
+    "Temukan solusi ideal untuk gaya pakaian Anda! Tim penjahit kami siap membantu Anda mengatasi kesulitan dengan pakaian yang tidak pas. Dengan keahlian dan pengalaman kami, kami menciptakan pakaian yang disesuaikan dengan bentuk dan gaya tubuh unik Anda. Mulailah mewujudkan impian mode Anda sekarang!",
+  authors: [
+    {
+      name: "Ryan Syukur",
+      url: process.env.BASE_URL,
+    },
+  ],
+
+  openGraph: {
+    type: "website",
+    title: "Sumi Tailor",
+    images: [process.env.BASE_URL + "/image/sumi-tailor-v1.jpg"],
+    description:
+      "Temukan solusi ideal untuk gaya pakaian Anda! Tim penjahit kami siap membantu Anda mengatasi kesulitan dengan pakaian yang tidak pas. Dengan keahlian dan pengalaman kami, kami menciptakan pakaian yang disesuaikan dengan bentuk dan gaya tubuh unik Anda. Mulailah mewujudkan impian mode Anda sekarang!",
+  },
+};
 
 const LoginPage = () => {
   return (
@@ -25,7 +51,7 @@ const LoginPage = () => {
             <article className="w-full md:w-[500px]">
               <div className="flex justify-center items-center p-8 h-full">
                 <div className="w-full">
-                  <h2 className="font-one font-bold text-3xl mb-1">Sign In</h2>
+                  <h2 className="font-one font-bold text-3xl mb-1">Login</h2>
                   <p className="mb-6">
                     Silakan masuk ke akun Anda menggunakan informasi yang sudah
                     terdaftar.

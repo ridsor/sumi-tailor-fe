@@ -1,6 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { FaBars, FaCircle, FaUser } from "react-icons/fa6";
+import { FaBars, FaUser } from "react-icons/fa6";
 
 const Header = ({ pathname }: { pathname: string }) => {
   const [hamburger, setHamburger] = useState<boolean>(false);
@@ -10,14 +11,19 @@ const Header = ({ pathname }: { pathname: string }) => {
       <div className="container px-2 py-4">
         <article className="bg-two w-full flex items-center text-white p-2.5 rounded-full lg:justify-between relative">
           <div className="flex items-center order-1 px-2 left gap-x-1">
-            <FaCircle className="fill-white" size="1rem" />
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={48}
+              height={48}
+              className="w-10 aspect-square"
+            />
             <span className="text-base font-bold">Sumi Tailor</span>
           </div>
           <div className="order-3 center lg:order-2">
             <button
               className="block p-2 mx-2 lg:hidden"
-              onClick={() => setHamburger((prev) => !prev)}
-            >
+              onClick={() => setHamburger((prev) => !prev)}>
               <FaBars
                 className={`${
                   hamburger ? "fill-gray-400" : "fill-white"
@@ -30,8 +36,7 @@ const Header = ({ pathname }: { pathname: string }) => {
                 hamburger
                   ? " opacity-100 pointer-events-auto -right-0"
                   : "-right-1/3 pointer-events-none opacity-0 lg:pointer-events-auto lg:opacity-100"
-              } transition-all top-[110%] lg:block lg:static absolute bg-white lg:bg-inherit shadow-md lg:shadow-none p-4 lg:p-0 w-full max-w-[250px] lg:w-auto lg:max-w-none lg:rounded-none rounded-md lg:border-none border`}
-            >
+              } transition-all top-[110%] lg:block lg:static absolute bg-white lg:bg-inherit shadow-md lg:shadow-none p-4 lg:p-0 w-full max-w-[250px] lg:w-auto lg:max-w-none lg:rounded-none rounded-md lg:border-none border`}>
               <ul className="flex gap-x-10 text-[#0f0f0f] lg:text-white flex-col lg:flex-row gap-y-3">
                 <li>
                   <Link
@@ -40,8 +45,7 @@ const Header = ({ pathname }: { pathname: string }) => {
                       pathname === "/"
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
-                    }`}
-                  >
+                    }`}>
                     Home
                   </Link>
                 </li>
@@ -52,8 +56,7 @@ const Header = ({ pathname }: { pathname: string }) => {
                       pathname === "/about"
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
-                    }`}
-                  >
+                    }`}>
                     About Us
                   </Link>
                 </li>
@@ -64,8 +67,7 @@ const Header = ({ pathname }: { pathname: string }) => {
                       pathname === "/gallery"
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
-                    }`}
-                  >
+                    }`}>
                     Gallery
                   </Link>
                 </li>
@@ -76,8 +78,7 @@ const Header = ({ pathname }: { pathname: string }) => {
                       pathname === "/service"
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
-                    }`}
-                  >
+                    }`}>
                     Service
                   </Link>
                 </li>
