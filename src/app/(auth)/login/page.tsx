@@ -36,12 +36,12 @@ const LoginPage = () => {
           <div className="min-h-[500px] flex flex-wrap justify-center">
             <article className="w-full lg:w-[calc(100%-500px)] ">
               <div className="flex items-center w-full h-full">
-                <div className="bg-[#E4EEDD] md:h-full w-full md:rounded-tr-xl md:rounded-br-xl md:shadow-sm flex justify-center items-center">
+                <div className="bg-[#E4EEDD] h-full w-full md:rounded-tr-xl md:rounded-br-xl md:shadow-sm flex justify-center items-center">
                   <div className="p-4">
                     <div className="w-[300px] hidden lg:block">
                       <Image src={login1} alt="" className="w-full" priority />
                     </div>
-                    <h1 className="text-3xl text-center md:text-4xl mb-3 font-bold tracking-wide">
+                    <h1 className="text-3xl text-center md:text-4xl font-bold tracking-wide">
                       Selamat Datang Kembali
                     </h1>
                   </div>
