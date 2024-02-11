@@ -6,7 +6,7 @@ import DashboardLoading from "@/app/(admin)/dashboard/loading";
 const Loading = () => {
   const pathname = usePathname();
 
-  if (pathname !== "/") {
+  if (pathname === "/dashboard") {
     return <DashboardLoading />;
   }
 

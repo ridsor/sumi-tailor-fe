@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={`${quicksand.variable} ${josenfin_sans.variable}`}
         suppressHydrationWarning={true}>
-        {enableNavbar.includes(pathname) && <Header pathname={pathname} />}
+        {enableNavbar.includes(pathname) && <Header />}
         {children}
         {enableNavbar.includes(pathname) && <Footer />}
       </body>

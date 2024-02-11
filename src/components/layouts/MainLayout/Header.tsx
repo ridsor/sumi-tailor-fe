@@ -1,9 +1,13 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaBars, FaUser } from "react-icons/fa6";
 
-const Header = ({ pathname }: { pathname: string }) => {
+const Header = () => {
+  const pathname = usePathname();
+
   const [hamburger, setHamburger] = useState<boolean>(false);
 
   return (
@@ -35,7 +39,7 @@ const Header = ({ pathname }: { pathname: string }) => {
               className={`${
                 hamburger
                   ? "opacity-100 pointer-events-auto scale-100 ease-out translate-x-0 translate-y-0"
-                  : "pointer-events-none opacity-0 lg:pointer-events-auto lg:opacity-100 scale-0 ease-in translate-x-1/2 -translate-y-1/2"
+                  : "pointer-events-none opacity-0 lg:pointer-events-auto lg:opacity-100 lg:scale-100 lg:translate-x-0 lg:translate-y-0 scale-0 ease-in translate-x-1/2 -translate-y-1/2"
               } right-0 transition-all top-[110%] lg:block lg:static absolute bg-white lg:bg-inherit shadow-md lg:shadow-none p-4 lg:p-0 w-full max-w-[250px] lg:w-auto lg:max-w-none lg:rounded-none rounded-md lg:border-none border`}>
               <ul className="flex gap-x-10 text-[#0f0f0f] lg:text-white flex-col lg:flex-row gap-y-3">
                 <li>
