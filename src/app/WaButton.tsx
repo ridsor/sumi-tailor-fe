@@ -2,13 +2,16 @@
 
 import { FaArrowUpLong } from "react-icons/fa6";
 import logoWhatsapp from "@/assets/img/icons/logo-whatsapp.svg";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import "./style.css";
 
 export default function WaButton() {
   const [chatWa, setChatWa] = useState<string>("");
+  const [isAnimationContactUs, setAnimationContactUs] =
+    useState<string>("mode1");
 
-  const getFormatChatWa = () => {
+  const getFormatChatWa = useCallback(() => {
     let result = null;
     const now = Date.now();
     const time = parseInt(
@@ -28,7 +31,21 @@ export default function WaButton() {
     }
 
     setChatWa(`Selamat ${result} Pak/Ibu`);
-  };
+  }, []);
+
+  useEffect(() => {
+    const animationContactUs = setInterval(() => {
+      setAnimationContactUs((prev) => {
+        if (prev == "mode2") {
+          return "mode3";
+        }
+        return "mode2";
+      });
+    }, 4000);
+    return () => {
+      clearInterval(animationContactUs);
+    };
+  }, []);
 
   useEffect(() => {
     getFormatChatWa();
@@ -41,13 +58,20 @@ export default function WaButton() {
           <Image src={logoWhatsapp} alt="whatsapp" />
         </div>
       </a>
-      <div className="absolute -translate-y-1/2 top-1/2 -left-[6.3rem]">
-        <div className="absolute block w-5 rotate-45 -translate-y-1/2 bg-white aspect-square -right-0.5 top-1/2 scale-90"></div>
-        <div className="px-3 py-1 text-[#0f0f0f] bg-white  whitespace-nowrap rounded-xl [box-shadow:0_0_.5rem_0rem_rgba(0,0,0,.2)]">
+      <div
+        className={`absolute -translate-y-1/2 top-1/2 overflow-hidden animate-contact-us ${
+          isAnimationContactUs != "mode1"
+            ? isAnimationContactUs == "mode3"
+              ? "animate-contact-us-out"
+              : "animate-contact-us-in"
+            : ""
+        }`}>
+        <div className="absolute block w-5 rotate-45 -translate-y-1/2 bg-white aspect-square right-2.5 top-1/2 scale-90"></div>
+        <div className="px-3 py-1 text-[#0f0f0f] bg-white overflow-hidden whitespace-nowrap rounded-xl [box-shadow:0_0_.5rem_0rem_rgba(0,0,0,.2)]">
           <span className="relative z-10">Contact Us</span>
         </div>
       </div>
-      <div className="absolute -translate-x-1/2 -bottom-10 left-1/2">
+      <div className="absolute -translate-x-1/2 -bottom-10 left-1/2 animate-pulse">
         <div className="flex items-center justify-center w-8 p-1 bg-white rounded-full [box-shadow:0_0_.5rem_0rem_rgba(0,0,0,.2)] aspect-square">
           <FaArrowUpLong className="fill-gray-500" />
         </div>

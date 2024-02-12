@@ -1,12 +1,19 @@
 "use client";
 
 import "./globals.css";
-import Header from "@/components/layouts/Main/Header";
+import Header from "@/components/layouts/MainLayout/Header";
 import { usePathname } from "next/navigation";
-import Footer from "@/components/layouts/Main/Footer";
+import Footer from "@/components/layouts/MainLayout/Footer";
 import { josenfin_sans, quicksand } from "@/fonts";
 
-const enableNavbar = ["/", "/about", "/gallery", "/service", "/login"];
+const enableNavbar = [
+  "/",
+  "/about",
+  "/gallery",
+  "/service",
+  "/login",
+  "/orders",
+];
 
 export default function RootLayout({
   children,
@@ -19,9 +26,8 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${quicksand.variable} ${josenfin_sans.variable}`}
-        suppressHydrationWarning={true}
-      >
-        {enableNavbar.includes(pathname) && <Header pathname={pathname} />}
+        suppressHydrationWarning={true}>
+        {enableNavbar.includes(pathname) && <Header />}
         {children}
         {enableNavbar.includes(pathname) && <Footer />}
       </body>

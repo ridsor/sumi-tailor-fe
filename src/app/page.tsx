@@ -7,13 +7,25 @@ import WaButton from "./WaButton";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  icons: {
+    icon: ["/favicon.ico"],
+    apple: ["/apple-touch-icon.png"],
+    shortcut: ["/apple-touch-icon.png"],
+  },
   title: "Sumi Tailor",
   description:
     "Temukan solusi ideal untuk gaya pakaian Anda! Tim penjahit kami siap membantu Anda mengatasi kesulitan dengan pakaian yang tidak pas. Dengan keahlian dan pengalaman kami, kami menciptakan pakaian yang disesuaikan dengan bentuk dan gaya tubuh unik Anda. Mulailah mewujudkan impian mode Anda sekarang!",
+  authors: [
+    {
+      name: "Ryan Syukur",
+      url: process.env.BASE_URL,
+    },
+  ],
+
   openGraph: {
     type: "website",
     title: "Sumi Tailor",
-    images: [process.env.BASE_URL + "/image/sumi-tailor.png"],
+    images: [process.env.BASE_URL + "/image/sumi-tailor-v1.jpg"],
     description:
       "Temukan solusi ideal untuk gaya pakaian Anda! Tim penjahit kami siap membantu Anda mengatasi kesulitan dengan pakaian yang tidak pas. Dengan keahlian dan pengalaman kami, kami menciptakan pakaian yang disesuaikan dengan bentuk dan gaya tubuh unik Anda. Mulailah mewujudkan impian mode Anda sekarang!",
   },
@@ -21,7 +33,7 @@ export const metadata: Metadata = {
 
 const HomePage = () => {
   return (
-    <>
+    <main>
       <section className="bg-three">
         <div className="container">
           <div className="row pt-36 min-h-[600px] h-auto px-4 flex flex-wrap">
@@ -39,17 +51,10 @@ const HomePage = () => {
               </p>
               <div className="flex gap-x-3 mb-6">
                 <Link
-                  href="/orders"
-                  className="text-three bg-two py-3 px-5 rounded-full flex items-center gap-x-1.5 hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)]"
-                >
-                  Cek Pesanan
-                  <FaArrowRightLong className="fill-three" />
-                </Link>
-                <Link
-                  href="/about-us"
-                  className="text-two border border-two hover:bg-four hover:text-three py-3 px-5 rounded-full flex items-center gap-x-1.5 focus:ring focus:ring-[rgba(179,203,166,.5)]"
-                >
+                  href="/about"
+                  className="text-three bg-two py-3 px-5 rounded-full flex items-center gap-x-1.5 hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)]">
                   Selengkapnya
+                  <FaArrowRightLong className="fill-three" />
                 </Link>
               </div>
             </article>
@@ -71,7 +76,7 @@ const HomePage = () => {
         </div>
       </section>
       <WaButton />
-    </>
+    </main>
   );
 };
 
