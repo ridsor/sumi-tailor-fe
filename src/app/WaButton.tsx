@@ -53,7 +53,7 @@ export default function WaButton() {
 
   return (
     <div id="contact-us" className="fixed bottom-[6.2rem] right-10">
-      <a href={`https://wa.me/6281344007725?text='${chatWa}'`} target="_blank">
+      <a href={`https://wa.me/6281344007725?text=${chatWa}`} target="_blank">
         <div className="w-10 aspect-square bg-[#2BB741] p-1 rounded-full shadow-md">
           <Image src={logoWhatsapp} alt="whatsapp" />
         </div>
