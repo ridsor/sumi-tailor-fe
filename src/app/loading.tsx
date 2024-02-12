@@ -1,14 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import DashboardLoading from "@/app/(admin)/dashboard/loading";
 
 const Loading = () => {
   const pathname = usePathname();
-
-  if (pathname === "/dashboard") {
-    return <DashboardLoading />;
-  }
 
   return (
     <main className="animate-pulse">
@@ -19,7 +14,6 @@ const Loading = () => {
               <div className="bg-[#bdc3c7] rounded-md mt-5 mb-8 h-[100px]"></div>
               <div className="bg-[#bdc3c7] rounded-md h-[120px] mb-8"></div>
               <div className="flex gap-4 mb-5">
-                <div className="bg-[#bdc3c7] rounded-md h-[45px] w-[144px]"></div>
                 <div className="bg-[#bdc3c7] rounded-md h-[45px] w-[144px]"></div>
               </div>
             </article>

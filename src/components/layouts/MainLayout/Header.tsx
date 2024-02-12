@@ -90,9 +90,9 @@ const Header = () => {
             </nav>
           </div>
           <div className="order-2 ml-auto right lg:order-3 lg:ml-0">
-            <Link href="/login" className="bg-white p-3 rounded-full block">
+            <div className="bg-white p-3 rounded-full block">
               <FaUser className="fill-two" size="1.2rem" />
-            </Link>
+            </div>
           </div>
         </article>
       </div>
