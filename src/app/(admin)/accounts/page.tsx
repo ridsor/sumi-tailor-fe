@@ -16,7 +16,7 @@ const AccountPage = () => {
 
   return (
     <>
-      <section>
+      <section className="py-16">
         <div className="container max-w-full">
           <div className="p-4">
             <h1 className="text-3xl font-one mb-3 tracking-wide font-semibold">
