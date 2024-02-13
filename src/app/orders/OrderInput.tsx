@@ -1,12 +1,8 @@
 import { FaXmark } from "react-icons/fa6";
 import Modal from "../../components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useCallback, useState } from "react";
-
-type Props = {
-  active: boolean;
-  openclose: (value: boolean) => void;
-};
+import { useCallback, useContext, useEffect, useState } from "react";
+import { ModalContext } from "./page";
 
 type Input = {
   name: string;
@@ -17,7 +13,9 @@ type Input = {
 
 type Validate = Input;
 
-export default function OrderInput({ active, openclose }: Props) {
+export default function OrderInput() {
+  const { modal, toggleModal, inputAction, order } = useContext(ModalContext);
+
   const [inputs, setInputs] = useState<Input>({
     name: "",
     category: "",
@@ -126,14 +124,25 @@ export default function OrderInput({ active, openclose }: Props) {
     []
   );
 
+  useEffect(() => {
+    if (inputAction === "edit") {
+      setInputs({
+        name: order.name,
+        category: order.category,
+        price: order.price,
+        description: order.description,
+      });
+    }
+  }, [inputAction, order]);
+
   return (
-    <Modal active={active} openclose={openclose}>
+    <Modal active={modal} openclose={toggleModal}>
       <div className="container max-w-full">
         <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
-          Buat Pesanan
+          {inputAction === "create" ? "Buat" : "Edit"} Pesanan
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
-            onClick={() => openclose(false)}>
+            onClick={() => toggleModal()}>
             <FaXmark />
           </button>
         </div>
@@ -243,7 +252,7 @@ export default function OrderInput({ active, openclose }: Props) {
           </div>
           <div className="form-input">
             <button className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold">
-              Buat
+              Simpan
             </button>
           </div>
         </form>
