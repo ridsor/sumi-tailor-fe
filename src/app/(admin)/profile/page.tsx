@@ -11,7 +11,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <section>
+      <section className="py-16">
         <div className="container max-w-full">
           <div className="p-4">
             <h1 className="text-3xl font-one tracking-wide mb-3 font-semibold">

@@ -1,5 +1,5 @@
 import { FaXmark } from "react-icons/fa6";
-import Modal from "../../components/fragments/Modal";
+import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ModalContext } from "./page";
