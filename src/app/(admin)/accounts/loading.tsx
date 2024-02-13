@@ -1,7 +1,7 @@
 export default function loading() {
   return (
     <>
-      <section className="animate-pulse">
+      <section className="animate-pulse py-16">
         <div className="container max-w-full">
           <div className="p-4">
             <div className="bg-[#bdc3c7] rounded-md h-[35px] w-[100px] mb-6"></div>

@@ -102,7 +102,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <section className="pt-10">
+      <section className="py-16">
         <div className="container max-w-full">
           <div className="p-4">
             <div className="flex flex-wrap gap-y-2 lg:gap-y-0 mb-8">

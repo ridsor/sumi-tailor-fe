@@ -6,14 +6,7 @@ import { usePathname } from "next/navigation";
 import Footer from "@/components/layouts/MainLayout/Footer";
 import { josenfin_sans, quicksand } from "@/fonts";
 
-const enableNavbar = [
-  "/",
-  "/about",
-  "/gallery",
-  "/service",
-  "/login",
-  "/orders",
-];
+const enableNavbar = ["/", "/about", "/gallery", "/service", "/login"];
 
 export default function RootLayout({
   children,

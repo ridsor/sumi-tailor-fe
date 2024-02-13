@@ -2,8 +2,8 @@
 
 import { SetStateAction, createContext, useCallback, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import OrderInput from "@/app/orders/OrderInput";
-import OrderList from "@/app/orders/OrderList";
+import OrderInput from "@/app/(admin)/orders/OrderInput";
+import OrderList from "@/app/(admin)/orders/OrderList";
 
 interface OrderInput {
   id: number;
@@ -61,7 +61,7 @@ export default function OrdersPage() {
         setOrder: setOrderInput,
       }}>
       <main>
-        <section className="pt-36 pb-16 bg-[#E5E9EC]">
+        <section className="py-16">
           <div className="container">
             <article className="px-4">
               <button
@@ -73,7 +73,7 @@ export default function OrdersPage() {
                 <FaPlus />
               </button>
               <OrderInput />
-              <div className="bg-white p-4 lg:p-7 shadow-md rounded-xl relative">
+              <div className="relative">
                 <h2 className="text-2xl font-bold mb-2">Daftar Pesanan</h2>
                 <p className="text-gray-500 mb-4">Lihat pesanan Anda disini.</p>
                 <OrderList />
