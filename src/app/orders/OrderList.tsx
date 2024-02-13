@@ -121,7 +121,8 @@ export default function OrderList() {
             ordersUnfinished.data.map((order) => (
               <Order
                 key={order.id}
-                timestamp={order.updated_at}
+                id={order.id}
+                date={order.updated_at}
                 name={order.name}
                 category={order.category}
                 price={order.price}
@@ -156,7 +157,8 @@ export default function OrderList() {
             ordersFinished.data.map((order) => (
               <Order
                 key={order.id}
-                timestamp={order.updated_at}
+                id={order.id}
+                date={order.updated_at}
                 name={order.name}
                 category={order.category}
                 price={order.price}
