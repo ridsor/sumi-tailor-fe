@@ -3,23 +3,26 @@
 import { FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { AccountModalContext } from "./page";
 
 type Props = {
   active: boolean;
-  opencloseModal: (value: boolean) => void;
+  opencloseModal: () => void;
 };
 
 type Input = {
   name: string;
   email: string;
-  password: string;
-  confirm_password: string;
+  password?: string;
+  confirm_password?: string;
 };
 
 type Validate = Input;
 
 export default function AdminInput({ active, opencloseModal }: Props) {
+  const { inputAction, accountInput } = useContext(AccountModalContext);
+
   const [inputs, setInputs] = useState<Input>({
     name: "",
     email: "",
@@ -143,15 +146,22 @@ export default function AdminInput({ active, opencloseModal }: Props) {
     []
   );
 
+  useEffect(() => {
+    setInputs({
+      name: accountInput.name,
+      email: accountInput.email,
+    });
+  }, [accountInput]);
+
   return (
     <Modal active={active} openclose={opencloseModal}>
       <div className="container max-w-full">
         <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
-          Tambah Admin
+          {inputAction === "create" ? "Buat" : "Edit"} Akun Admin
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
             tabIndex={active ? 1 : undefined}
-            onClick={() => opencloseModal(false)}>
+            onClick={() => opencloseModal()}>
             <FaXmark />
           </button>
         </div>
@@ -208,61 +218,65 @@ export default function AdminInput({ active, opencloseModal }: Props) {
               ""
             )}
           </div>
-          <div className="form-input mb-3 relative">
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              className={`${
-                validate.password ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
-              value={inputs.password}
-            />
-            {validate.password ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.password}</span>
-                </div>
+          {inputAction !== "edit" && (
+            <>
+              <div className="form-input mb-3 relative">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  className={`${
+                    validate.password ? "border-fail pr-11" : ""
+                  } w-full border rounded-sm py-2 px-3 relative z-10`}
+                  onChange={onChangeEventHanlder}
+                  value={inputs.password}
+                />
+                {validate.password ? (
+                  <div className="absolute top-0 right-0 left-0 bottom-0">
+                    <button
+                      type={"button"}
+                      className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                      <FaExclamationCircle />
+                    </button>
+                    <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                      <span>{validate.password}</span>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="form-input mb-3 relative">
-            <input
-              type="password"
-              placeholder="Konfirmasi Password"
-              name="confirm_password"
-              className={`${
-                validate.confirm_password ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
-              value={inputs.confirm_password}
-            />
-            {validate.confirm_password ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.confirm_password}</span>
-                </div>
+              <div className="form-input mb-3 relative">
+                <input
+                  type="password"
+                  placeholder="Konfirmasi Password"
+                  name="confirm_password"
+                  className={`${
+                    validate.confirm_password ? "border-fail pr-11" : ""
+                  } w-full border rounded-sm py-2 px-3 relative z-10`}
+                  onChange={onChangeEventHanlder}
+                  value={inputs.confirm_password}
+                />
+                {validate.confirm_password ? (
+                  <div className="absolute top-0 right-0 left-0 bottom-0">
+                    <button
+                      type={"button"}
+                      className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                      <FaExclamationCircle />
+                    </button>
+                    <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                      <span>{validate.confirm_password}</span>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
-            ) : (
-              ""
-            )}
-          </div>
+            </>
+          )}
           <div className="form-input">
             <button className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold">
-              Tambah
+              Simpan
             </button>
           </div>
         </form>

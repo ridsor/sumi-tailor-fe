@@ -68,6 +68,13 @@ export default function OrdersPage() {
                 onClick={() => {
                   toggleModal();
                   setInputAction("create");
+                  setOrderInput({
+                    id: 0,
+                    name: "",
+                    category: "",
+                    price: "",
+                    description: "",
+                  });
                 }}
                 className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
                 <FaPlus />

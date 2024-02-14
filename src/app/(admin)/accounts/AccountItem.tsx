@@ -1,13 +1,16 @@
 "use client";
 
+import { useContext } from "react";
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
+import { AccountModalContext } from "./page";
 
-interface Props {
-  opencloseModal: (value: boolean) => void;
-}
+interface Props {}
 
 export default function AdminItem(props: Props) {
+  const { toggleModal, setAccountInput, setInputAction } =
+    useContext(AccountModalContext);
+
   return (
     <tr className="border-b">
       <td className="px-2 text-center">1</td>
@@ -18,7 +21,14 @@ export default function AdminItem(props: Props) {
         <div className="flex">
           <button
             className="bg-yellow-500 px-2 py-2  rounded-md text-white mr-1"
-            onClick={() => props.opencloseModal(true)}>
+            onClick={() => {
+              toggleModal();
+              setInputAction("edit");
+              setAccountInput({
+                name: "Ryan",
+                email: "risorgamerz000001@gmail.com",
+              });
+            }}>
             <FaEdit />
           </button>
           <button className="bg-fail px-2 py-1  rounded-md text-white">
