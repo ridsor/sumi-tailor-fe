@@ -11,7 +11,8 @@ interface Order {
   id: number;
   item_code: number;
   name: string;
-  category: string;
+  nohp: "";
+  address: "";
   price: number | null;
   description: string | null;
   finished: number;
@@ -119,16 +120,7 @@ export default function OrderList() {
           )}
           {ordersUnfinished.data.length > 0 ? (
             ordersUnfinished.data.map((order) => (
-              <Order
-                key={order.id}
-                id={order.id}
-                date={order.updated_at}
-                name={order.name}
-                category={order.category}
-                price={order.price}
-                description={order.description}
-                finished={order.finished}
-              />
+              <Order key={order.id} order={order} />
             ))
           ) : (
             <>Data Pesanan tidak ditemukan</>
@@ -155,16 +147,7 @@ export default function OrderList() {
           )}
           {ordersFinished.data.length > 0 ? (
             ordersFinished.data.map((order) => (
-              <Order
-                key={order.id}
-                id={order.id}
-                date={order.updated_at}
-                name={order.name}
-                category={order.category}
-                price={order.price}
-                description={order.description}
-                finished={order.finished}
-              />
+              <Order key={order.id} order={order} />
             ))
           ) : (
             <>Data Pesanan tidak ditemukan</>
