@@ -1,3 +1,5 @@
+"use client";
+
 import { TbLayoutDashboard } from "react-icons/tb";
 import { FaShoppingCart } from "react-icons/fa";
 import { RiShieldUserFill } from "react-icons/ri";
@@ -8,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import personIcon from "@/assets/img/icons/person.png";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
+import { usePathname } from "next/navigation";
 
 interface Props {
   isSidebar: boolean;
@@ -15,6 +18,8 @@ interface Props {
 }
 
 export default function Aside({ isSidebar, setSidebar }: Props) {
+  const pathname = usePathname();
+
   return (
     <aside
       className={`${
@@ -96,7 +101,9 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 )}
                 <Link
                   href="/profile"
-                  className="flex items-center hover:bg-four rounded-md w-full font-semibold active:ring active:ring-three mt-2">
+                  className={`${
+                    pathname === "/profile" ? "bg-four" : ""
+                  } flex items-center hover:bg-four rounded-md w-full font-semibold active:ring active:ring-three mt-2`}>
                   <div className="p-3">
                     <FaUser className="text-xl" />
                   </div>
@@ -107,11 +114,13 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
               <ul
                 className={`${
                   isSidebar ? "p-2" : "py-2"
-                } flex flex-col font-semibold`}>
+                } flex flex-col font-semibold gap-y-1`}>
                 <li>
                   <Link
                     href="/dashboard"
-                    className="flex items-center hover:bg-four rounded-md active:ring active:ring-three">
+                    className={`${
+                      pathname === "/dashboard" ? "bg-four" : ""
+                    } flex items-center hover:bg-four rounded-md active:ring active:ring-three`}>
                     <div className="p-3">
                       <TbLayoutDashboard className="text-xl" />
                     </div>
@@ -121,7 +130,9 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 <li>
                   <Link
                     href="/orders"
-                    className="flex items-center hover:bg-four rounded-md active:ring active:ring-three">
+                    className={`${
+                      pathname === "/orders" ? "bg-four" : ""
+                    } flex items-center hover:bg-four rounded-md active:ring active:ring-three`}>
                     <div className="p-3">
                       <FaShoppingCart className="text-xl" />
                     </div>
@@ -131,7 +142,9 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 <li>
                   <Link
                     href="/accounts"
-                    className="flex items-center hover:bg-four rounded-md active:ring active:ring-three">
+                    className={`${
+                      pathname === "/accounts" ? "bg-four" : ""
+                    } flex items-center hover:bg-four rounded-md active:ring active:ring-three`}>
                     <div className="p-3">
                       <RiShieldUserFill className="text-xl" />
                     </div>
