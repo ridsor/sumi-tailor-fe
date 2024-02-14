@@ -8,7 +8,8 @@ import OrderList from "@/app/(admin)/orders/OrderList";
 interface OrderInput {
   id: number;
   name: string;
-  category: string;
+  nohp: string;
+  address: string;
   price: string;
   description: string;
 }
@@ -28,7 +29,8 @@ export const ModalContext = createContext<{
   order: {
     id: 0,
     name: "",
-    category: "",
+    nohp: "",
+    address: "",
     price: "",
     description: "",
   },
@@ -41,7 +43,8 @@ export default function OrdersPage() {
   const [orderInput, setOrderInput] = useState<OrderInput>({
     id: 0,
     name: "",
-    category: "",
+    nohp: "",
+    address: "",
     price: "",
     description: "",
   });
@@ -71,7 +74,8 @@ export default function OrdersPage() {
                   setOrderInput({
                     id: 0,
                     name: "",
-                    category: "",
+                    nohp: "",
+                    address: "",
                     price: "",
                     description: "",
                   });

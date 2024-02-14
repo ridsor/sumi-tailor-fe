@@ -20,7 +20,6 @@ const Loading = () => {
               <div className="bg-[#bdc3c7] rounded-md h-[120px] mb-8"></div>
               <div className="flex gap-4 mb-5">
                 <div className="bg-[#bdc3c7] rounded-md h-[45px] w-[144px]"></div>
-                <div className="bg-[#bdc3c7] rounded-md h-[45px] w-[144px]"></div>
               </div>
             </article>
             <article className="w-full lg:w-1/2 flex justify-center">

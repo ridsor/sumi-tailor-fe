@@ -1,10 +1,11 @@
 "use server";
 
-interface Order {
+export interface Order {
   id: number;
   item_code: number;
   name: string;
-  category: string;
+  nohp: "";
+  address: "";
   price: number | null;
   description: string | null;
   finished: number;
