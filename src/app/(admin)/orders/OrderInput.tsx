@@ -125,15 +125,13 @@ export default function OrderInput() {
   );
 
   useEffect(() => {
-    if (inputAction === "edit") {
-      setInputs({
-        name: order.name,
-        category: order.category,
-        price: order.price,
-        description: order.description,
-      });
-    }
-  }, [inputAction, order]);
+    setInputs({
+      name: order.name,
+      category: order.category,
+      price: order.price,
+      description: order.description,
+    });
+  }, [order]);
 
   return (
     <Modal active={modal} openclose={toggleModal}>
