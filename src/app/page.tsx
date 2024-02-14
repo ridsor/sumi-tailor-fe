@@ -51,15 +51,10 @@ const HomePage = () => {
               </p>
               <div className="flex gap-x-3 mb-6">
                 <Link
-                  href="/orders"
-                  className="text-three bg-two py-3 px-5 rounded-full flex items-center gap-x-1.5 hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)]">
-                  Cek Pesanan
-                  <FaArrowRightLong className="fill-three" />
-                </Link>
-                <Link
                   href="/about"
-                  className="text-two border border-two hover:bg-four hover:text-three py-3 px-5 rounded-full flex items-center gap-x-1.5 focus:ring focus:ring-[rgba(179,203,166,.5)]">
+                  className="text-three bg-two py-3 px-5 rounded-full flex items-center gap-x-1.5 hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)]">
                   Selengkapnya
+                  <FaArrowRightLong className="fill-three" />
                 </Link>
               </div>
             </article>
