@@ -3,13 +3,83 @@
 import Image from "next/image";
 import "./style.css";
 import { FaExclamation } from "react-icons/fa6";
+import { useState } from "react";
+
+interface RegisterOrderInput {
+  name: string;
+  email: string;
+  nohp: string;
+  address: string;
+  price: string;
+  description: string;
+}
 
 export default function RegisterOrderPage() {
+  const [inputs, setInputs] = useState<RegisterOrderInput>({
+    name: "",
+    email: "",
+    nohp: "",
+    address: "",
+    price: "",
+    description: "",
+  });
+  const [validation, setValidation] = useState<string[]>([]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setValidation([]);
+
+    const validation = handleValidation(inputs);
+    if (validation.length > 0) {
+      setValidation(validation);
+      return;
+    }
   };
 
-  const handleValidation = () => {};
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setInputs((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleValidation = (inputs: RegisterOrderInput): string[] => {
+    const result = [];
+
+    // name
+    if (!inputs.name) {
+      result.push("Nama tidak boleh kosong");
+    }
+
+    // email
+    var rs = inputs.email;
+    var atps = rs.indexOf("@");
+    var dots = rs.lastIndexOf(".");
+    if (!inputs.email) {
+      result.push("Email tidak boleh kosong");
+    } else if (atps < 1 || dots < atps + 2 || dots + 2 >= rs.length) {
+      result.push("Email tidak valid");
+    }
+
+    // no handphone
+    if (!inputs.nohp) {
+      result.push("No Handphone tidak boleh kosong");
+    } else if (isNaN(Number(inputs.nohp)))
+      result.push("No Handphone harus angka");
+
+    // address
+    if (!inputs.address) result.push("Alamat tidak boleh kosong");
+
+    // price
+    if (isNaN(Number(inputs.price))) result.push("Harga harus angka");
+
+    // description
+    if (!inputs.description) result.push("Deskripsi tidak boleh kosong");
+
+    return result;
+  };
 
   return (
     <main>
@@ -27,44 +97,32 @@ export default function RegisterOrderPage() {
             <h1 className="text-[#21334A] text-lg font-one font-semibold mb-3">
               MENDAFTAR PESANAN
             </h1>
-            <div className="mb-3 bg-[#FCEFEF] border border-fail text-fail py-2 px-3 font-medium rounded-sm flex flex-col max-w-xl divide-y divide-fail">
-              <div className="flex items-center gap-x-2 py-0.5">
-                <div className="flex items-center justify-center rounded-full border-fail border min-w-4 aspect-square text-[11px]">
-                  <FaExclamation />
-                </div>
-                Lorem
+            {validation.length > 0 && (
+              <div
+                className={`mb-3 transition-all validation bg-[#FCEFEF] border border-fail text-fail py-2 px-3 font-medium rounded-sm flex flex-col max-w-xl divide-y divide-fail`}>
+                {validation.map((x, i) => (
+                  <div className="flex items-center gap-x-2 py-1" key={i}>
+                    <div className="flex items-center justify-center rounded-full border-fail border min-w-4 aspect-square text-[11px]">
+                      <FaExclamation />
+                    </div>
+                    {x}
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center gap-x-2 py-0.5">
-                <div className="flex items-center justify-center rounded-full border-fail border min-w-4 aspect-square text-[11px]">
-                  <FaExclamation />
-                </div>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Lorem
-                ipsum dolor sit amet consectetur adipisicing elit. Fuga,
-                reiciendis? Lorem ipsum dolor, sit amet consectetur adipisicing
-                elit. Itaque, ea!
-              </div>
-              <div className="flex items-center gap-x-2 py-0.5">
-                <div className="flex items-center justify-center rounded-full border-fail border min-w-4 aspect-square text-[11px]">
-                  <FaExclamation />
-                </div>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Lorem
-                ipsum dolor sit amet consectetur adipisicing elit. Fuga,
-                reiciendis? Lorem ipsum dolor, sit amet consectetur adipisicing
-                elit. Itaque, ea!
-              </div>
-            </div>
+            )}
             <div className="columns-1 gap-3 sm:columns-2">
               <div className="form-input border border-[#DDDDDD] rounded-sm relative mb-3">
                 <label
                   htmlFor="name"
                   className="text-[#21334A] text-sm font-bold absolute top-1 left-3">
-                  NAME<span className="text-fail">*</span>
+                  NAMA<span className="text-fail">*</span>
                 </label>
                 <input
                   type="text"
                   className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
                   name="name"
                   id="name"
+                  onChange={handleChange}
                 />
               </div>
               <div className="form-input border border-[#DDDDDD] rounded-sm relative mb-3">
@@ -74,10 +132,11 @@ export default function RegisterOrderPage() {
                   EMAIL<span className="text-fail">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="email"
                   className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
                   name="email"
                   id="email"
+                  onChange={handleChange}
                 />
               </div>
               <div className="form-input border border-[#DDDDDD] rounded-sm relative mb-3">
@@ -91,6 +150,7 @@ export default function RegisterOrderPage() {
                   className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
                   name="nohp"
                   id="nohp"
+                  onChange={handleChange}
                 />
               </div>
               <div className="form-input border border-[#DDDDDD] rounded-sm relative mb-3">
@@ -104,6 +164,7 @@ export default function RegisterOrderPage() {
                   className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
                   name="address"
                   id="address"
+                  onChange={handleChange}
                 />
               </div>
               <div className="form-input border border-[#DDDDDD] rounded-sm relative mb-3">
@@ -117,6 +178,7 @@ export default function RegisterOrderPage() {
                   className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
                   name="price"
                   id="price"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -130,6 +192,7 @@ export default function RegisterOrderPage() {
                 rows={3}
                 className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
                 name="description"
+                onChange={handleChange}
                 id="description"></textarea>
             </div>
             <div className="form-input">
