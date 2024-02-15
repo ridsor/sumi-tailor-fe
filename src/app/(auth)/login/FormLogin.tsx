@@ -36,7 +36,7 @@ export default function FormLogin() {
       email = "Email tidak boleh kosong";
       result = true;
     } else if (atps < 1 || dots < atps + 2 || dots + 2 >= rs.length) {
-      email = "Alamat email tidak valid";
+      email = "Email tidak valid";
       result = true;
     }
 
