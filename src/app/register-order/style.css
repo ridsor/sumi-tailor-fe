@@ -9,3 +9,16 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.validation {
+  animation: Validation 300ms;
+}
+
+@keyframes Validation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100;
+  }
+}
