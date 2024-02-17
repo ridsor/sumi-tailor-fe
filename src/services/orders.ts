@@ -4,6 +4,7 @@ export interface Order {
   id: number;
   item_code: number;
   name: string;
+  email: string;
   nohp: "";
   address: "";
   price: number | null;
