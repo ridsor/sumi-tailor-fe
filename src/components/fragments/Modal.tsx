@@ -7,9 +7,16 @@ type Props = {
   active: boolean;
   openclose: () => void;
   bg?: string;
+  size?: string;
 };
 
-export default function Modal({ children, active, openclose, bg }: Props) {
+export default function Modal({
+  children,
+  active,
+  openclose,
+  bg,
+  size = "max-w-[500px]",
+}: Props) {
   useEffect(() => {
     if (active) {
       document.body.classList.add("overflow-hidden");
@@ -27,7 +34,7 @@ export default function Modal({ children, active, openclose, bg }: Props) {
         className="absolute top-0 left-0 right-0 bottom-0 z-10"
         onClick={() => openclose()}></div>
       <div className="w-full h-full overflow-auto py-5">
-        <div className="mx-auto w-full  max-w-[500px] flex items-center min-h-full">
+        <div className={`${size} mx-auto w-full flex items-center min-h-full`}>
           <div
             className={`w-full rounded-md min-h-fit shadow-md relative z-20 ${
               !bg ? "bg-white" : ""
