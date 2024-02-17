@@ -51,6 +51,8 @@ export default function RegisterOrderPage() {
     // name
     if (!inputs.name) {
       result.push("Nama tidak boleh kosong");
+    } else if (inputs.name.length >= 100) {
+      result.push("Nama harus maks 100 karakter");
     }
 
     // email
@@ -61,22 +63,39 @@ export default function RegisterOrderPage() {
       result.push("Email tidak boleh kosong");
     } else if (atps < 1 || dots < atps + 2 || dots + 2 >= rs.length) {
       result.push("Email tidak valid");
+    } else if (inputs.email.length >= 100) {
+      result.push("Email harus maks 100 karakter");
     }
 
     // no handphone
     if (!inputs.nohp) {
       result.push("No Handphone tidak boleh kosong");
-    } else if (isNaN(Number(inputs.nohp)))
+    } else if (isNaN(Number(inputs.nohp))) {
       result.push("No Handphone harus angka");
+    } else if (inputs.nohp.length >= 20) {
+      result.push("No Handphone harus maks 20 karakter");
+    }
 
     // address
-    if (!inputs.address) result.push("Alamat tidak boleh kosong");
+    if (!inputs.address) {
+      result.push("Alamat tidak boleh kosong");
+    } else if (inputs.address.length >= 500) {
+      result.push("Alamat harus maks 500 karakter");
+    }
 
     // price
-    if (isNaN(Number(inputs.price))) result.push("Harga harus angka");
+    if (isNaN(Number(inputs.price))) {
+      result.push("Harga harus angka");
+    } else if (inputs.price.length >= 100) {
+      result.push("Harga harus maks 100 karakter");
+    }
 
     // description
-    if (!inputs.description) result.push("Deskripsi tidak boleh kosong");
+    if (!inputs.description) {
+      result.push("Deskripsi tidak boleh kosong");
+    } else if (inputs.description.length >= 500) {
+      result.push("Deskripsi harus maks 500 karakter");
+    }
 
     return result;
   };
