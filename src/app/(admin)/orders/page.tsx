@@ -4,10 +4,12 @@ import { SetStateAction, createContext, useCallback, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import OrderInput from "@/app/(admin)/orders/OrderInput";
 import OrderList from "@/app/(admin)/orders/OrderList";
+import TokenModal from "./TokenModal";
 
 interface OrderInput {
   id: number;
   name: string;
+  email: string;
   nohp: string;
   address: string;
   price: string;
@@ -29,6 +31,7 @@ export const ModalContext = createContext<{
   order: {
     id: 0,
     name: "",
+    email: "",
     nohp: "",
     address: "",
     price: "",
@@ -38,26 +41,31 @@ export const ModalContext = createContext<{
 });
 
 export default function OrdersPage() {
-  const [isModal, setModal] = useState<boolean>(false);
+  const [isOrderModal, setOrderModal] = useState<boolean>(false);
+  const [isTokenModal, setTokenModal] = useState<boolean>(false);
   const [inputAction, setInputAction] = useState<"create" | "edit">("create");
   const [orderInput, setOrderInput] = useState<OrderInput>({
     id: 0,
     name: "",
+    email: "",
     nohp: "",
     address: "",
     price: "",
     description: "",
   });
 
-  const toggleModal = useCallback(() => {
-    setModal((prev) => !prev);
+  const toggleOrderModal = useCallback(() => {
+    setOrderModal((prev) => !prev);
+  }, []);
+  const toggleTokenModal = useCallback(() => {
+    setTokenModal((prev) => !prev);
   }, []);
 
   return (
     <ModalContext.Provider
       value={{
-        modal: isModal,
-        toggleModal,
+        modal: isOrderModal,
+        toggleModal: toggleOrderModal,
         inputAction,
         setInputAction,
         order: orderInput,
@@ -69,11 +77,12 @@ export default function OrdersPage() {
             <article className="px-4">
               <button
                 onClick={() => {
-                  toggleModal();
+                  toggleOrderModal();
                   setInputAction("create");
                   setOrderInput({
                     id: 0,
                     name: "",
+                    email: "",
                     nohp: "",
                     address: "",
                     price: "",
@@ -86,7 +95,15 @@ export default function OrdersPage() {
               <OrderInput />
               <div className="relative">
                 <h2 className="text-2xl font-bold mb-2">Daftar Pesanan</h2>
-                <p className="text-gray-500 mb-4">Lihat pesanan Anda disini.</p>
+                <button
+                  className="text-gray-500 mb-4"
+                  onClick={() => toggleTokenModal()}>
+                  Token pendaftaran pesanan
+                </button>
+                <TokenModal
+                  active={isTokenModal}
+                  openclose={toggleTokenModal}
+                />
                 <OrderList />
               </div>
             </article>
