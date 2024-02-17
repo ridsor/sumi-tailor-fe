@@ -3,6 +3,7 @@
     {
       "id": 1,
       "code": "ST0001",
+      "email": "ridsor@gmail.com",
       "name": "Nama 1",
       "nohp": "082211981226",
       "price": "450000",
@@ -15,6 +16,7 @@
     {
       "id": 3,
       "code": "ST0003",
+      "email": "ridsor@gmail.com",
       "name": "Nama 2",
       "nohp": "082211981226",
       "price": "450000",
@@ -27,6 +29,7 @@
     {
       "id": 2,
       "code": "ST0002",
+      "email": "ridsor@gmail.com",
       "name": "Nama 3",
       "nohp": "082211981226",
       "price": "450000",
@@ -39,6 +42,7 @@
     {
       "id": 4,
       "code": "ST0004",
+      "email": "ridsor@gmail.com",
       "name": "Nama 4",
       "nohp": "082211981226",
       "price": "450000",
@@ -52,6 +56,7 @@
       "id": 5,
       "name": "Nama 5",
       "code": "ST0005",
+      "email": "ridsor@gmail.com",
       "nohp": "082211981226",
       "price": "450000",
       "address": "Wayame",
@@ -64,6 +69,7 @@
       "id": 6,
       "name": "Nama 6",
       "code": "ST0006",
+      "email": "ridsor@gmail.com",
       "nohp": "082211981226",
       "price": "450000",
       "address": "Wayame",
