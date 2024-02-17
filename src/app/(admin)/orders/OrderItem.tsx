@@ -110,6 +110,7 @@ export default function OrderItem(props: Props) {
                   setOrder({
                     id: props.order.id,
                     name: props.order.name,
+                    email: props.order.email,
                     nohp: props.order.nohp,
                     address: props.order.address,
                     price:
