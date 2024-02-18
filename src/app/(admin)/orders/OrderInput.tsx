@@ -146,7 +146,13 @@ export default function OrderInput() {
         }));
       }
 
-      if (description.length > 500) {
+      if (!description) {
+        setValidate((prev) => ({
+          ...prev,
+          description: "Deskripsi tidak boleh kosong",
+        }));
+        result = true;
+      } else if (description.length > 500) {
         setValidate((prev) => ({
           ...prev,
           description: "Deskripsi harus memiliki maks 100 karakter",
