@@ -54,15 +54,18 @@ export default function OrderItem(props: Props) {
           </div>
           <div className="category leading-none text-[13px]">082211334455</div>
           <div className="price text-[13px] text-gray-600 font-medium">
+            {props.order.email}
+          </div>
+        </div>
+      </div>
+      <div className="order-4 lg:order-3 w-full lg:w-auto">
+        <div className="px-3 lg:px-6 pb-2.5 md:py-2.5 flex flex-col justify-center min-h-full lg:max-w-[300px]">
+          <div className="price text-[13px] text-gray-600 font-medium">
             Rp
             {props.order.price
               ? new Intl.NumberFormat("id-ID").format(props.order.price)
               : " -"}
           </div>
-        </div>
-      </div>
-      <div className="order-4 lg:order-3 w-full lg:w-auto">
-        <div className="px-3 lg:px-6 pb-2.5 md:py-2.5 flex flex-col justify-center min-h-full md:max-w-[300px]">
           <div className="name text-[13px] font-medium text-gray-600">
             Alamat
           </div>
