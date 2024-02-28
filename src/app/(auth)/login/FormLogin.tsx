@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 interface InputsLogin {
@@ -8,6 +9,10 @@ interface InputsLogin {
 }
 
 export default function FormLogin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [inputsLogin, setInputsLogin] = useState<InputsLogin>({
     email: "",
     password: "",
@@ -17,10 +22,43 @@ export default function FormLogin() {
     password: "",
   });
 
-  const handleSubmitFormLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (handleValidationLogin()) return;
+    setLoading(true);
+
+    if (handleValidationLogin()) {
+      setLoading(false);
+      return;
+    }
+
+    const login = await fetch(
+      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputsLogin),
+        credentials: "include",
+      }
+    )
+      .then((res) => res.json())
+      .catch((err) => {
+        throw err;
+      });
+
+    if (login.status != "success") {
+      setValidate({ email: "Email", password: "Password" });
+      console.log(login.message);
+      setLoading(false);
+      return;
+    }
+
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+
+    router.push(callbackUrl);
+    setLoading(false);
   };
 
   const handleValidationLogin = (): boolean => {
@@ -59,7 +97,7 @@ export default function FormLogin() {
   };
 
   return (
-    <form onSubmit={handleSubmitFormLogin} method="post">
+    <form onSubmit={handleLoginSubmit} method="post">
       <div className="form-input mb-4 relative">
         <input
           type="text"
@@ -108,9 +146,10 @@ export default function FormLogin() {
       </div>
       <div className="form-input mb-2">
         <button
+          disabled={isLoading}
           type="submit"
           className="w-full px-4 py-2 bg-two text-three rounded-md font-bold text-lg">
-          Login
+          {isLoading ? "Loading..." : "Login"}
         </button>
       </div>
     </form>
