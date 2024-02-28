@@ -10,7 +10,8 @@ import Link from "next/link";
 import Image from "next/image";
 import personIcon from "@/assets/img/icons/person.png";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
 
 interface Props {
   isSidebar: boolean;
@@ -19,6 +20,56 @@ interface Props {
 
 export default function Aside({ isSidebar, setSidebar }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const [isLoadingLogout, setLoadingLogout] = useState<boolean>(false);
+
+  const handleLogout = useCallback(async () => {
+    setLoadingLogout(true);
+
+    const refreshToken: Response = (await fetch(
+      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/refresh",
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    ).catch((err) => {
+      throw err;
+    })) as Response;
+
+    if (refreshToken.status != 201 && !refreshToken.ok) {
+      console.log("Failed to logout");
+      setLoadingLogout(false);
+      return;
+    }
+
+    const token: string = await refreshToken
+      .json()
+      .then((result) => result.authorization.access_token);
+
+    const response: Response = (await fetch(
+      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/logout",
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    ).catch((err) => {
+      throw err;
+    })) as Response;
+
+    if (response.status != 200) {
+      console.log("Failed to logout");
+      setLoadingLogout(false);
+      return;
+    }
+
+    router.push("/");
+    setLoadingLogout(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <aside
@@ -155,11 +206,14 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
             </div>
             <div className="self-end">
               <hr className="border-top border-[#d7d3cc] mb-2" />
-              <button className="flex items-center hover:bg-four rounded-md w-full font-semibold active:ring active:ring-three">
+              <button
+                className="flex items-center hover:bg-four rounded-md w-full font-semibold active:ring active:ring-three"
+                onClick={handleLogout}
+                disabled={isLoadingLogout}>
                 <div className="p-3">
                   <FaArrowRightFromBracket className="text-xl" />
                 </div>
-                {isSidebar ? "Sign Out" : ""}
+                {isSidebar ? (isLoadingLogout ? "Loading..." : "Logout") : ""}
               </button>
             </div>
           </article>
