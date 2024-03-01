@@ -32,33 +32,38 @@ export default function FormLogin() {
       return;
     }
 
-    const login = await fetch(
-      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputsLogin),
-        credentials: "include",
+    try {
+      const login = await fetch(
+        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(inputsLogin),
+          credentials: "include",
+        }
+      )
+        .then((res) => res.json())
+        .catch((err) => {
+          throw err;
+        });
+
+      if (login.status != "success") {
+        setValidate({ email: "Email", password: "Password" });
+        console.log(login.message);
+        setLoading(false);
+        return;
       }
-    )
-      .then((res) => res.json())
-      .catch((err) => {
-        throw err;
-      });
 
-    if (login.status != "success") {
-      setValidate({ email: "Email", password: "Password" });
-      console.log(login.message);
+      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+
+      router.push(callbackUrl);
+
       setLoading(false);
-      return;
+    } catch (e) {
+      console.error(e);
     }
-
-    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-
-    router.push(callbackUrl);
-    setLoading(false);
   };
 
   const handleValidationLogin = (): boolean => {
