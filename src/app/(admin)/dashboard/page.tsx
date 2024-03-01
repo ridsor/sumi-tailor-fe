@@ -3,14 +3,9 @@ import { abbreviateNumber, getMonthForChart } from "@/utils/dashboard";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { Metadata } from "next";
-const DashboardChart = dynamic(
-  () => {
-    return import("./DashbordCharts");
-  },
-  {
-    ssr: false,
-  }
-);
+const DashboardChart = dynamic(() => import("./DashbordCharts"), {
+  ssr: false,
+});
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

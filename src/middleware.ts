@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getUser } from "./services/token";
 
 export const protectedRoutes = [
   "/dashboard",
@@ -10,24 +11,6 @@ export const authRoutes = ["/login"];
 export const publicRoutes = ["/", "/about", "/gallery", "/service"];
 
 export async function middleware(request: NextRequest) {
-  const getUser = async () => {
-    const response: Response = (await fetch(
-      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/me",
-      {
-        method: "GET",
-        headers: {
-          Cookie: "refreshToken=" + cookie?.value,
-        },
-        credentials: "include",
-      }
-    ).catch((err) => {
-      throw err;
-    })) as Response;
-
-    return response;
-  };
-
-  const cookie = request.cookies.get("refreshToken");
   const pathname = request.nextUrl.pathname;
 
   if (protectedRoutes.includes(pathname)) {

@@ -1,6 +1,9 @@
 "use server";
 
-export interface Order {
+import { cookies } from "next/headers";
+import { getToken } from "./token";
+
+export interface TypeOrders {
   id: number;
   item_code: number;
   name: string;
@@ -14,45 +17,60 @@ export interface Order {
   updated_at: string | number;
 }
 
-interface Pagination {
-  totalItems: number;
-  totalPages: number;
+export interface TypePagination {
+  limit: number;
+  total: number;
   page: number;
 }
 
 export const getOrders = async ({
   page = 1,
-  totalItems = 10,
+  limit = 5,
   status,
 }: {
   page?: number;
-  totalItems?: number;
+  limit?: number;
   status: string;
 }): Promise<{
-  data: Order[];
-  pagination: Pagination;
+  data: TypeOrders[];
+  pagination: TypePagination;
 }> => {
+  const refreshToken = await getToken();
+
+  if (refreshToken.status != "success") {
+    throw new Error("Failed to logout");
+  }
+
+  const sumitailorCookie = cookies().get("sumitailor_session");
+
   const res = await fetch(
-    process.env.BACKEND_URL + `/orders?_page=${page}&_per_page=${totalItems}`,
+    process.env.NEXT_PUBLIC_API_URL +
+      `/api/orders?status=${status}&page=${page}&limit=${limit}`,
     {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${refreshToken.authorization.access_token}`,
+        Cookie: "sumitailor_session=" + sumitailorCookie?.value,
+      },
       next: {
         revalidate: 60,
       },
     }
   );
 
-  if (!res.ok) {
+  if (!res.ok && res.status != 200) {
     throw new Error("Failed to fetch data");
   }
 
-  const data = await res.json();
+  const orders = await res.json();
 
   return {
-    data: data.data,
+    data: orders.data,
     pagination: {
-      totalItems: totalItems as number,
-      totalPages: data.pages,
-      page: page as number,
+      page: orders.page,
+      limit: orders.limit,
+      total: orders.total,
     },
   };
 };
