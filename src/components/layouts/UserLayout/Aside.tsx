@@ -12,6 +12,7 @@ import personIcon from "@/assets/img/icons/person.png";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import { getToken } from "@/services/token";
 
 interface Props {
   isSidebar: boolean;
@@ -27,25 +28,13 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
   const handleLogout = useCallback(async () => {
     setLoadingLogout(true);
 
-    const refreshToken: Response = (await fetch(
-      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/refresh",
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    ).catch((err) => {
-      throw err;
-    })) as Response;
+    const refreshToken = await getToken();
 
-    if (refreshToken.status != 201 && !refreshToken.ok) {
+    if (refreshToken.status != "success") {
       console.log("Failed to logout");
       setLoadingLogout(false);
       return;
     }
-
-    const token: string = await refreshToken
-      .json()
-      .then((result) => result.authorization.access_token);
 
     const response: Response = (await fetch(
       (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/logout",
@@ -53,7 +42,7 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
         method: "PUT",
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${refreshToken.authorization.access_token}`,
         },
       }
     ).catch((err) => {
@@ -93,15 +82,11 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
               isSidebar ? "right-3 top-3" : "-right-5 top-11"
             } absolute bg-three z-10 rounded-full p-1 flex items-center justify-center`}>
             <button
-              className="rounded-full bg-two text-three active:ring active:ring-[rgba(0,0,0,.1)]"
+              className="rounded-full bg-two text-three active:ring active:ring-[rgba(0,0,0,.1)] text-lg p-2"
               onClick={() => setSidebar(!isSidebar)}>
-              <div className="p-2">
-                <FaPlay
-                  className={`${
-                    isSidebar ? "-rotate-180" : ""
-                  } text-lg transition`}
-                />
-              </div>
+              <FaPlay
+                className={`${isSidebar ? "-rotate-180" : ""} transition`}
+              />
             </button>
           </div>
           <article
@@ -207,12 +192,10 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
             <div className="self-end">
               <hr className="border-top border-[#d7d3cc] mb-2" />
               <button
-                className="flex items-center hover:bg-four rounded-md w-full font-semibold active:ring active:ring-three"
+                className="flex items-center hover:bg-four rounded-md w-full font-semibold active:ring active:ring-three p-3 gap-x-3"
                 onClick={handleLogout}
                 disabled={isLoadingLogout}>
-                <div className="p-3">
-                  <FaArrowRightFromBracket className="text-xl" />
-                </div>
+                <FaArrowRightFromBracket className="text-xl" />
                 {isSidebar ? (isLoadingLogout ? "Loading..." : "Logout") : ""}
               </button>
             </div>
