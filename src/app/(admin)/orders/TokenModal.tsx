@@ -1,5 +1,4 @@
 "use client";
-import { getTokenRegisterOrder } from "@/action/orders";
 import Modal from "@/components/fragments/Modal";
 import { downloadImage } from "@/utils/order";
 import { useCallback, useRef, useState } from "react";
@@ -23,7 +22,7 @@ export default function TokenModal(props: Props) {
   );
 
   const handleResetOrderRegisterToken = useCallback(async () => {
-    const token = await getTokenRegisterOrder();
+    const token = "";
 
     setOrderRegisterToken(token);
   }, []);

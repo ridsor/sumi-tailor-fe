@@ -18,8 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${quicksand.variable} ${josenfin_sans.variable}`}
-        suppressHydrationWarning={true}>
+        suppressHydrationWarning={true}
+        className={`${quicksand.variable} ${josenfin_sans.variable}`}>
         {enableNavbar.includes(pathname) && <Header />}
         {children}
         {enableNavbar.includes(pathname) && <Footer />}
