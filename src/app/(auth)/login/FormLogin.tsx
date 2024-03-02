@@ -6,6 +6,7 @@ import { useState } from "react";
 interface InputsLogin {
   email: string;
   password: string;
+  remember_me: boolean;
 }
 
 export default function FormLogin() {
@@ -16,11 +17,14 @@ export default function FormLogin() {
   const [inputsLogin, setInputsLogin] = useState<InputsLogin>({
     email: "",
     password: "",
+    remember_me: false,
   });
-  const [validate, setValidate] = useState<InputsLogin>({
-    email: "",
-    password: "",
-  });
+  const [validate, setValidate] = useState<{ email: string; password: string }>(
+    {
+      email: "",
+      password: "",
+    }
+  );
 
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,33 +36,39 @@ export default function FormLogin() {
       return;
     }
 
-    const login = await fetch(
-      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputsLogin),
-        credentials: "include",
+    try {
+      const login = await fetch(
+        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(inputsLogin),
+          credentials: "include",
+        }
+      )
+        .then((res) => res.json())
+        .catch((err) => {
+          throw err;
+        });
+
+      if (login.status != "success") {
+        setValidate({ email: "Email", password: "Password" });
+        console.log(login.message);
+        setLoading(false);
+        return;
       }
-    )
-      .then((res) => res.json())
-      .catch((err) => {
-        throw err;
-      });
 
-    if (login.status != "success") {
-      setValidate({ email: "Email", password: "Password" });
-      console.log(login.message);
+      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+
+      router.push(callbackUrl);
+
       setLoading(false);
-      return;
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
     }
-
-    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-
-    router.push(callbackUrl);
-    setLoading(false);
   };
 
   const handleValidationLogin = (): boolean => {
@@ -93,7 +103,14 @@ export default function FormLogin() {
   };
 
   const handleChangeInputLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputsLogin((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (e.target.type == "checkbox") {
+      setInputsLogin((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.checked,
+      }));
+    } else {
+      setInputsLogin((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    }
   };
 
   return (
@@ -141,6 +158,7 @@ export default function FormLogin() {
           name="remember_me"
           id="remember_me"
           className="accent-two"
+          onChange={handleChangeInputLogin}
         />
         <label htmlFor="remember_me">Remember Me</label>
       </div>
