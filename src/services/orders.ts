@@ -1,6 +1,5 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { getToken } from "./token";
 
 export interface TypeOrders {
@@ -41,8 +40,6 @@ export const getOrders = async ({
     throw new Error("Failed to logout");
   }
 
-  const sumitailorCookie = cookies().get("sumitailor_session");
-
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
       `/api/orders?status=${status}&page=${page}&limit=${limit}`,
@@ -51,7 +48,6 @@ export const getOrders = async ({
       credentials: "include",
       headers: {
         Authorization: `Bearer ${refreshToken.authorization.access_token}`,
-        Cookie: "sumitailor_session=" + sumitailorCookie?.value,
       },
       next: {
         revalidate: 60,
