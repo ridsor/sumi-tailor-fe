@@ -6,6 +6,7 @@ import { useState } from "react";
 interface InputsLogin {
   email: string;
   password: string;
+  remember_me: boolean;
 }
 
 export default function FormLogin() {
@@ -16,11 +17,14 @@ export default function FormLogin() {
   const [inputsLogin, setInputsLogin] = useState<InputsLogin>({
     email: "",
     password: "",
+    remember_me: false,
   });
-  const [validate, setValidate] = useState<InputsLogin>({
-    email: "",
-    password: "",
-  });
+  const [validate, setValidate] = useState<{ email: string; password: string }>(
+    {
+      email: "",
+      password: "",
+    }
+  );
 
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,6 +67,7 @@ export default function FormLogin() {
       setLoading(false);
     } catch (e) {
       console.error(e);
+      setLoading(false);
     }
   };
 
@@ -98,7 +103,14 @@ export default function FormLogin() {
   };
 
   const handleChangeInputLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputsLogin((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (e.target.type == "checkbox") {
+      setInputsLogin((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.checked,
+      }));
+    } else {
+      setInputsLogin((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    }
   };
 
   return (
@@ -146,6 +158,7 @@ export default function FormLogin() {
           name="remember_me"
           id="remember_me"
           className="accent-two"
+          onChange={handleChangeInputLogin}
         />
         <label htmlFor="remember_me">Remember Me</label>
       </div>
