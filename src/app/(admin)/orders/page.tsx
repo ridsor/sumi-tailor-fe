@@ -7,10 +7,10 @@ import OrderList from "@/app/(admin)/orders/OrderList";
 import TokenModal from "./TokenModal";
 
 interface OrderInput {
-  id: number;
+  item_code: string;
   name: string;
   email: string;
-  nohp: string;
+  no_hp: string;
   address: string;
   price: string;
   description: string;
@@ -29,10 +29,10 @@ export const ModalContext = createContext<{
   inputAction: "create",
   setInputAction: () => {},
   order: {
-    id: 0,
+    item_code: "",
     name: "",
     email: "",
-    nohp: "",
+    no_hp: "",
     address: "",
     price: "",
     description: "",
@@ -45,10 +45,10 @@ export default function OrdersPage() {
   const [isTokenModal, setTokenModal] = useState<boolean>(false);
   const [inputAction, setInputAction] = useState<"create" | "edit">("create");
   const [orderInput, setOrderInput] = useState<OrderInput>({
-    id: 0,
+    item_code: "",
     name: "",
     email: "",
-    nohp: "",
+    no_hp: "",
     address: "",
     price: "",
     description: "",
@@ -80,10 +80,10 @@ export default function OrdersPage() {
                   toggleOrderModal();
                   setInputAction("create");
                   setOrderInput({
-                    id: 0,
+                    item_code: "",
                     name: "",
                     email: "",
-                    nohp: "",
+                    no_hp: "",
                     address: "",
                     price: "",
                     description: "",

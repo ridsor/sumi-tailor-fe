@@ -28,31 +28,35 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
   const handleLogout = useCallback(async () => {
     setLoadingLogout(true);
 
-    const refreshToken = await getToken();
+    try {
+      const token = await getToken();
 
-    if (refreshToken.status != "success") {
-      console.log("Failed to logout");
-      setLoadingLogout(false);
-      return;
-    }
-
-    const response: Response = (await fetch(
-      (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/logout",
-      {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${refreshToken.authorization.access_token}`,
-        },
+      if (token.status != "success") {
+        console.error("Failed to logout");
+        setLoadingLogout(false);
+        return;
       }
-    ).catch((err) => {
-      throw err;
-    })) as Response;
 
-    if (response.status != 200) {
-      console.log("Failed to logout");
-      setLoadingLogout(false);
-      return;
+      const response: Response = (await fetch(
+        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/logout",
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token.authorization.access_token}`,
+          },
+        }
+      ).catch((err) => {
+        throw err;
+      })) as Response;
+
+      if (response.status != 200) {
+        console.error("Failed to logout");
+        setLoadingLogout(false);
+        return;
+      }
+    } catch (e) {
+      console.log(e);
     }
 
     router.push("/");
