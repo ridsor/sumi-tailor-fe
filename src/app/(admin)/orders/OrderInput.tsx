@@ -3,11 +3,20 @@ import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ModalContext } from "./page";
+import { getToken } from "@/services/token";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import {
+  handlePageOrderFinished,
+  handlePageOrderUnfinished,
+} from "@/lib/redux/features/ordersSlice";
 
 type Input = {
   name: string;
   email: string;
-  nohp: string;
+  no_hp: string;
   address: string;
   price: string;
   description: string;
@@ -16,12 +25,17 @@ type Input = {
 type Validate = Input;
 
 export default function OrderInput() {
+  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const { modal, toggleModal, inputAction, order } = useContext(ModalContext);
+  const [InputLoading, setInputLoading] = useState<boolean>(false);
 
   const [inputs, setInputs] = useState<Input>({
     name: "",
     email: "",
-    nohp: "",
+    no_hp: "",
     address: "",
     price: "",
     description: "",
@@ -30,14 +44,14 @@ export default function OrderInput() {
   const [validate, setValidate] = useState<Validate>({
     name: "",
     email: "",
-    nohp: "",
+    no_hp: "",
     address: "",
     price: "",
     description: "",
   });
 
   const onValidate = useCallback(
-    ({ name, email, nohp, address, price, description }: Input): boolean => {
+    ({ name, email, no_hp, address, price, description }: Input): boolean => {
       let result: boolean = false;
 
       // name
@@ -86,23 +100,23 @@ export default function OrderInput() {
         }));
       }
 
-      // nohp
-      if (!nohp) {
+      // no_hp
+      if (!no_hp) {
         setValidate((prev) => ({
           ...prev,
-          nohp: "Kategori tidak boleh kosong",
+          no_hp: "Kategori tidak boleh kosong",
         }));
         result = true;
-      } else if (nohp.length > 100) {
+      } else if (no_hp.length > 100) {
         setValidate((prev) => ({
           ...prev,
-          nohp: "Kategori harus memiliki maks 100 karakter",
+          no_hp: "Kategori harus memiliki maks 100 karakter",
         }));
         result = true;
       } else {
         setValidate((prev) => ({
           ...prev,
-          nohp: "",
+          no_hp: "",
         }));
       }
 
@@ -171,23 +185,148 @@ export default function OrderInput() {
   );
 
   const onSubmitEventHandler = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      setInputLoading(true);
 
       setValidate({
         name: "",
         email: "",
-        nohp: "",
+        no_hp: "",
         address: "",
         price: "",
         description: "",
       });
+
       if (onValidate(inputs)) return;
+
+      if (inputAction == "edit") {
+        try {
+          const token = await getToken();
+
+          if (token.status != "success") {
+            console.error("Failed to input");
+            setInputLoading(false);
+            return;
+          }
+
+          const inputResponse = await fetch(
+            (process.env.NEXT_PUBLIC_API_URL as string) +
+              "/api/orders/" +
+              order.item_code,
+            {
+              method: "PUT",
+              body: JSON.stringify(inputs),
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+
+                Authorization: "Bearer " + token.authorization.access_token,
+              },
+            }
+          );
+
+          if (inputResponse.status != 201) {
+            const result = await inputResponse.json();
+            console.error("Failed to input");
+            if (typeof result.errors.email != "undefined") {
+              setValidate((prev) => ({ ...prev, email: result.errors.email }));
+            }
+            if (typeof result.errors.no_hp != "undefined") {
+              setValidate((prev) => ({ ...prev, no_hp: result.errors.no_hp }));
+            }
+            setInputLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      } else if (inputAction == "create") {
+        try {
+          const token = await getToken();
+
+          if (token.status != "success") {
+            console.error("Failed to input");
+            setInputLoading(false);
+            return;
+          }
+
+          const inputResponse = await fetch(
+            (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
+            {
+              method: "POST",
+              body: JSON.stringify(inputs),
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+
+                Authorization: "Bearer " + token.authorization.access_token,
+              },
+            }
+          );
+
+          if (inputResponse.status != 201) {
+            const result = await inputResponse.json();
+            console.error("Failed to input");
+            if (typeof result.errors.email != "undefined") {
+              setValidate((prev) => ({ ...prev, email: result.errors.email }));
+            }
+            if (typeof result.errors.no_hp != "undefined") {
+              setValidate((prev) => ({ ...prev, no_hp: result.errors.no_hp }));
+            }
+            setInputLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      try {
+        if (
+          searchParams.get("page") != null &&
+          searchParams.get("page") != "1"
+        ) {
+          router.push("/orders?page=1");
+        } else {
+          dispatch(handlePageOrderFinished({ page: 1 }));
+          dispatch(handlePageOrderUnfinished({ page: 1 }));
+        }
+
+        withReactContent(Swal)
+          .mixin({
+            customClass: {
+              popup: "max-w-[200px] w-full h-[100px]",
+              icon: "scale-50 -translate-y-8",
+            },
+            buttonsStyling: false,
+          })
+          .fire({
+            position: "top-end",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+      } catch (e) {
+        console.error(e);
+      }
+
+      toggleModal();
+      setInputLoading(false);
     },
-    [inputs, onValidate]
+    [
+      order.item_code,
+      inputs,
+      onValidate,
+      toggleModal,
+      dispatch,
+      router,
+      searchParams,
+      inputAction,
+    ]
   );
 
-  const onChangeEventHanlder = useCallback(
+  const onChangeEventHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setInputs((prev) => ({
         ...prev,
@@ -198,10 +337,19 @@ export default function OrderInput() {
   );
 
   useEffect(() => {
+    setValidate({
+      name: "",
+      email: "",
+      no_hp: "",
+      address: "",
+      price: "",
+      description: "",
+    });
+
     setInputs({
       name: order.name,
       email: order.email,
-      nohp: order.nohp,
+      no_hp: order.no_hp,
       address: order.address,
       price: order.price,
       description: order.description,
@@ -211,7 +359,7 @@ export default function OrderInput() {
       setValidate({
         name: "",
         email: "",
-        nohp: "",
+        no_hp: "",
         address: "",
         price: "",
         description: "",
@@ -238,7 +386,7 @@ export default function OrderInput() {
               className={`${
                 validate.name ? "border-fail pr-11 relative" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
+              onChange={onChangeEventHandler}
               value={inputs.name}
             />
             {validate.name ? (
@@ -264,7 +412,7 @@ export default function OrderInput() {
               className={`${
                 validate.email ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
+              onChange={onChangeEventHandler}
               value={inputs.email}
             />
             {validate.email ? (
@@ -286,14 +434,14 @@ export default function OrderInput() {
             <input
               type="text"
               placeholder="No Handphone"
-              name="nohp"
+              name="no_hp"
               className={`${
-                validate.nohp ? "border-fail pr-11" : ""
+                validate.no_hp ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
-              value={inputs.nohp}
+              onChange={onChangeEventHandler}
+              value={inputs.no_hp}
             />
-            {validate.nohp ? (
+            {validate.no_hp ? (
               <div className="absolute top-0 right-0 left-0 bottom-0">
                 <button
                   type={"button"}
@@ -301,7 +449,7 @@ export default function OrderInput() {
                   <FaExclamationCircle />
                 </button>
                 <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.nohp}</span>
+                  <span>{validate.no_hp}</span>
                 </div>
               </div>
             ) : (
@@ -316,7 +464,7 @@ export default function OrderInput() {
               className={`${
                 validate.address ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
+              onChange={onChangeEventHandler}
               value={inputs.address}
             />
             {validate.address ? (
@@ -342,7 +490,7 @@ export default function OrderInput() {
               className={`${
                 validate.price ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
+              onChange={onChangeEventHandler}
               value={inputs.price}
             />
             {validate.price ? (
@@ -368,7 +516,7 @@ export default function OrderInput() {
               className={`${
                 validate.description ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHanlder}
+              onChange={onChangeEventHandler}
               value={inputs.description}></textarea>
             {validate.description ? (
               <div className="absolute top-0 right-0 left-0 bottom-0">
@@ -387,7 +535,7 @@ export default function OrderInput() {
           </div>
           <div className="form-input">
             <button className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold">
-              Simpan
+              {InputLoading ? "Loading..." : "Simpan"}
             </button>
           </div>
         </form>

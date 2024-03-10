@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const [isSidebar, setSidebar] = useState<boolean>(true);
 
-  return (
+  return enableNavbar.includes(pathname) ? (
     <>
       <main
         className={`${
@@ -23,5 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Aside isSidebar={isSidebar} setSidebar={setSidebar} />
       )}
     </>
+  ) : (
+    children
   );
 }

@@ -1,26 +1,7 @@
 "use server";
 
+import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
 import { getToken } from "./token";
-
-export interface TypeOrders {
-  id: number;
-  item_code: number;
-  name: string;
-  email: string;
-  nohp: "";
-  address: "";
-  price: number | null;
-  description: string | null;
-  finished: number;
-  created_at: string | number;
-  updated_at: string | number;
-}
-
-export interface TypePagination {
-  limit: number;
-  total: number;
-  page: number;
-}
 
 export const getOrders = async ({
   page = 1,
@@ -31,8 +12,8 @@ export const getOrders = async ({
   limit?: number;
   status: string;
 }): Promise<{
-  data: TypeOrders[];
-  pagination: TypePagination;
+  data: OrderType[];
+  pagination: PaginationType;
 }> => {
   const refreshToken = await getToken();
 

@@ -16,6 +16,7 @@ const config: Config = {
         two: "#445E36",
         three: "#FFFFF0",
         four: "#B3CBA6",
+        five: "#1E1E1E",
         fail: "#F7576B",
         success: "#97D359",
       },
