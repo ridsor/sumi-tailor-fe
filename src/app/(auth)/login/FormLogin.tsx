@@ -63,8 +63,6 @@ export default function FormLogin() {
       const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
       router.push(callbackUrl);
-
-      setLoading(false);
     } catch (e) {
       console.error(e);
       setLoading(false);

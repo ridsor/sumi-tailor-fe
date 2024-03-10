@@ -8,30 +8,23 @@ import { FaTimesCircle } from "react-icons/fa";
 import { getDay, getMonth, getTime } from "@/utils/order";
 import { useContext } from "react";
 import { ModalContext } from "./page";
-import { Order } from "@/services/orders";
+import { OrderType } from "@/lib/redux/features/ordersSlice";
 
 interface Props {
-  order: Order;
+  order: OrderType;
+  onCancel: (item_code: string) => void;
+  onStatusChange: (item_code: string) => void;
 }
 
 export default function OrderItem(props: Props) {
-  const { modal, toggleModal, setInputAction, setOrder } =
-    useContext(ModalContext);
+  const { toggleModal, setInputAction, setOrder } = useContext(ModalContext);
 
   const handleBtnActionOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (e.currentTarget.nextElementSibling?.classList.contains("active")) {
-      e.currentTarget.nextElementSibling?.classList.remove(
-        "!pointer-events-auto",
-        "!opacity-100",
-        "active"
-      );
-    } else {
-      e.currentTarget.nextElementSibling?.classList.add(
-        "!pointer-events-auto",
-        "!opacity-100",
-        "active"
-      );
-    }
+    const menuItem = document.querySelectorAll(".menu-item");
+    menuItem.forEach((x) => {
+      x.classList.remove("active");
+    });
+    e.currentTarget.nextElementSibling?.classList.add("active");
   };
 
   return (
@@ -52,7 +45,9 @@ export default function OrderItem(props: Props) {
           <div className="name text-[13px] font-medium text-gray-600 mb-1">
             {props.order.name}
           </div>
-          <div className="category leading-none text-[13px]">082211334455</div>
+          <div className="category leading-none text-[13px]">
+            {props.order.no_hp}
+          </div>
           <div className="price text-[13px] text-gray-600 font-medium">
             {props.order.email}
           </div>
@@ -83,13 +78,13 @@ export default function OrderItem(props: Props) {
           onClick={handleBtnActionOrder}>
           <FaEllipsisVertical />
         </button>
-        <div className="absolute top-[calc(100%+.5rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in z-10">
+        <div className="menu-item absolute top-[calc(100%+.5rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in z-10">
           <ul className="bg-white p-1 gap-1 flex flex-col text-[12px] border rounded-md text-[#172838]">
-            {props.order.finished == 1 ? (
+            {props.order.status == "isFinished" ? (
               <li>
                 <button
                   className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
-                  onClick={() => {}}>
+                  onClick={() => props.onStatusChange(props.order.item_code)}>
                   <FaArrowRotateLeft />
                   Belum Selesai
                 </button>
@@ -98,7 +93,7 @@ export default function OrderItem(props: Props) {
               <li>
                 <button
                   className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
-                  onClick={() => {}}>
+                  onClick={() => props.onStatusChange(props.order.item_code)}>
                   <FaCircleCheck />
                   Selesai
                 </button>
@@ -111,10 +106,10 @@ export default function OrderItem(props: Props) {
                   toggleModal();
                   setInputAction("edit");
                   setOrder({
-                    id: props.order.id,
+                    item_code: props.order.item_code,
                     name: props.order.name,
                     email: props.order.email,
-                    nohp: props.order.nohp,
+                    no_hp: props.order.no_hp,
                     address: props.order.address,
                     price:
                       props.order.price === null
@@ -133,7 +128,7 @@ export default function OrderItem(props: Props) {
             <li>
               <button
                 className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
-                onClick={() => {}}>
+                onClick={() => props.onCancel(props.order.item_code)}>
                 <FaTimesCircle />
                 Batalkan
               </button>
