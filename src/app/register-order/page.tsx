@@ -4,36 +4,93 @@ import Image from "next/image";
 import "./style.css";
 import { FaExclamation } from "react-icons/fa6";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 interface RegisterOrderInput {
   name: string;
   email: string;
-  nohp: string;
+  no_hp: string;
   address: string;
   price: string;
   description: string;
 }
 
 export default function RegisterOrderPage() {
+  const searchParams = useSearchParams();
   const [inputs, setInputs] = useState<RegisterOrderInput>({
     name: "",
     email: "",
-    nohp: "",
+    no_hp: "",
     address: "",
     price: "",
     description: "",
   });
-  const [validation, setValidation] = useState<string[]>([]);
+  const [validate, setValidate] = useState<string[]>([]);
+  const [isInputLoading, setInputLoading] = useState<boolean>(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setValidation([]);
+    setInputLoading(true);
+    setValidate([]);
 
-    const validation = handleValidation(inputs);
-    if (validation.length > 0) {
-      setValidation(validation);
+    const validate = handleValidate(inputs);
+    if (validate.length > 0) {
+      setValidate(validate);
+      setInputLoading(false);
       return;
     }
+
+    try {
+      const token = searchParams.get("token") || "";
+
+      const inputResponse = await fetch(
+        (process.env.NEXT_PUBLIC_API_URL as string) +
+          "/api/orders?token=" +
+          token,
+        {
+          method: "POST",
+          body: JSON.stringify(inputs),
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (inputResponse.status != 201) {
+        const result = await inputResponse.json();
+        console.error("Failed to input");
+        if (typeof result.errors.email != "undefined") {
+          setValidate((prev) => [...prev, result.errors.email]);
+        }
+        if (typeof result.errors.no_hp != "undefined") {
+          setValidate((prev) => [...prev, result.errors.no_hp]);
+        }
+        setInputLoading(false);
+        return;
+      }
+
+      withReactContent(Swal)
+        .mixin({
+          customClass: {
+            popup: "max-w-[200px] w-full h-[100px]",
+            icon: "scale-50 -translate-y-8",
+          },
+          buttonsStyling: false,
+        })
+        .fire({
+          position: "top-end",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+    } catch (e) {
+      console.log(e);
+    }
+
+    setInputLoading(false);
   };
 
   const handleChange = (
@@ -45,7 +102,7 @@ export default function RegisterOrderPage() {
     }));
   };
 
-  const handleValidation = (inputs: RegisterOrderInput): string[] => {
+  const handleValidate = (inputs: RegisterOrderInput): string[] => {
     const result = [];
 
     // name
@@ -68,11 +125,11 @@ export default function RegisterOrderPage() {
     }
 
     // no handphone
-    if (!inputs.nohp) {
+    if (!inputs.no_hp) {
       result.push("No Handphone tidak boleh kosong");
-    } else if (isNaN(Number(inputs.nohp))) {
+    } else if (isNaN(Number(inputs.no_hp))) {
       result.push("No Handphone harus angka");
-    } else if (inputs.nohp.length >= 20) {
+    } else if (inputs.no_hp.length >= 20) {
       result.push("No Handphone harus maks 20 karakter");
     }
 
@@ -116,10 +173,10 @@ export default function RegisterOrderPage() {
             <h1 className="text-[#21334A] text-lg font-one font-semibold mb-3">
               MENDAFTAR PESANAN
             </h1>
-            {validation.length > 0 && (
+            {validate.length > 0 && (
               <div
-                className={`mb-3 transition-all validation bg-[#FCEFEF] border border-fail text-fail py-2 px-3 font-medium rounded-sm flex flex-col max-w-xl divide-y divide-fail`}>
-                {validation.map((x, i) => (
+                className={`mb-3 transition-all validate bg-[#FCEFEF] border border-fail text-fail py-2 px-3 font-medium rounded-sm flex flex-col max-w-xl divide-y divide-fail`}>
+                {validate.map((x, i) => (
                   <div className="flex items-center gap-x-2 py-1" key={i}>
                     <div className="flex items-center justify-center rounded-full border-fail border min-w-4 aspect-square text-[11px]">
                       <FaExclamation />
@@ -160,15 +217,15 @@ export default function RegisterOrderPage() {
               </div>
               <div className="form-input border border-[#DDDDDD] rounded-sm relative mb-3">
                 <label
-                  htmlFor="nohp"
+                  htmlFor="no_hp"
                   className="text-[#21334A] text-sm font-bold absolute top-1 left-3">
                   NO HANDPHONE<span className="text-fail">*</span>
                 </label>
                 <input
                   type="text"
                   className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
-                  name="nohp"
-                  id="nohp"
+                  name="no_hp"
+                  id="no_hp"
                   onChange={handleChange}
                 />
               </div>
@@ -218,7 +275,7 @@ export default function RegisterOrderPage() {
               <button
                 type="submit"
                 className="py-2 px-3 bg-two rounded-sm text-white block w-full font-semibold font-two text-lg hover:bg-four  focus:ring focus:ring-[rgba(179,203,166,.5)]">
-                SIMPAN
+                {isInputLoading ? "Loading..." : "SIMPAN"}
               </button>
             </div>
           </form>
