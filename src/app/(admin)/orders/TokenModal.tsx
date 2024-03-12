@@ -1,6 +1,6 @@
 "use client";
 import Modal from "@/components/fragments/Modal";
-import { downloadImage } from "@/utils/order";
+import { downloadImageFromElement } from "@/utils/order";
 import { useCallback, useRef, useState } from "react";
 import { FaCopy, FaXmark } from "react-icons/fa6";
 import QRCode from "react-qr-code";
@@ -29,7 +29,10 @@ export default function TokenModal(props: Props) {
 
   const handleDownloadQRCode = useCallback(() => {
     const element = orderRegisterQrCodeRef.current;
-    downloadImage(element as HTMLDivElement, `registertoken-qrcode.png`);
+    downloadImageFromElement(
+      element as HTMLDivElement,
+      `registertoken-qrcode.png`
+    );
   }, []);
 
   return (
