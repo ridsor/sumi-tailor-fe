@@ -45,6 +45,7 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
           headers: {
             Authorization: `Bearer ${token.authorization.access_token}`,
           },
+          cache: "no-store",
         }
       ).catch((err) => {
         throw err;

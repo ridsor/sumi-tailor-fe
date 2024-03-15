@@ -1,6 +1,5 @@
 import { getOrderById } from "@/services/orders";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import OrderConfirmation from "./OrderConfirmation";
 import { getUser } from "@/services/token";

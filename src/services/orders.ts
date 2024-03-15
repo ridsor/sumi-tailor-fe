@@ -63,7 +63,7 @@ export const getOrderById = async (item_code: string, token: string = "") => {
         Cookie: ("refreshToken=" +
           cookies().get("refreshToken")?.value) as string,
       },
-      cache: "no-cache",
+      cache: "no-store",
     }
   ).catch((e) => {
     throw e;
