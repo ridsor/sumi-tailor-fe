@@ -13,6 +13,7 @@ export const getToken = async () => {
         Cookie: "refreshToken=" + refreshTokenCookie?.value,
       },
       credentials: "include",
+      cache: "no-store",
     }
   )
     .then((res) => res.json())
@@ -34,6 +35,7 @@ export const getUser = async () => {
         Cookie: "refreshToken=" + refreshTokenCookie?.value,
       },
       credentials: "include",
+      cache: "no-store",
     }
   ).catch((err) => {
     throw err;

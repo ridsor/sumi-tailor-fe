@@ -46,6 +46,7 @@ export default function FormLogin() {
           },
           body: JSON.stringify(inputsLogin),
           credentials: "include",
+          cache: "no-store",
         }
       )
         .then((res) => res.json())

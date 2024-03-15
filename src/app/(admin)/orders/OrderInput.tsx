@@ -200,8 +200,8 @@ export default function OrderInput() {
 
       if (onValidate(inputs)) return;
 
-      if (inputAction == "edit") {
-        try {
+      try {
+        if (inputAction == "edit") {
           const token = await getToken();
 
           if (token.status != "success") {
@@ -226,7 +226,7 @@ export default function OrderInput() {
             }
           );
 
-          if (inputResponse.status != 201) {
+          if (inputResponse.status != 200) {
             const result = await inputResponse.json();
             console.error("Failed to input");
             if (typeof result.errors.email != "undefined") {
@@ -238,19 +238,7 @@ export default function OrderInput() {
             setInputLoading(false);
             return;
           }
-        } catch (e) {
-          console.log(e);
-        }
-      } else if (inputAction == "create") {
-        try {
-          const token = await getToken();
-
-          if (token.status != "success") {
-            console.error("Failed to input");
-            setInputLoading(false);
-            return;
-          }
-
+        } else if (inputAction == "create") {
           const inputResponse = await fetch(
             (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
             {
@@ -259,8 +247,6 @@ export default function OrderInput() {
               credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-
-                Authorization: "Bearer " + token.authorization.access_token,
               },
             }
           );
@@ -277,12 +263,7 @@ export default function OrderInput() {
             setInputLoading(false);
             return;
           }
-        } catch (e) {
-          console.log(e);
         }
-      }
-
-      try {
         if (
           searchParams.get("page") != null &&
           searchParams.get("page") != "1"
@@ -308,7 +289,7 @@ export default function OrderInput() {
             timer: 1500,
           });
       } catch (e) {
-        console.error(e);
+        console.log(e);
       }
 
       toggleModal();
