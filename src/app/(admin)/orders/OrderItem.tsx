@@ -9,6 +9,7 @@ import { getDay, getMonth, getTime } from "@/utils/order";
 import { useContext } from "react";
 import { ModalContext } from "./page";
 import { OrderType } from "@/lib/redux/features/ordersSlice";
+import Link from "next/link";
 
 interface Props {
   order: OrderType;
@@ -22,13 +23,18 @@ export default function OrderItem(props: Props) {
   const handleBtnActionOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
     const menuItem = document.querySelectorAll(".menu-item");
     menuItem.forEach((x) => {
-      x.classList.remove("active");
+      if (!e.currentTarget.nextElementSibling?.classList.contains("active")) {
+        x.classList.remove("active");
+      }
     });
-    e.currentTarget.nextElementSibling?.classList.add("active");
+    e.currentTarget.nextElementSibling?.classList.toggle("active");
   };
 
   return (
-    <div className="order flex border rounded-md shadow-sm flex-wrap">
+    <div className="order flex border rounded-md shadow-sm flex-wrap relative">
+      <Link
+        href={`/orders/${props.order.item_code}`}
+        className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10"></Link>
       <div className="flex flex-col relative items-center px-8 lg:px-10 py-2.5 after:content-[''] after:block after:h-[70%] w-1 after:border-r after:absolute after:-translate-y-1/2 after:top-1/2 after:right-0 order-1 self-center">
         <div className="month font-medium leading-none">
           {getMonth(props.order.updated_at)}
@@ -72,13 +78,13 @@ export default function OrderItem(props: Props) {
       <div className="description order-4  text-[13px] self-center w-full lg:w-0 lg:flex-1 p-2 lg:p-0 lg:py-2.5 lg:border-t-0 border-t">
         {props.order.description ? props.order.description : "-"}
       </div>
-      <div className="order-3 lg:order-6 text-lg self-center ml-auto lg:mx-6 p-2 flex relative">
+      <div className="order-3 lg:order-6 text-lg self-center ml-auto lg:mx-6 p-2 flex">
         <button
-          className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative"
+          className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative z-20"
           onClick={handleBtnActionOrder}>
           <FaEllipsisVertical />
         </button>
-        <div className="menu-item absolute top-[calc(100%+.5rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in z-10">
+        <div className="menu-item absolute z-30 top-[calc(100%-.8rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in z-10">
           <ul className="bg-white p-1 gap-1 flex flex-col text-[12px] border rounded-md text-[#172838]">
             {props.order.status == "isFinished" ? (
               <li>

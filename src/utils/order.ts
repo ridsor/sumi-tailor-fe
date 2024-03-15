@@ -18,7 +18,10 @@ export const getTime = (timestamp: string | number) => {
   }).format(date);
 };
 
-export async function downloadImage(element: HTMLDivElement, filename: string) {
+export async function downloadImageFromElement(
+  element: HTMLDivElement,
+  filename: string
+) {
   const canvas = await html2canvas(element);
   const data = canvas.toDataURL("image/png");
   const link = document.createElement("a");
