@@ -2,6 +2,8 @@ import { getOrderById } from "@/services/orders";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import OrderConfirmation from "./OrderConfirmation";
+import { getUser } from "@/services/token";
 
 interface Props {
   params: { item_code: string };
@@ -17,8 +19,13 @@ export const generateMetadata = async ({
     searchParams.token as string
   ).catch((e) => {
     console.error(e);
-    redirect("/");
+    if (e.message === "Authorization") {
+      redirect("/");
+    }
   });
+
+  let title = "Sumi Tailor";
+  if (typeof order != "undefined") title = "Sumi Tailor · " + order.data.name;
 
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -27,7 +34,7 @@ export const generateMetadata = async ({
       apple: ["/apple-touch-icon.png"],
       shortcut: ["/apple-touch-icon.png"],
     },
-    title: "Sumi Tailor · " + order.data.name,
+    title,
     description:
       "Temukan solusi ideal untuk gaya pakaian Anda! Tim penjahit kami siap membantu Anda mengatasi kesulitan dengan pakaian yang tidak pas. Dengan keahlian dan pengalaman kami, kami menciptakan pakaian yang disesuaikan dengan bentuk dan gaya tubuh unik Anda. Mulailah mewujudkan impian mode Anda sekarang!",
     authors: [
@@ -48,12 +55,16 @@ export const generateMetadata = async ({
 };
 
 export default async function DetailOrder(props: Props) {
+  const user = await getUser().catch((e) => console.error(e));
+
   const order = await getOrderById(
     props.params.item_code,
     props.searchParams.token as string
   ).catch((e) => {
     console.error(e);
-    redirect("/");
+    if (e.message === "Authorization") {
+      redirect("/");
+    }
   });
 
   let date = Intl.DateTimeFormat("id-ID", {
@@ -121,9 +132,9 @@ export default async function DetailOrder(props: Props) {
                   : " -"}
               </div>
             </div>
-            <button className="py-3 px-6 bg-two text-white mt-5 rounded-md font-bold tracking-wider uppercase mx-auto block">
-              Konfirmasi
-            </button>
+            {user?.ok && (
+              <OrderConfirmation item_code={props.params.item_code} />
+            )}
           </div>
         </div>
       </section>

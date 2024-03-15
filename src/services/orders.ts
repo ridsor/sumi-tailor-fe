@@ -63,18 +63,19 @@ export const getOrderById = async (item_code: string, token: string = "") => {
         Cookie: ("refreshToken=" +
           cookies().get("refreshToken")?.value) as string,
       },
-      next: {
-        revalidate: 60,
-      },
+      cache: "no-cache",
     }
   ).catch((e) => {
     throw e;
   });
 
-  if (!res.ok && res.status != 200) {
-    throw new Error("Failed to fetch data");
+  if (res.status == 403) {
+    throw new Error("Authorization");
   }
 
+  if (res.status != 200) {
+    throw new Error("Failed to fetch data");
+  }
   const order = await res.json();
 
   return order;
