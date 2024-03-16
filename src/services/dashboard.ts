@@ -15,9 +15,7 @@ export const getDashboard = async () => {
     headers: {
       Authorization: `Bearer ${refreshToken.authorization.access_token}`,
     },
-    next: {
-      revalidate: 1,
-    },
+    cache: "no-store",
   });
 
   if (!res.ok && res.status != 200) {
