@@ -3,6 +3,7 @@ import { abbreviateNumber, getMonthForChart } from "@/utils/dashboard";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { Metadata } from "next";
+import { getDashboard } from "@/services/dashboard";
 const DashboardChart = dynamic(() => import("./DashbordCharts"), {
   ssr: false,
 });
@@ -36,6 +37,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 export default async function DashboardPage() {
+  const dashboard = await getDashboard().catch((e) => console.error(e));
+  const order_total = dashboard.data.map(
+    (x: { order_total: number }) => x.order_total
+  );
+  const total_income = dashboard.data.map(
+    (x: { total_income: number }) => x.total_income
+  );
   const chartOrder: {
     options: ApexOptions;
     series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
@@ -43,7 +51,7 @@ export default async function DashboardPage() {
     series: [
       {
         name: "Pesanan",
-        data: [31, 40, 28, 51, 42, 109],
+        data: order_total,
       },
     ],
     options: {
@@ -73,7 +81,7 @@ export default async function DashboardPage() {
     series: [
       {
         name: "Penghasilan",
-        data: [400000, 1000000, 2000000, 1500000, 4200000, 1090000],
+        data: total_income,
       },
     ],
     options: {
@@ -115,15 +123,56 @@ export default async function DashboardPage() {
                     <div className="h-full p-3 flex items-center justify-center bg-white border-[#d7d3cc] border w-full max-w-[300px] mx-auto rounded-xl">
                       <div>
                         <div className="text-center font-semibold">
-                          Total Pesanan Hari Ini
+                          Total Pesanan Bulan Ini
                         </div>
                         <div className="flex justify-center items-center gap-2 flex-col lg:flex-row">
                           <div className="value font-bold text-xl lg:text-2xl">
-                            99
+                            {order_total[5]}
                           </div>
-                          <div className="font-bold text-success flex items-center gap-1">
-                            <FaArrowUpLong className="text-[13px]" />
-                            <span>+1%</span>
+                          <div
+                            className={`${
+                              order_total[4] == 0 ||
+                              Math.round(
+                                (order_total[5] / order_total[4]) * 100
+                              ) -
+                                100 >=
+                                0
+                                ? "text-success"
+                                : "text-fail"
+                            } font-bold flex items-center gap-1`}>
+                            {order_total[4] != 0 &&
+                            Math.round(
+                              (order_total[5] / order_total[4]) * 100
+                            ) -
+                              100 !=
+                              0 ? (
+                              Math.round(
+                                (order_total[5] / order_total[4]) * 100
+                              ) -
+                                100 >
+                              0 ? (
+                                <FaArrowUpLong className="text-[13px]" />
+                              ) : (
+                                <FaArrowDownLong className="text-[13px]" />
+                              )
+                            ) : (
+                              ""
+                            )}
+                            <span>
+                              {order_total[4] != 0 &&
+                                Math.round(
+                                  (order_total[5] / order_total[4]) * 100
+                                ) -
+                                  100 >
+                                  0 &&
+                                "+"}
+                              {order_total[4] !== 0
+                                ? Math.round(
+                                    (order_total[5] / order_total[4]) * 100
+                                  ) - 100
+                                : 0}
+                              %
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -133,15 +182,56 @@ export default async function DashboardPage() {
                     <div className="flex items-center justify-center h-full p-3s bg-white border-[#d7d3cc] border w-full max-w-[300px] mx-auto rounded-xl">
                       <div>
                         <div className="text-center font-semibold">
-                          Total Penghasilan Hari Ini
+                          Total Penghasilan Bulan Ini
                         </div>
                         <div className="flex justify-center items-center gap-2 flex-col lg:flex-row">
                           <div className="value font-bold text-xl lg:text-2xl">
-                            Rp. {abbreviateNumber(1300000)}
+                            Rp. {abbreviateNumber(total_income[5])}
                           </div>
-                          <div className="font-bold text-fail flex items-center gap-1">
-                            <FaArrowDownLong className="text-[13px]" />
-                            <span>-1%</span>
+                          <div
+                            className={`${
+                              total_income[4] == 0 ||
+                              Math.round(
+                                (total_income[5] / total_income[4]) * 100
+                              ) -
+                                100 >=
+                                0
+                                ? "text-success"
+                                : "text-fail"
+                            } font-bold flex items-center gap-1`}>
+                            {total_income[4] != 0 &&
+                            Math.round(
+                              (total_income[5] / total_income[4]) * 100
+                            ) -
+                              100 !==
+                              0 ? (
+                              Math.round(
+                                (total_income[5] / total_income[4]) * 100
+                              ) -
+                                100 >
+                              0 ? (
+                                <FaArrowUpLong className="text-[13px]" />
+                              ) : (
+                                <FaArrowDownLong className="text-[13px]" />
+                              )
+                            ) : (
+                              ""
+                            )}
+                            <span>
+                              {total_income[4] != 0 &&
+                                Math.round(
+                                  (total_income[5] / total_income[4]) * 100
+                                ) -
+                                  100 >
+                                  0 &&
+                                "+"}
+                              {total_income[4] !== 0
+                                ? Math.round(
+                                    (total_income[5] / total_income[4]) * 100
+                                  ) - 100
+                                : 0}
+                              %
+                            </span>
                           </div>
                         </div>
                       </div>
