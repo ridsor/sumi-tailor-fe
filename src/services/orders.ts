@@ -19,7 +19,7 @@ export const getOrders = async ({
   const refreshToken = await getToken();
 
   if (refreshToken.status != "success") {
-    throw new Error("Failed to logout");
+    throw new Error("Failed to fetch data");
   }
 
   const res = await fetch(

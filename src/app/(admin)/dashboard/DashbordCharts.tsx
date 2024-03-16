@@ -16,6 +16,11 @@ interface Props {
 }
 
 export default function ChartDashboard(props: Props) {
+  props.chartOrder.options.yaxis = {
+    labels: {
+      formatter: (value) => value.toFixed(0),
+    },
+  };
   props.chartIncome.options.yaxis = {
     labels: {
       formatter: (value) => "Rp. " + abbreviateNumber(value),
