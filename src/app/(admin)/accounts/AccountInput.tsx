@@ -5,10 +5,15 @@ import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AccountModalContext } from "./page";
+import { getToken } from "@/services/token";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import { cookies } from "next/headers";
 
 type Props = {
   active: boolean;
   opencloseModal: () => void;
+  reloadUsers: () => void;
 };
 
 type Input = {
@@ -20,7 +25,7 @@ type Input = {
 
 type Validate = Input;
 
-export default function AdminInput({ active, opencloseModal }: Props) {
+export default function AdminInput(props: Props) {
   const { inputAction, accountInput } = useContext(AccountModalContext);
 
   const [inputs, setInputs] = useState<Input>({
@@ -35,9 +40,13 @@ export default function AdminInput({ active, opencloseModal }: Props) {
     password: "",
     confirm_password: "",
   });
+  const [isInputLoading, setInputLoading] = useState<boolean>(false);
 
   const onValidate = useCallback(
-    ({ name, email, password, confirm_password }: Input): boolean => {
+    (
+      { name, email, password, confirm_password }: Input,
+      inputAction: string
+    ): boolean => {
       let result = false;
 
       if (!name) {
@@ -84,45 +93,66 @@ export default function AdminInput({ active, opencloseModal }: Props) {
         }));
       }
 
-      let passwordRegex =
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-      if (!password) {
-        setValidate((prev) => ({
-          ...prev,
-          password: "Password tidak boleh kosong!",
-        }));
-        result = true;
-      } else if (password.length > 100) {
-        setValidate((prev) => ({
-          ...prev,
-          password: "Password harus memiliki maks 100 karakter!",
-        }));
-        result = true;
-      } else if (!passwordRegex.test(password)) {
-        setValidate((prev) => ({
-          ...prev,
-          password: "Password tidak memenuhi standar keamanan!",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          password: "",
-        }));
-      }
+      if (inputAction == "create") {
+        const mixedCaseRegex = /^(?=.*[a-z])(?=.*[A-Z])/;
+        const numbersRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+        const symbolsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/;
+        if (!password) {
+          setValidate((prev) => ({
+            ...prev,
+            password: "Password tidak boleh kosong",
+          }));
+          result = true;
+        } else if (password.length < 8) {
+          setValidate((prev) => ({
+            ...prev,
+            password: "Password harus memiliki min 8 karakter",
+          }));
+          result = true;
+        } else if (password.length > 100) {
+          setValidate((prev) => ({
+            ...prev,
+            password: "Password harus memiliki maks 100 karakter",
+          }));
+          result = true;
+        } else if (!mixedCaseRegex.test(password)) {
+          setValidate((prev) => ({
+            ...prev,
+            password: "Password harus mengandung huruf kapital dan kecil",
+          }));
+          result = true;
+        } else if (!numbersRegex.test(password)) {
+          setValidate((prev) => ({
+            ...prev,
+            password: "Password harus mengandung huruf angka",
+          }));
+          result = true;
+        } else if (!symbolsRegex.test(password)) {
+          setValidate((prev) => ({
+            ...prev,
+            password: "Password harus mengandung karakter khusus",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            password: "",
+          }));
+        }
 
-      if (password !== confirm_password) {
-        setValidate((prev) => ({
-          ...prev,
-          confirm_password:
-            "Konfirmasi password harus cocok dengan password yang telah dimasukkan!",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          confirm_password: "",
-        }));
+        if (password !== confirm_password) {
+          setValidate((prev) => ({
+            ...prev,
+            confirm_password:
+              "Konfirmasi password harus cocok dengan password yang telah dimasukkan!",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            confirm_password: "",
+          }));
+        }
       }
 
       return result;
@@ -131,12 +161,104 @@ export default function AdminInput({ active, opencloseModal }: Props) {
   );
 
   const onSubmitEventHandler = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (onValidate(inputs)) return;
+      if (onValidate(inputs, inputAction)) return;
+      setInputLoading(true);
+
+      try {
+        const token = await getToken();
+
+        if (token.status != "success") {
+          setInputLoading(false);
+          return;
+        }
+
+        if (inputAction == "create") {
+          const body = JSON.stringify({
+            name: inputs.name,
+            email: inputs.email,
+            password: inputs.password,
+          });
+
+          const response = await fetch(
+            (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/register",
+            {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token.authorization.access_token,
+              },
+              body,
+            }
+          );
+
+          if (response.status != 201) {
+            const result = await response.json();
+            if (typeof result.errors.email != "undefined") {
+              setValidate((prev) => ({ ...prev, email: result.errors.email }));
+            }
+
+            setInputLoading(false);
+            return;
+          }
+        } else {
+          const body = JSON.stringify({
+            name: inputs.name,
+            email: inputs.email,
+          });
+
+          const response = await fetch(
+            (process.env.NEXT_PUBLIC_API_URL as string) +
+              "/api/users/" +
+              accountInput.id,
+            {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token.authorization.access_token,
+              },
+              body,
+            }
+          );
+
+          if (response.status != 200) {
+            const result = await response.json();
+            if (typeof result.errors.email != "undefined") {
+              setValidate((prev) => ({ ...prev, email: result.errors.email }));
+            }
+
+            setInputLoading(false);
+            return;
+          }
+        }
+
+        withReactContent(Swal)
+          .mixin({
+            customClass: {
+              popup: "max-w-[200px] w-full h-[100px]",
+              icon: "scale-50 -translate-y-8",
+            },
+            buttonsStyling: false,
+          })
+          .fire({
+            position: "top-end",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 500,
+          });
+        props.reloadUsers();
+      } catch (e) {
+        console.error(e);
+      }
+
+      setInputLoading(false);
+      props.opencloseModal();
     },
-    [inputs, onValidate]
+    [inputs, onValidate, props, inputAction, accountInput.id]
   );
 
   const onChangeEventHanlder = useCallback(
@@ -147,21 +269,36 @@ export default function AdminInput({ active, opencloseModal }: Props) {
   );
 
   useEffect(() => {
-    setInputs({
-      name: accountInput.name,
-      email: accountInput.email,
+    if (inputAction == "create") {
+      setInputs({
+        name: "",
+        email: "",
+        password: "",
+        confirm_password: "",
+      });
+    } else {
+      setInputs({
+        name: accountInput.name,
+        email: accountInput.email,
+      });
+    }
+    setValidate({
+      name: "",
+      email: "",
+      password: "",
+      confirm_password: "",
     });
-  }, [accountInput]);
+  }, [accountInput, inputAction]);
 
   return (
-    <Modal active={active} openclose={opencloseModal}>
+    <Modal active={props.active} openclose={props.opencloseModal}>
       <div className="container max-w-full">
         <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
           {inputAction === "create" ? "Buat" : "Edit"} Akun Admin
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
-            tabIndex={active ? 1 : undefined}
-            onClick={() => opencloseModal()}>
+            tabIndex={props.active ? 1 : undefined}
+            onClick={() => props.opencloseModal()}>
             <FaXmark />
           </button>
         </div>
@@ -275,8 +412,10 @@ export default function AdminInput({ active, opencloseModal }: Props) {
             </>
           )}
           <div className="form-input">
-            <button className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold">
-              Simpan
+            <button
+              className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold"
+              type="submit">
+              {isInputLoading ? "Loading..." : "Simpan"}
             </button>
           </div>
         </form>

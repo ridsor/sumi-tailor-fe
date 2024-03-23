@@ -4,10 +4,19 @@ import { FaSearch } from "react-icons/fa";
 import AdminList from "./AccountList";
 import AdminInput from "./AccountInput";
 
-import { SetStateAction, createContext, useCallback, useState } from "react";
+import {
+  SetStateAction,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { FaPlus } from "react-icons/fa6";
+import { User, getUsers } from "@/services/user";
+import AccountLoading from "./AccountLoading";
 
 type AccountInput = {
+  id: string;
   name: string;
   email: string;
 };
@@ -23,6 +32,7 @@ export const AccountModalContext = createContext<{
   modal: false,
   toggleModal: () => {},
   accountInput: {
+    id: "",
     name: "",
     email: "",
   },
@@ -32,16 +42,45 @@ export const AccountModalContext = createContext<{
 });
 
 const AccountPage = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [isModal, setModal] = useState<boolean>(false);
   const [inputAction, setInputAction] = useState<"create" | "edit">("create");
   const [accountInput, setAccountInput] = useState<AccountInput>({
+    id: "",
     name: "",
     email: "",
+  });
+  const [users, setUsers] = useState<{
+    data: User[];
+    loading: boolean;
+  }>({
+    data: [],
+    loading: true,
   });
 
   const toggleModal = useCallback(() => {
     setModal((prev) => !prev);
   }, []);
+
+  const reloadUsers = useCallback(() => {
+    setUsers((prev) => ({ ...prev, loading: true }));
+    getUsers()
+      .then((result) =>
+        setUsers({
+          loading: false,
+          data: result,
+        })
+      )
+      .catch((e) => console.error(e));
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      reloadUsers();
+    } else {
+      setLoading(true);
+    }
+  }, [isLoading, reloadUsers]);
 
   return (
     <AccountModalContext.Provider
@@ -64,6 +103,7 @@ const AccountPage = () => {
                 toggleModal();
                 setInputAction("create");
                 setAccountInput({
+                  id: "",
                   name: "",
                   email: "",
                 });
@@ -71,7 +111,11 @@ const AccountPage = () => {
               className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
               <FaPlus />
             </button>
-            <AdminInput active={isModal} opencloseModal={toggleModal} />
+            <AdminInput
+              active={isModal}
+              opencloseModal={toggleModal}
+              reloadUsers={reloadUsers}
+            />
             <div className="search relative w-full max-w-[400px] mb-3">
               <input
                 type="text"
@@ -82,7 +126,11 @@ const AccountPage = () => {
                 <FaSearch />
               </button>
             </div>
-            <AdminList />
+            {users.loading ? (
+              <AccountLoading />
+            ) : (
+              <AdminList users={users.data} reloadUsers={reloadUsers} />
+            )}
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <>
-      <section className="py-16">
+      <section className="py-16 animate-pulse">
         <div className="container max-w-full">
           <div className="p-4">
             <div className="flex items-center justify-between flex-wrap gap-y-[30px]">
