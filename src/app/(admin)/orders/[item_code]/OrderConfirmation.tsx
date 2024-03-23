@@ -77,13 +77,13 @@ export default function OrderConfirmation(props: Props) {
             position: "top-end",
             icon: "success",
             showConfirmButton: false,
-            timer: 1500,
+            timer: 500,
           });
 
         setTimeout(() => {
           router.push("/orders");
           setLoading(false);
-        }, 1500);
+        }, 500);
       } else {
       }
     } catch (e) {

@@ -187,7 +187,6 @@ export default function OrderInput() {
   const onSubmitEventHandler = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      setInputLoading(true);
 
       setValidate({
         name: "",
@@ -199,6 +198,8 @@ export default function OrderInput() {
       });
 
       if (onValidate(inputs)) return;
+
+      setInputLoading(true);
 
       try {
         if (inputAction == "edit") {
@@ -286,7 +287,7 @@ export default function OrderInput() {
             position: "top-end",
             icon: "success",
             showConfirmButton: false,
-            timer: 1500,
+            timer: 500,
           });
       } catch (e) {
         console.log(e);

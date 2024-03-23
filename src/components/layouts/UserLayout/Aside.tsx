@@ -8,11 +8,13 @@ import { FaUser } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import Link from "next/link";
 import Image from "next/image";
-import personIcon from "@/assets/img/icons/person.png";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getToken } from "@/services/token";
+import user_img from "@/assets/img/user-img.svg";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { getUser } from "@/lib/redux/features/userSlice";
 
 interface Props {
   isSidebar: boolean;
@@ -20,9 +22,11 @@ interface Props {
 }
 
 export default function Aside({ isSidebar, setSidebar }: Props) {
+  const dispatch = useAppDispatch();
   const pathname = usePathname();
   const router = useRouter();
 
+  const user = useAppSelector((state) => state.user);
   const [isLoadingLogout, setLoadingLogout] = useState<boolean>(false);
 
   const handleLogout = useCallback(async () => {
@@ -64,6 +68,10 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
     setLoadingLogout(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, [dispatch]);
 
   return (
     <aside
@@ -123,7 +131,11 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                     isSidebar ? "w-[70px]" : "w-[44px]"
                   } user-img aspect-square mx-auto mb-1`}>
                   <Image
-                    src={personIcon}
+                    src={
+                      user.image
+                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${user.image}`
+                        : user_img
+                    }
                     width={70}
                     height={70}
                     alt="user_img"
@@ -134,7 +146,7 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 {isSidebar ? (
                   <>
                     <div className="user-name text-center font-semibold">
-                      Admin
+                      {user.name}
                     </div>
                   </>
                 ) : (

@@ -160,7 +160,7 @@ export default function OrderList() {
             position: "top-end",
             icon: "success",
             showConfirmButton: false,
-            timer: 1500,
+            timer: 500,
           });
       } catch (e) {
         console.error(e);

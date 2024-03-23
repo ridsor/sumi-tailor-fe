@@ -11,9 +11,8 @@ export const authRoutes = ["/login"];
 export const publicRoutes = ["/", "/about", "/gallery", "/service"];
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
   try {
-    const pathname = request.nextUrl.pathname;
-
     if (protectedRoutes.includes(pathname)) {
       const user = await getUser();
 
@@ -45,7 +44,7 @@ export async function middleware(request: NextRequest) {
       }
     }
   } catch (e) {
-    console.error(e);
     return NextResponse.redirect(new URL("/", request.url));
+    console.error(e);
   }
 }
