@@ -4,8 +4,12 @@ import { useContext } from "react";
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import { AccountModalContext } from "./page";
+import { User } from "@/services/user";
 
-interface Props {}
+interface Props {
+  user: User;
+  onDelete: (id: string) => Promise<void>;
+}
 
 export default function AdminItem(props: Props) {
   const { toggleModal, setAccountInput, setInputAction } =
@@ -14,9 +18,8 @@ export default function AdminItem(props: Props) {
   return (
     <tr className="border-b">
       <td className="px-2 text-center">1</td>
-      <td className="px-2">Ryan</td>
-      <td className="px-2">risorgamerz000001@gmail.com</td>
-      <td className="px-2">Aktif</td>
+      <td className="px-2">{props.user.name}</td>
+      <td className="px-2">{props.user.email}</td>
       <td className="align-middle px-2">
         <div className="flex">
           <button
@@ -25,13 +28,16 @@ export default function AdminItem(props: Props) {
               toggleModal();
               setInputAction("edit");
               setAccountInput({
-                name: "Ryan",
-                email: "risorgamerz000001@gmail.com",
+                id: props.user.id,
+                name: props.user.name,
+                email: props.user.email,
               });
             }}>
             <FaEdit />
           </button>
-          <button className="bg-fail px-2 py-1  rounded-md text-white">
+          <button
+            className="bg-fail px-2 py-1  rounded-md text-white"
+            onClick={() => props.onDelete(props.user.id)}>
             <FaTrash />
           </button>
         </div>

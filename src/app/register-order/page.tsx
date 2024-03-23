@@ -165,7 +165,7 @@ export default function RegisterOrderPage() {
             position: "top-end",
             icon: "success",
             showConfirmButton: false,
-            timer: 1500,
+            timer: 500,
           });
 
         setTimeout(() => {

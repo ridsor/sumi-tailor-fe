@@ -27,7 +27,7 @@ export const getToken = async () => {
 export const getUser = async () => {
   const refreshTokenCookie = cookies().get("refreshToken");
 
-  const response: Response = (await fetch(
+  const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/me",
     {
       method: "GET",
@@ -39,7 +39,7 @@ export const getUser = async () => {
     }
   ).catch((err) => {
     throw err;
-  })) as Response;
+  });
 
   return response;
 };
