@@ -86,7 +86,7 @@ export default function OrderItem(props: Props) {
           onClick={handleBtnActionOrder}>
           <FaEllipsisVertical />
         </button>
-        <div className="menu-item absolute z-30 top-[calc(100%-.8rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in z-10">
+        <div className="menu-item absolute z-30 top-[calc(100%-.8rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in">
           <ul className="bg-white p-1 gap-1 flex flex-col text-[12px] border rounded-md text-[#172838]">
             {props.order.status == "isFinished" ? (
               <li>
