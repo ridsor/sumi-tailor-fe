@@ -4,13 +4,16 @@ import { useCallback } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { getToken } from "@/services/token";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 type Props = {
   users: User[];
-  reloadUsers: () => void;
+  loadUsers: () => void;
 };
 
 export default function AdminList(props: Props) {
+  const user = useAppSelector((state) => state.user);
+
   const handleDelete = useCallback(
     async (id: string) => {
       try {
@@ -58,7 +61,7 @@ export default function AdminList(props: Props) {
             return;
           }
 
-          props.reloadUsers();
+          props.loadUsers();
         }
       } catch (e) {
         console.error(e);
@@ -69,6 +72,7 @@ export default function AdminList(props: Props) {
 
   return (
     <div className="w-full overflow-x-auto">
+      <p className="mx-2 text-right text-lg">{props.users.length} / 4</p>
       <table className="w-full" cellPadding={10}>
         <thead>
           <tr className="border-b">
@@ -77,13 +81,19 @@ export default function AdminList(props: Props) {
             </td>
             <td className="font-semibold px-2">Nama</td>
             <td className="font-semibold px-2">Email</td>
-            <td className="font-semibold px-2">Aksi</td>
-            <td></td>
+            {user.role === "super admin" && (
+              <td className="font-semibold px-2">Aksi</td>
+            )}
           </tr>
         </thead>
         <tbody>
-          {props.users.map((user) => (
-            <AdminItem key={user.id} user={user} onDelete={handleDelete} />
+          {props.users.map((user, i) => (
+            <AdminItem
+              no={i + 1}
+              key={user.id}
+              user={user}
+              onDelete={handleDelete}
+            />
           ))}
         </tbody>
       </table>
