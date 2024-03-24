@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
       const token = request.nextUrl.searchParams.get("token") || "";
       const registerOrderResponse = await fetch(
         (process.env.NEXT_PUBLIC_API_URL as string) +
-          "/api/orders/register-order?token=" +
+          "/api/orders/register-order/check?token=" +
           token
       );
 
