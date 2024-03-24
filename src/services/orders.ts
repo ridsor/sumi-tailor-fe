@@ -8,10 +8,12 @@ export const getOrders = async ({
   page = 1,
   limit = 5,
   status,
+  search,
 }: {
   page?: number;
   limit?: number;
   status: string;
+  search: string;
 }): Promise<{
   data: OrderType[];
   pagination: PaginationType;
@@ -24,7 +26,7 @@ export const getOrders = async ({
 
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
-      `/api/orders?status=${status}&page=${page}&limit=${limit}`,
+      `/api/orders?status=${status}&page=${page}&limit=${limit}&search=${search}`,
     {
       method: "GET",
       credentials: "include",

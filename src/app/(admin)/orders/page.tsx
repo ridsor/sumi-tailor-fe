@@ -1,10 +1,27 @@
 "use client";
 
-import { SetStateAction, createContext, useCallback, useState } from "react";
+import {
+  SetStateAction,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { FaPlus } from "react-icons/fa6";
 import OrderInput from "@/app/(admin)/orders/OrderInput";
 import OrderList from "@/app/(admin)/orders/OrderList";
 import TokenModal from "./TokenModal";
+import OrdedrSearch from "./OrderSearch";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import {
+  changePage,
+  handlePageOrderFinished,
+  handlePageOrderUnfinished,
+} from "@/lib/redux/features/ordersSlice";
+import { getToken } from "@/services/token";
 
 interface OrderInput {
   item_code: string;
@@ -41,9 +58,18 @@ export const ModalContext = createContext<{
 });
 
 export default function OrdersPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const pathname = usePathname();
+
+  const orders = useAppSelector((state) => state.orders);
+
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
   const [isTokenModal, setTokenModal] = useState<boolean>(false);
   const [inputAction, setInputAction] = useState<"create" | "edit">("create");
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [orderInput, setOrderInput] = useState<OrderInput>({
     item_code: "",
     name: "",
@@ -60,6 +86,163 @@ export default function OrdersPage() {
   const toggleTokenModal = useCallback(() => {
     setTokenModal((prev) => !prev);
   }, []);
+  const handleOrderSearch = useCallback(
+    (value: string) => {
+      clearTimeout(searchTimeout);
+
+      setSearchTimeout(
+        setTimeout(() => {
+          const params = new URLSearchParams(searchParams.toString());
+          params.set("s", value);
+          router.push(pathname + "?" + params.toString());
+        }, 1000)
+      );
+    },
+    [searchTimeout, pathname, searchParams, router]
+  );
+  const handleCancelOrder = useCallback(
+    async (item_code: string) => {
+      try {
+        const result = await withReactContent(Swal)
+          .mixin({
+            customClass: {
+              confirmButton:
+                "bg-success px-3 py-1.5 rounded-md text-white ml-1",
+              cancelButton: "bg-fail px-3 py-1.5 rounded-md text-white mr-1",
+            },
+            buttonsStyling: false,
+          })
+          .fire({
+            title: "Apa kamu yakin?",
+            text: "Anda tidak akan dapat mengembalikan ini!",
+            showCancelButton: true,
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak",
+            reverseButtons: true,
+          });
+
+        if (result.isConfirmed) {
+          const token = await getToken();
+
+          if (token.status != "success") {
+            console.error("Failed to cancel");
+            return;
+          }
+
+          const response = await fetch(
+            (process.env.NEXT_PUBLIC_API_URL as string) +
+              "/api/orders/" +
+              item_code,
+            {
+              method: "DELETE",
+              credentials: "include",
+              headers: {
+                Authorization: "Bearer " + token.authorization.access_token,
+              },
+            }
+          );
+
+          if (response.status != 200) {
+            console.error("Failed to cancel");
+            return;
+          }
+
+          if (
+            searchParams.get("page") != null &&
+            searchParams.get("page") != "1"
+          ) {
+            router.push("/orders?page=1");
+          } else {
+            const search = searchParams.get("s") || "";
+            dispatch(handlePageOrderFinished({ page: 1, search }));
+            dispatch(handlePageOrderUnfinished({ page: 1, search }));
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [dispatch, router, searchParams]
+  );
+
+  const handleStatusChange = useCallback(
+    async (item_code: string) => {
+      try {
+        const token = await getToken();
+
+        if (token.status != "success") {
+          console.error("Failed to cancel");
+          return;
+        }
+
+        const response = await fetch(
+          (process.env.NEXT_PUBLIC_API_URL as string) +
+            "/api/orders/" +
+            item_code +
+            "/status",
+          {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+              Authorization: "Bearer " + token.authorization.access_token,
+            },
+          }
+        );
+
+        if (response.status != 200) {
+          console.error("Failed to cancel");
+          return;
+        }
+
+        if (
+          searchParams.get("page") != null &&
+          searchParams.get("page") != "1"
+        ) {
+          router.push("/orders?page=1");
+        } else {
+          const search = searchParams.get("s") || "";
+          dispatch(handlePageOrderFinished({ page: 1, search }));
+          dispatch(handlePageOrderUnfinished({ page: 1, search }));
+        }
+
+        withReactContent(Swal)
+          .mixin({
+            customClass: {
+              popup: "max-w-[200px] w-full h-[100px]",
+              icon: "scale-50 -translate-y-8",
+            },
+            buttonsStyling: false,
+          })
+          .fire({
+            position: "top-end",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 500,
+          });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [dispatch, router, searchParams]
+  );
+
+  useEffect(() => {
+    if (isLoading) {
+      setLoading(false);
+    } else {
+      const page = searchParams.has("page")
+        ? Number(searchParams.get("page"))
+        : 1;
+      const limit = searchParams.has("limit")
+        ? Number(searchParams.get("limit"))
+        : 5;
+      const search = searchParams.get("s") || "";
+
+      dispatch(changePage(page));
+      dispatch(handlePageOrderUnfinished({ page, limit, search }));
+      dispatch(handlePageOrderFinished({ page, limit, search }));
+    }
+  }, [searchParams, dispatch, isLoading]);
 
   return (
     <ModalContext.Provider
@@ -104,7 +287,15 @@ export default function OrdersPage() {
                   active={isTokenModal}
                   openclose={toggleTokenModal}
                 />
-                <OrderList />
+                <OrdedrSearch
+                  onSearch={handleOrderSearch}
+                  value={searchParams.get("s") || ""}
+                />
+                <OrderList
+                  isLoading={isLoading}
+                  onCancel={handleCancelOrder}
+                  onStatusChange={handleStatusChange}
+                />
               </div>
             </article>
           </div>

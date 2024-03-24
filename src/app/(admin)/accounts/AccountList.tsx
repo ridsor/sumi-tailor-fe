@@ -5,6 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { getToken } from "@/services/token";
 import { useAppSelector } from "@/lib/redux/hooks";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   users: User[];
@@ -12,6 +13,8 @@ type Props = {
 };
 
 export default function AdminList(props: Props) {
+  const searchParams = useSearchParams();
+
   const user = useAppSelector((state) => state.user);
 
   const handleDelete = useCallback(
@@ -61,13 +64,14 @@ export default function AdminList(props: Props) {
             return;
           }
 
+          const search = searchParams.get("s") || "";
           props.loadUsers();
         }
       } catch (e) {
         console.error(e);
       }
     },
-    [props]
+    [props, searchParams]
   );
 
   return (
