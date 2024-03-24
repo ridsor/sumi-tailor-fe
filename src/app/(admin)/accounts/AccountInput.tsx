@@ -13,7 +13,7 @@ import { cookies } from "next/headers";
 type Props = {
   active: boolean;
   opencloseModal: () => void;
-  reloadUsers: () => void;
+  loadUsers: () => void;
 };
 
 type Input = {
@@ -197,10 +197,30 @@ export default function AdminInput(props: Props) {
 
           if (response.status != 201) {
             const result = await response.json();
+            if (
+              typeof result.message != "undefined" &&
+              result.message == "User limit is 4"
+            ) {
+              withReactContent(Swal)
+                .mixin({
+                  customClass: {
+                    popup: "max-w-[200px] w-full h-[100px]",
+                    icon: "!scale-50 -translate-y-8",
+                    title: "text-sm -translate-y-[4.5rem]",
+                  },
+                  buttonsStyling: false,
+                })
+                .fire({
+                  position: "top-end",
+                  icon: "error",
+                  title: "Pengguna dibatasi 4",
+                  showConfirmButton: false,
+                  timer: 1000,
+                });
+            }
             if (typeof result.errors.email != "undefined") {
               setValidate((prev) => ({ ...prev, email: result.errors.email }));
             }
-
             setInputLoading(false);
             return;
           }
@@ -250,7 +270,7 @@ export default function AdminInput(props: Props) {
             showConfirmButton: false,
             timer: 500,
           });
-        props.reloadUsers();
+        props.loadUsers();
       } catch (e) {
         console.error(e);
       }
