@@ -8,12 +8,12 @@ import { AccountModalContext } from "./page";
 import { getToken } from "@/services/token";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import { cookies } from "next/headers";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   active: boolean;
   opencloseModal: () => void;
-  loadUsers: () => void;
+  loadUsers: (search?: string) => void;
 };
 
 type Input = {
@@ -26,6 +26,7 @@ type Input = {
 type Validate = Input;
 
 export default function AdminInput(props: Props) {
+  const searchParams = useSearchParams();
   const { inputAction, accountInput } = useContext(AccountModalContext);
 
   const [inputs, setInputs] = useState<Input>({
@@ -270,7 +271,9 @@ export default function AdminInput(props: Props) {
             showConfirmButton: false,
             timer: 500,
           });
-        props.loadUsers();
+
+        const search = searchParams.get("s") || "";
+        props.loadUsers(search);
       } catch (e) {
         console.error(e);
       }
@@ -278,7 +281,7 @@ export default function AdminInput(props: Props) {
       setInputLoading(false);
       props.opencloseModal();
     },
-    [inputs, onValidate, props, inputAction, accountInput.id]
+    [inputs, onValidate, props, inputAction, accountInput.id, searchParams]
   );
 
   const onChangeEventHanlder = useCallback(

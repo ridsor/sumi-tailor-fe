@@ -27,15 +27,25 @@ export const handlePageOrderFinished = createAsyncThunk<
   },
   {
     page: number;
-    limit?: number | undefined;
+    search?: string;
+    limit?: number;
   }
 >(
   "orders/handlePageOrderFinished",
-  async ({ page, limit }: { page: number; limit?: number }) => {
+  async ({
+    page,
+    limit,
+    search = "",
+  }: {
+    page: number;
+    search?: string;
+    limit?: number;
+  }) => {
     const response = await getOrders({
       page,
       limit,
       status: "isFinished",
+      search,
     }).catch((e) => {
       throw e;
     });
@@ -54,15 +64,25 @@ export const handlePageOrderUnfinished = createAsyncThunk<
   },
   {
     page: number;
-    limit?: number | undefined;
+    search?: string;
+    limit?: number;
   }
 >(
   "orders/handlePageOrderUnfinished",
-  async ({ page, limit }: { page: number; limit?: number }) => {
+  async ({
+    page,
+    search = "",
+    limit,
+  }: {
+    page: number;
+    limit?: number;
+    search?: string;
+  }) => {
     const response = await getOrders({
       page,
       limit,
       status: "isProcess",
+      search,
     }).catch((e) => {
       throw e;
     });
