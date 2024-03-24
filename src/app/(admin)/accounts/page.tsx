@@ -1,6 +1,5 @@
 "use client";
 
-import { FaSearch } from "react-icons/fa";
 import AdminList from "./AccountList";
 import AdminInput from "./AccountInput";
 
@@ -14,6 +13,10 @@ import {
 import { FaPlus } from "react-icons/fa6";
 import { User, getUsers } from "@/services/user";
 import AccountLoading from "./AccountLoading";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { getUser } from "@/lib/redux/features/userSlice";
+import AccountSearch from "./AccountSearch";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type AccountInput = {
   id: string;
@@ -42,9 +45,16 @@ export const AccountModalContext = createContext<{
 });
 
 const AccountPage = () => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
+
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isModal, setModal] = useState<boolean>(false);
   const [inputAction, setInputAction] = useState<"create" | "edit">("create");
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [accountInput, setAccountInput] = useState<AccountInput>({
     id: "",
     name: "",
@@ -62,25 +72,43 @@ const AccountPage = () => {
     setModal((prev) => !prev);
   }, []);
 
-  const reloadUsers = useCallback(() => {
+  const loadUsers = useCallback((search: string = "") => {
     setUsers((prev) => ({ ...prev, loading: true }));
-    getUsers()
+    getUsers(search)
       .then((result) =>
         setUsers({
           loading: false,
           data: result,
         })
       )
-      .catch((e) => console.error(e));
+      .catch((e) => setUsers({ loading: false, data: [] }));
   }, []);
 
   useEffect(() => {
     if (isLoading) {
-      reloadUsers();
+      dispatch(getUser());
+
+      const search = searchParams.get("s") || "";
+      loadUsers(search);
     } else {
       setLoading(true);
     }
-  }, [isLoading, reloadUsers]);
+  }, [isLoading, loadUsers, dispatch, searchParams]);
+
+  const handleAccountSearch = useCallback(
+    (value: string) => {
+      clearTimeout(searchTimeout);
+
+      setSearchTimeout(
+        setTimeout(() => {
+          const params = new URLSearchParams(searchParams.toString());
+          params.set("s", value);
+          router.push(pathname + "?" + params.toString());
+        }, 1000)
+      );
+    },
+    [searchParams, pathname, router, searchTimeout]
+  );
 
   return (
     <AccountModalContext.Provider
@@ -98,38 +126,34 @@ const AccountPage = () => {
             <h1 className="text-3xl font-one mb-3 tracking-wide font-semibold">
               Admin
             </h1>
-            <button
-              onClick={() => {
-                toggleModal();
-                setInputAction("create");
-                setAccountInput({
-                  id: "",
-                  name: "",
-                  email: "",
-                });
-              }}
-              className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
-              <FaPlus />
-            </button>
+            {user.role === "super admin" && (
+              <button
+                onClick={() => {
+                  toggleModal();
+                  setInputAction("create");
+                  setAccountInput({
+                    id: "",
+                    name: "",
+                    email: "",
+                  });
+                }}
+                className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
+                <FaPlus />
+              </button>
+            )}
             <AdminInput
               active={isModal}
               opencloseModal={toggleModal}
-              reloadUsers={reloadUsers}
+              loadUsers={loadUsers}
             />
-            <div className="search relative w-full max-w-[400px] mb-3">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="px-3 pr-8 py-1 rounded-md border  w-full"
-              />
-              <button className="absolute top-1/2 -translate-y-1/2 right-3">
-                <FaSearch />
-              </button>
-            </div>
+            <AccountSearch
+              onSearch={handleAccountSearch}
+              value={searchParams.get("s") || ""}
+            />
             {users.loading ? (
               <AccountLoading />
             ) : (
-              <AdminList users={users.data} reloadUsers={reloadUsers} />
+              <AdminList users={users.data} loadUsers={loadUsers} />
             )}
           </div>
         </div>
