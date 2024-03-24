@@ -271,8 +271,9 @@ export default function OrderInput() {
         ) {
           router.push("/orders?page=1");
         } else {
-          dispatch(handlePageOrderFinished({ page: 1 }));
-          dispatch(handlePageOrderUnfinished({ page: 1 }));
+          const search = searchParams.get("s") || "";
+          dispatch(handlePageOrderFinished({ page: 1, search }));
+          dispatch(handlePageOrderUnfinished({ page: 1, search }));
         }
 
         withReactContent(Swal)

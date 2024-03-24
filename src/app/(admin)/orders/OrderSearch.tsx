@@ -7,7 +7,7 @@ type Props = {
   value: string;
 };
 
-export default function AccountSearch(props: Props) {
+export default function OrdedrSearch(props: Props) {
   return (
     <div className="search relative w-full max-w-[400px] mb-3">
       <input
