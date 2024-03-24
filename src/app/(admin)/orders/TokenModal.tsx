@@ -1,7 +1,9 @@
 "use client";
 import Modal from "@/components/fragments/Modal";
+import { getRegisterOrder, resetRegisterOrder } from "@/services/orders";
+import { getToken } from "@/services/token";
 import { downloadImageFromElement } from "@/utils/order";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCopy, FaXmark } from "react-icons/fa6";
 import QRCode from "react-qr-code";
 
@@ -13,6 +15,7 @@ interface Props {
 export default function TokenModal(props: Props) {
   const [orderRegisterToken, setOrderRegisterToken] = useState<string>("");
   const orderRegisterQrCodeRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setLoading] = useState(true);
 
   const copyTokenURL = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -22,9 +25,14 @@ export default function TokenModal(props: Props) {
   );
 
   const handleResetOrderRegisterToken = useCallback(async () => {
-    const token = "";
-
-    setOrderRegisterToken(token);
+    try {
+      const token = await resetRegisterOrder();
+      setOrderRegisterToken(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/register-order?token=${token}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
 
   const handleDownloadQRCode = useCallback(() => {
@@ -34,6 +42,25 @@ export default function TokenModal(props: Props) {
       `registertoken-qrcode.png`
     );
   }, []);
+
+  const loadRegisterOrder = useCallback(async () => {
+    try {
+      const token = (await getRegisterOrder()) || "";
+      setOrderRegisterToken(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/register-order?token=${token}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      loadRegisterOrder();
+    } else {
+      setLoading(false);
+    }
+  }, [isLoading, loadRegisterOrder]);
 
   return (
     <Modal active={props.active} openclose={props.openclose} size="max-w-xl">
