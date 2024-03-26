@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import "./style.css";
-import { FaExclamation, FaXmark } from "react-icons/fa6";
+import { FaCopy, FaExclamation, FaXmark } from "react-icons/fa6";
 import { useCallback, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import withReactContent from "sweetalert2-react-content";
@@ -200,6 +200,13 @@ export default function RegisterOrderPage() {
     []
   );
 
+  const copyTokenURL = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      navigator.clipboard.writeText(orderToken);
+    },
+    [orderToken]
+  );
+
   return (
     <main>
       <section className="px-4 pb-16 pt-6">
@@ -237,6 +244,16 @@ export default function RegisterOrderPage() {
                   onClick={handleDownloadQRCode}>
                   Download
                 </button>
+                <div className="mb-4 flex items-center justify-center gap-x-3 px-4">
+                  <span
+                    id="order_register_url_token"
+                    className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical]">
+                    {orderToken}
+                  </span>
+                  <button onClick={copyTokenURL} className="text-xl">
+                    <FaCopy />
+                  </button>
+                </div>
               </article>
             </div>
           </Modal>
