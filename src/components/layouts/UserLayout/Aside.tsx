@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getToken } from "@/services/token";
 import user_img from "@/assets/img/user-img.svg";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getUser } from "@/lib/redux/features/userSlice";
+import { clearUser, getUser } from "@/lib/redux/features/userSlice";
 
 interface Props {
   isSidebar: boolean;
@@ -64,10 +64,10 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
       console.log(e);
     }
 
+    dispatch(clearUser());
     router.push("/");
     setLoadingLogout(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router, dispatch]);
 
   useEffect(() => {
     dispatch(getUser());
