@@ -56,9 +56,6 @@ export default function OrderConfirmation(props: Props) {
           }
         );
 
-        console.log(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${props.item_code}/confirm`
-        );
         if (confirmResponse.status != 200) {
           console.error("Failed to input");
           setLoading(false);
