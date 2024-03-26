@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
 };
 
-const HomePage = () => {
+export default function HomePage() {
   return (
     <main>
       <section className="bg-three">
@@ -79,6 +79,4 @@ const HomePage = () => {
       <WaButton />
     </main>
   );
-};
-
-export default HomePage;
+}

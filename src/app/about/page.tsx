@@ -3,6 +3,7 @@ import { TbNeedleThread } from "react-icons/tb";
 import imageAboutUs from "@/assets/img/image-aboutus.jpeg";
 import Image from "next/image";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   },
 };
 
-const AboutPage = () => {
+export default function AboutPage() {
   return (
     <main>
       <section className="bg-three relative">
@@ -96,6 +97,4 @@ const AboutPage = () => {
       </section>
     </main>
   );
-};
-
-export default AboutPage;
+}

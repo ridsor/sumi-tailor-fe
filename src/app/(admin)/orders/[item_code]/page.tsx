@@ -18,13 +18,10 @@ export const generateMetadata = async ({
     searchParams.token as string
   ).catch((e) => {
     console.error(e);
-    if (e.message === "Authorization") {
-      redirect("/");
-    }
   });
 
   let title = "Sumi Tailor";
-  if (typeof order != "undefined") title = "Sumi Tailor · " + order.data.name;
+  if (typeof order != "undefined") title = "Sumi Tailor · " + order.name;
 
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -63,6 +60,8 @@ export default async function DetailOrder(props: Props) {
     console.error(e);
     if (e.message === "Authorization") {
       redirect("/");
+    } else {
+      redirect("/orders");
     }
   });
 
@@ -73,7 +72,7 @@ export default async function DetailOrder(props: Props) {
     hour: "numeric",
     minute: "numeric",
     hour12: false,
-  }).format(new Date(order.data.updated_at));
+  }).format(new Date(order.updated_at));
 
   return (
     <main>
@@ -84,30 +83,30 @@ export default async function DetailOrder(props: Props) {
           </h1>
           <div className="px-4">
             <h2 className="font-semibold text-base border-b py-2 mb-3 border-five">
-              Pesanan Selesai
+              Pesanan {order.status === "isFinished" ? "Selesai" : "Diproses"}
             </h2>
             <div className="flex mb-2">
               <div className="flex justify-between flex-1">
                 <span>Nama</span>
-                <span id="name">{order.data.name}</span>
+                <span id="name">{order.name}</span>
               </div>
             </div>
             <div className="flex mb-2">
               <div className="flex justify-between flex-1">
                 <span>Email</span>
-                <span id="email">{order.data.email}</span>
+                <span id="email">{order.email}</span>
               </div>
             </div>
             <div className="flex mb-2">
               <div className="flex justify-between flex-1">
                 <span>No Handphone</span>
-                <span id="no_hp">{order.data.no_hp}</span>
+                <span id="no_hp">{order.no_hp}</span>
               </div>
             </div>
             <div className="flex mb-2">
               <div className="flex justify-between flex-1">
                 <span>Alamat</span>
-                <span id="address">{order.data.address}</span>
+                <span id="address">{order.address}</span>
               </div>
             </div>
             <div className="flex mb-3">
@@ -121,13 +120,13 @@ export default async function DetailOrder(props: Props) {
             <div
               className="border rounded-md py-2 px-3 border-five"
               id="description">
-              <p>{order.data.description}</p>
+              <p>{order.description}</p>
               <hr className="my-3 border-five" />
               <div className="text-[12px]">Total Harga</div>
               <div className="font-bold" id="price">
                 Rp
-                {order.data.price
-                  ? Intl.NumberFormat("id-ID").format(order.data.price)
+                {order.price
+                  ? Intl.NumberFormat("id-ID").format(order.price)
                   : " -"}
               </div>
             </div>
