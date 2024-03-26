@@ -80,7 +80,7 @@ export const getOrderById = async (item_code: string, token: string = "") => {
   }
   const order = await res.json();
 
-  return order;
+  return order.data;
 };
 
 export const getRegisterOrder = async () => {
