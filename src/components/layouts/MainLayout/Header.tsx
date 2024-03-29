@@ -113,7 +113,7 @@ const Header = () => {
               href={user.id !== "" ? "/dashboard" : "/login"}
               className="bg-white p-3 rounded-full block">
               <FaUser className="fill-two" size="1.2rem" />
-            </Link>
+            </div>
           </div>
         </article>
       </div>
