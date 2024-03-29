@@ -109,6 +109,7 @@ const Header = () => {
           </div>
           <div className="order-2 ml-auto right lg:order-3 lg:ml-0">
             <Link
+              aria-label="Halaman User"
               href={user.id !== "" ? "/dashboard" : "/login"}
               className="bg-white p-3 rounded-full block">
               <FaUser className="fill-two" size="1.2rem" />
