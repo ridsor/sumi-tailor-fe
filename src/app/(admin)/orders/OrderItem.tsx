@@ -36,7 +36,8 @@ export default function OrderItem(props: Props) {
     <div className="order flex border rounded-md shadow-sm flex-wrap relative">
       <Link
         href={`/orders/${props.order.item_code}`}
-        className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10"></Link>
+        className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10"
+        aria-label="Order Item"></Link>
       <div className="flex flex-col relative items-center px-8 lg:px-10 py-2.5 after:content-[''] after:block after:h-[70%] w-1 after:border-r after:absolute after:-translate-y-1/2 after:top-1/2 after:right-0 order-1 self-center">
         <div className="month font-medium leading-none">
           {getMonth(props.order.updated_at)}
@@ -83,6 +84,7 @@ export default function OrderItem(props: Props) {
       <div className="order-3 lg:order-6 text-lg self-center ml-auto lg:mx-6 p-2 flex">
         <button
           className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative z-20"
+          aria-label="Menu Order"
           onClick={handleBtnActionOrder}>
           <FaEllipsisVertical />
         </button>

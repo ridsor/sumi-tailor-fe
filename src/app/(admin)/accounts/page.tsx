@@ -128,6 +128,7 @@ const AccountPage = () => {
             </h1>
             {user.role === "super admin" && (
               <button
+                aria-label="Add account"
                 onClick={() => {
                   toggleModal();
                   setInputAction("create");

@@ -19,6 +19,7 @@ export default function OrdedrSearch(props: Props) {
       />
       <button
         className="absolute top-1/2 -translate-y-1/2 right-3"
+        aria-label="Search"
         disabled={true}>
         <FaSearch />
       </button>

@@ -16,6 +16,7 @@ export default function TokenModal(props: Props) {
   const [orderRegisterToken, setOrderRegisterToken] = useState<string>("");
   const orderRegisterQrCodeRef = useRef<HTMLDivElement>(null);
   const [isLoading, setLoading] = useState(true);
+  const [isTokenLoading, setTokenLoading] = useState<boolean>(false);
 
   const copyTokenURL = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -25,6 +26,7 @@ export default function TokenModal(props: Props) {
   );
 
   const handleResetOrderRegisterToken = useCallback(async () => {
+    setTokenLoading(true);
     try {
       const token = await resetRegisterOrder();
       setOrderRegisterToken(
@@ -33,6 +35,7 @@ export default function TokenModal(props: Props) {
     } catch (e) {
       console.error(e);
     }
+    setTokenLoading(false);
   }, []);
 
   const handleDownloadQRCode = useCallback(() => {
@@ -69,6 +72,7 @@ export default function TokenModal(props: Props) {
           Token Pendaftaran Pesanan
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
+            aria-label="Exit Modal"
             onClick={() => props.openclose()}>
             <FaXmark />
           </button>
@@ -99,14 +103,18 @@ export default function TokenModal(props: Props) {
                 className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical]">
                 {orderRegisterToken}
               </span>
-              <button onClick={copyTokenURL} className="text-xl">
+              <button
+                onClick={copyTokenURL}
+                className="text-xl"
+                aria-label="Copy token">
                 <FaCopy />
               </button>
             </div>
             <button
               className="px-3 py-2 bg-two text-white rounded-md block mx-auto hover:bg-four"
+              disabled={isTokenLoading}
               onClick={handleResetOrderRegisterToken}>
-              Reset Token
+              {isTokenLoading ? "Loading..." : "Reset Token"}
             </button>
           </div>
         </div>
