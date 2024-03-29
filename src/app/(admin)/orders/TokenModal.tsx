@@ -16,6 +16,7 @@ export default function TokenModal(props: Props) {
   const [orderRegisterToken, setOrderRegisterToken] = useState<string>("");
   const orderRegisterQrCodeRef = useRef<HTMLDivElement>(null);
   const [isLoading, setLoading] = useState(true);
+  const [isTokenLoading, setTokenLoading] = useState<boolean>(false);
 
   const copyTokenURL = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -25,6 +26,7 @@ export default function TokenModal(props: Props) {
   );
 
   const handleResetOrderRegisterToken = useCallback(async () => {
+    setTokenLoading(true);
     try {
       const token = await resetRegisterOrder();
       setOrderRegisterToken(
@@ -33,6 +35,7 @@ export default function TokenModal(props: Props) {
     } catch (e) {
       console.error(e);
     }
+    setTokenLoading(false);
   }, []);
 
   const handleDownloadQRCode = useCallback(() => {
@@ -109,8 +112,9 @@ export default function TokenModal(props: Props) {
             </div>
             <button
               className="px-3 py-2 bg-two text-white rounded-md block mx-auto hover:bg-four"
+              disabled={isTokenLoading}
               onClick={handleResetOrderRegisterToken}>
-              Reset Token
+              {isTokenLoading ? "Loading..." : "Reset Token"}
             </button>
           </div>
         </div>
