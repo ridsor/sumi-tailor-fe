@@ -28,6 +28,7 @@ export default function AdminItem(props: Props) {
           <div className="flex">
             <button
               className="bg-yellow-500 px-2 py-2  rounded-md text-white mr-1"
+              aria-label="Edit account"
               onClick={() => {
                 toggleModal();
                 setInputAction("edit");
@@ -41,7 +42,8 @@ export default function AdminItem(props: Props) {
             </button>
             <button
               className="bg-fail px-2 py-1  rounded-md text-white"
-              onClick={() => props.onDelete(props.user.id)}>
+              onClick={() => props.onDelete(props.user.id)}
+              aria-label="Delete account">
               <FaTrash />
             </button>
           </div>

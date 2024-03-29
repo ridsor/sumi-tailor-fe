@@ -8,6 +8,8 @@ const DashboardChart = dynamic(() => import("./DashbordCharts"), {
   ssr: false,
 });
 
+export const revalidate = 0;
+
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),

@@ -321,7 +321,8 @@ export default function AdminInput(props: Props) {
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
             tabIndex={props.active ? 1 : undefined}
-            onClick={() => props.opencloseModal()}>
+            onClick={() => props.opencloseModal()}
+            aria-label="Exit modal">
             <FaXmark />
           </button>
         </div>
