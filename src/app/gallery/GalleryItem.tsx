@@ -9,10 +9,10 @@ const GalleryItem = (props: Props) => {
     <div className="shadow-md mb-4">
       <Image
         src={`/image/gallery${props.image}.jpg`}
-        alt="gallery-pertama"
+        alt={`gallery${props.image}`}
         priority
-        width={400}
-        height={400}
+        width={200}
+        height={200}
         className="w-full rounded-xl"
       />
     </div>

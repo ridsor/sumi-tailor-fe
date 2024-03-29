@@ -96,7 +96,8 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
             } absolute bg-three z-10 rounded-full p-1 flex items-center justify-center`}>
             <button
               className="rounded-full bg-two text-three active:ring active:ring-[rgba(0,0,0,.1)] text-lg p-2"
-              onClick={() => setSidebar(!isSidebar)}>
+              onClick={() => setSidebar(!isSidebar)}
+              aria-label="Menu Sidebar">
               <FaPlay
                 className={`${isSidebar ? "-rotate-180" : ""} transition`}
               />

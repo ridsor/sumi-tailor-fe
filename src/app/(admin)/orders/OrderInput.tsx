@@ -356,6 +356,7 @@ export default function OrderInput() {
           {inputAction === "create" ? "Buat" : "Edit"} Pesanan
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
+            aria-label="Exit Modal"
             onClick={() => toggleModal()}>
             <FaXmark />
           </button>

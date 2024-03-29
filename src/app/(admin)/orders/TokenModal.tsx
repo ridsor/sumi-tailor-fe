@@ -69,6 +69,7 @@ export default function TokenModal(props: Props) {
           Token Pendaftaran Pesanan
           <button
             className="absolute top-1/2 -translate-y-1/2 right-3"
+            aria-label="Exit Modal"
             onClick={() => props.openclose()}>
             <FaXmark />
           </button>
@@ -99,7 +100,10 @@ export default function TokenModal(props: Props) {
                 className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical]">
                 {orderRegisterToken}
               </span>
-              <button onClick={copyTokenURL} className="text-xl">
+              <button
+                onClick={copyTokenURL}
+                className="text-xl"
+                aria-label="Copy token">
                 <FaCopy />
               </button>
             </div>
