@@ -1,14 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import DashboardLoading from "@/app/(admin)/dashboard/loading";
 
 const Loading = () => {
   const pathname = usePathname();
-
-  if (pathname === "/dashboard") {
-    return <DashboardLoading />;
-  }
 
   return (
     <main className="animate-pulse">
