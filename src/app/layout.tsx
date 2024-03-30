@@ -5,15 +5,9 @@ import Header from "@/components/layouts/MainLayout/Header";
 import { usePathname } from "next/navigation";
 import Footer from "@/components/layouts/MainLayout/Footer";
 import { josenfin_sans, quicksand } from "@/fonts";
+import ReduxProvider from "@/components/fragments/ReduxProvider";
 
-const enableNavbar = [
-  "/",
-  "/about",
-  "/gallery",
-  "/service",
-  "/login",
-  "/orders",
-];
+const enableNavbar = ["/", "/about", "/gallery", "/service", "/login"];
 
 export default function RootLayout({
   children,
@@ -21,16 +15,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-
   return (
-    <html lang="en">
-      <body
-        className={`${quicksand.variable} ${josenfin_sans.variable}`}
-        suppressHydrationWarning={true}>
-        {enableNavbar.includes(pathname) && <Header />}
-        {children}
-        {enableNavbar.includes(pathname) && <Footer />}
-      </body>
-    </html>
+    <ReduxProvider>
+      <html lang="en">
+        <body
+          suppressHydrationWarning={true}
+          className={`${quicksand.variable} ${josenfin_sans.variable}`}>
+          {enableNavbar.includes(pathname) && <Header />}
+          {children}
+          {enableNavbar.includes(pathname) && <Footer />}
+        </body>
+      </html>
+    </ReduxProvider>
   );
 }

@@ -1,5 +1,8 @@
 import { Metadata } from "next";
-import GalleryList from "./GalleryList";
+
+interface Props {
+  children: React.ReactNode;
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -27,18 +30,6 @@ export const metadata: Metadata = {
   },
 };
 
-const GalleryPage = () => {
-  return (
-    <main>
-      <section className="bg-[#E4EEDD]">
-        <div className="container px-4">
-          <div className="pt-36 pb-16">
-            <GalleryList />
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-};
-
-export default GalleryPage;
+export default function layout({ children }: Props) {
+  return children;
+}
