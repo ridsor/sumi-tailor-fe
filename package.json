@@ -12,6 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
     "apexcharts": "^3.45.2",
+    "glob-to-regexp": "^0.4.1",
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
     "next": "14.0.4",
