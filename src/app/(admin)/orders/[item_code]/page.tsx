@@ -2,7 +2,9 @@ import { getOrderById } from "@/services/orders";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import OrderConfirmation from "./OrderConfirmation";
-import { getUser } from "@/services/token";
+import { getUser } from "@/services/auth";
+import { getServerSession } from "next-auth";
+import { authOption } from "@/app/api/auth/[...nextauth]/route";
 
 interface Props {
   params: { item_code: string };
@@ -13,9 +15,11 @@ export const generateMetadata = async ({
   params,
   searchParams,
 }: Props): Promise<Metadata> => {
+  const session = await getServerSession(authOption);
   const order = await getOrderById(
     params.item_code,
-    searchParams.token as string
+    searchParams.token as string,
+    session?.user.refreshToken || ""
   ).catch((e) => {
     console.error(e);
   });
@@ -51,13 +55,13 @@ export const generateMetadata = async ({
 };
 
 export default async function DetailOrder(props: Props) {
-  const user = await getUser().catch((e) => console.error(e));
+  const session = await getServerSession(authOption);
 
   const order = await getOrderById(
     props.params.item_code,
-    props.searchParams.token as string
+    props.searchParams.token as string,
+    session?.user.refreshToken || ""
   ).catch((e) => {
-    console.error(e);
     if (e.message === "Authorization") {
       redirect("/");
     } else {
@@ -130,8 +134,12 @@ export default async function DetailOrder(props: Props) {
                   : " -"}
               </div>
             </div>
-            {user?.ok && (
-              <OrderConfirmation item_code={props.params.item_code} />
+            {(session?.user.role === "admin" ||
+              session?.user.role === "super admin") && (
+              <OrderConfirmation
+                item_code={props.params.item_code}
+                session={session}
+              />
             )}
           </div>
         </div>

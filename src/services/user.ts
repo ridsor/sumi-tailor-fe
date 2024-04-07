@@ -1,7 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { getToken } from "./token";
+import { getToken } from "./auth";
 
 export interface User {
   id: string;
@@ -10,12 +9,11 @@ export interface User {
   status: string;
 }
 
-export const getUsers = async (search: string = ""): Promise<User[]> => {
-  const refreshToken = await getToken();
-
-  if (refreshToken.status != "success") {
-    throw new Error("Failed to fetch data");
-  }
+export const getUsers = async (
+  refreshToken: string,
+  search: string = ""
+): Promise<User[]> => {
+  const token = await getToken(refreshToken);
 
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL + `/api/users?search=` + search,
@@ -23,11 +21,10 @@ export const getUsers = async (search: string = ""): Promise<User[]> => {
       method: "GET",
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${refreshToken.authorization.access_token}`,
-        Cookie: "refreshToken=" + cookies().get("refreshToken")?.value,
+        Authorization: `Bearer ${token}`,
       },
       next: {
-        revalidate: 0,
+        revalidate: 60,
       },
     }
   );

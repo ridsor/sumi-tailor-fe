@@ -4,11 +4,12 @@ import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { Metadata } from "next";
 import { getDashboard } from "@/services/dashboard";
+import { getServerSession } from "next-auth";
+import { authOption } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 const DashboardChart = dynamic(() => import("./DashbordCharts"), {
   ssr: false,
 });
-
-export const revalidate = 0;
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -39,13 +40,21 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 export default async function DashboardPage() {
-  const dashboard = await getDashboard().catch((e) => console.error(e));
-  const order_total = dashboard.data.map(
+  const session = await getServerSession(authOption);
+  const dashboard = await getDashboard(session?.user.refreshToken || "").catch(
+    (e) => {
+      console.error(e);
+      redirect("/");
+    }
+  );
+
+  const order_total = dashboard.map(
     (x: { order_total: number }) => x.order_total
   );
-  const total_income = dashboard.data.map(
+  const total_income = dashboard.map(
     (x: { total_income: number }) => x.total_income
   );
+
   const chartOrder: {
     options: ApexOptions;
     series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;

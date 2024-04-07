@@ -3,9 +3,10 @@ import AdminItem from "./AccountItem";
 import { useCallback } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import { getToken } from "@/services/token";
+import { getToken } from "@/services/auth";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type Props = {
   users: User[];
@@ -14,8 +15,7 @@ type Props = {
 
 export default function AdminList(props: Props) {
   const searchParams = useSearchParams();
-
-  const user = useAppSelector((state) => state.user);
+  const { data: session } = useSession();
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -39,12 +39,7 @@ export default function AdminList(props: Props) {
           });
 
         if (result.isConfirmed) {
-          const token = await getToken();
-
-          if (token.status != "success") {
-            console.error("Failed to delete");
-            return;
-          }
+          const token = await getToken(session?.user.refreshToken || "");
 
           const res = await fetch(
             (process.env.NEXT_PUBLIC_API_URL as string) +
@@ -54,7 +49,7 @@ export default function AdminList(props: Props) {
               method: "DELETE",
               credentials: "include",
               headers: {
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token,
               },
             }
           );
@@ -71,7 +66,7 @@ export default function AdminList(props: Props) {
         console.error(e);
       }
     },
-    [props, searchParams]
+    [props, searchParams, session]
   );
 
   return (
@@ -85,7 +80,7 @@ export default function AdminList(props: Props) {
             </td>
             <td className="font-semibold px-2">Nama</td>
             <td className="font-semibold px-2">Email</td>
-            {user.role === "super admin" && (
+            {session?.user.role === "super admin" && (
               <td className="font-semibold px-2">Aksi</td>
             )}
           </tr>

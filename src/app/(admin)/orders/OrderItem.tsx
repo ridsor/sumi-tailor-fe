@@ -10,7 +10,7 @@ import { useContext } from "react";
 import { ModalContext } from "./page";
 import { OrderType } from "@/lib/redux/features/ordersSlice";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/redux/hooks";
+import { useSession } from "next-auth/react";
 
 interface Props {
   order: OrderType;
@@ -20,7 +20,7 @@ interface Props {
 
 export default function OrderItem(props: Props) {
   const { toggleModal, setInputAction, setOrder } = useContext(ModalContext);
-  const user = useAppSelector((state) => state.user);
+  const { data: session } = useSession();
 
   const handleBtnActionOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
     const menuItem = document.querySelectorAll(".menu-item");
@@ -135,7 +135,7 @@ export default function OrderItem(props: Props) {
                 Edit
               </button>
             </li>
-            {user.role === "super admin" && (
+            {session?.user.role === "super admin" && (
               <li>
                 <button
                   className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"

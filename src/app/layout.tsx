@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Footer from "@/components/layouts/MainLayout/Footer";
 import { josenfin_sans, quicksand } from "@/fonts";
 import ReduxProvider from "@/components/fragments/ReduxProvider";
+import { SessionProvider } from "next-auth/react";
 
 const enableNavbar = ["/", "/about", "/gallery", "/service", "/login"];
 
@@ -17,15 +18,17 @@ export default function RootLayout({
   const pathname = usePathname();
   return (
     <ReduxProvider>
-      <html lang="en">
-        <body
-          suppressHydrationWarning={true}
-          className={`${quicksand.variable} ${josenfin_sans.variable}`}>
-          {enableNavbar.includes(pathname) && <Header />}
-          {children}
-          {enableNavbar.includes(pathname) && <Footer />}
-        </body>
-      </html>
+      <SessionProvider>
+        <html lang="en">
+          <body
+            suppressHydrationWarning={true}
+            className={`${quicksand.variable} ${josenfin_sans.variable}`}>
+            {enableNavbar.includes(pathname) && <Header />}
+            {children}
+            {enableNavbar.includes(pathname) && <Footer />}
+          </body>
+        </html>
+      </SessionProvider>
     </ReduxProvider>
   );
 }

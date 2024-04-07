@@ -13,10 +13,9 @@ import {
 import { FaPlus } from "react-icons/fa6";
 import { User, getUsers } from "@/services/user";
 import AccountLoading from "./AccountLoading";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getUser } from "@/lib/redux/features/userSlice";
 import AccountSearch from "./AccountSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type AccountInput = {
   id: string;
@@ -48,8 +47,7 @@ const AccountPage = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
+  const { data: session } = useSession();
 
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isModal, setModal] = useState<boolean>(false);
@@ -72,28 +70,29 @@ const AccountPage = () => {
     setModal((prev) => !prev);
   }, []);
 
-  const loadUsers = useCallback((search: string = "") => {
-    setUsers((prev) => ({ ...prev, loading: true }));
-    getUsers(search)
-      .then((result) =>
-        setUsers({
-          loading: false,
-          data: result,
-        })
-      )
-      .catch((e) => setUsers({ loading: false, data: [] }));
-  }, []);
+  const loadUsers = useCallback(
+    (search: string = "") => {
+      setUsers((prev) => ({ ...prev, loading: true }));
+      getUsers(session?.user.refreshToken || "", search)
+        .then((result) =>
+          setUsers({
+            loading: false,
+            data: result,
+          })
+        )
+        .catch((e) => setUsers({ loading: false, data: [] }));
+    },
+    [session]
+  );
 
   useEffect(() => {
     if (isLoading) {
-      dispatch(getUser());
-
       const search = searchParams.get("s") || "";
       loadUsers(search);
     } else {
       setLoading(true);
     }
-  }, [isLoading, loadUsers, dispatch, searchParams]);
+  }, [isLoading, loadUsers, searchParams]);
 
   const handleAccountSearch = useCallback(
     (value: string) => {
@@ -126,7 +125,7 @@ const AccountPage = () => {
             <h1 className="text-3xl font-one mb-3 tracking-wide font-semibold">
               Admin
             </h1>
-            {user.role === "super admin" && (
+            {session?.user.role === "super admin" && (
               <button
                 aria-label="Add account"
                 onClick={() => {

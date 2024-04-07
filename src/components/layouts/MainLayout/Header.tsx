@@ -1,27 +1,16 @@
 "use client";
-import { getUser } from "@/lib/redux/features/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaBars, FaUser } from "react-icons/fa6";
 
 const Header = () => {
+  const session = useSession();
   const pathname = usePathname();
-  const dispatch = useAppDispatch();
 
-  const user = useAppSelector((state) => state.user);
   const [hamburger, setHamburger] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!isLoading) {
-      dispatch(getUser());
-    } else {
-      setLoading(false);
-    }
-  }, [isLoading, dispatch]);
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50">
@@ -110,7 +99,9 @@ const Header = () => {
           <div className="order-2 ml-auto right lg:order-3 lg:ml-0">
             <Link
               aria-label="Halaman User"
-              href={user.id !== "" ? "/dashboard" : "/login"}
+              href={
+                session.status === "authenticated" ? "/dashboard" : "/login"
+              }
               className="bg-white p-3 rounded-full block">
               <FaUser className="fill-two" size="1.2rem" />
             </Link>

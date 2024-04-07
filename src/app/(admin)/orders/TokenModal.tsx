@@ -1,11 +1,12 @@
 "use client";
 import Modal from "@/components/fragments/Modal";
 import { getRegisterOrder, resetRegisterOrder } from "@/services/orders";
-import { getToken } from "@/services/token";
+import { getToken } from "@/services/auth";
 import { downloadImageFromElement } from "@/utils/order";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCopy, FaXmark } from "react-icons/fa6";
 import QRCode from "react-qr-code";
+import { useSession } from "next-auth/react";
 
 interface Props {
   active: boolean;
@@ -17,6 +18,7 @@ export default function TokenModal(props: Props) {
   const orderRegisterQrCodeRef = useRef<HTMLDivElement>(null);
   const [isLoading, setLoading] = useState(true);
   const [isTokenLoading, setTokenLoading] = useState<boolean>(false);
+  const { data: session } = useSession();
 
   const copyTokenURL = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -28,7 +30,7 @@ export default function TokenModal(props: Props) {
   const handleResetOrderRegisterToken = useCallback(async () => {
     setTokenLoading(true);
     try {
-      const token = await resetRegisterOrder();
+      const token = await resetRegisterOrder(session?.user.refreshToken || "");
       setOrderRegisterToken(
         `${process.env.NEXT_PUBLIC_BASE_URL}/register-order?token=${token}`
       );
@@ -36,7 +38,7 @@ export default function TokenModal(props: Props) {
       console.error(e);
     }
     setTokenLoading(false);
-  }, []);
+  }, [session]);
 
   const handleDownloadQRCode = useCallback(() => {
     const element = orderRegisterQrCodeRef.current;
@@ -48,14 +50,14 @@ export default function TokenModal(props: Props) {
 
   const loadRegisterOrder = useCallback(async () => {
     try {
-      const token = (await getRegisterOrder()) || "";
+      const token = await getRegisterOrder(session?.user.refreshToken || "");
       setOrderRegisterToken(
         `${process.env.NEXT_PUBLIC_BASE_URL}/register-order?token=${token}`
       );
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     if (!isLoading) {

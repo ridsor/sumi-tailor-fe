@@ -1,5 +1,6 @@
 "use client";
 
+import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -37,33 +38,20 @@ export default function FormLogin() {
     }
 
     try {
-      const login = await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(inputsLogin),
-          credentials: "include",
-          cache: "no-store",
-        }
-      )
-        .then((res) => res.json())
-        .catch((err) => {
-          throw err;
-        });
+      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+      const login = await signIn("credentials", {
+        redirect: false,
+        ...inputsLogin,
+        callbackUrl,
+      });
 
-      if (login.status != "success") {
+      if (!login?.ok) {
         setValidate({ email: "Email", password: "Password" });
-        console.log(login.message);
         setLoading(false);
         return;
       }
 
-      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
       router.push(callbackUrl);
-      1;
     } catch (e) {
       console.error(e);
       setLoading(false);

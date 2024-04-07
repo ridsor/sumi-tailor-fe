@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUser } from "./services/token";
+import { getUser } from "./services/auth";
+import { getToken } from "next-auth/jwt";
+import { signOut } from "next-auth/react";
 
 export const protectedRoutes = [
   "/dashboard",
@@ -11,12 +13,17 @@ export const authRoutes = ["/login"];
 export const publicRoutes = ["/", "/about", "/gallery", "/service"];
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
   try {
+    const pathname = request.nextUrl.pathname;
     if (protectedRoutes.includes(pathname)) {
-      const user = await getUser();
+      const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+      const user = await getUser(token?.refreshToken || "");
 
-      if (user.status != 200) {
+      if (user?.status != "success") {
+        signOut();
         return NextResponse.redirect(
           new URL("/login?callbackUrl=" + pathname, request.url)
         );
@@ -24,10 +31,15 @@ export async function middleware(request: NextRequest) {
     }
 
     if (authRoutes.includes(pathname)) {
-      const user = await getUser();
-
-      if (user.status == 200) {
+      const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+      const user = await getUser(token?.refreshToken || "");
+      if (user?.status == "success") {
         return NextResponse.redirect(new URL("/dashboard", request.url));
+      } else {
+        signOut();
       }
     }
 
@@ -44,7 +56,7 @@ export async function middleware(request: NextRequest) {
       }
     }
   } catch (e) {
-    return NextResponse.redirect(new URL("/", request.url));
     console.error(e);
+    return NextResponse.redirect(new URL("/", request.url));
   }
 }

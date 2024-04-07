@@ -1,9 +1,9 @@
-import { User } from "@/lib/redux/features/userSlice";
-import { getToken } from "@/services/token";
+import { getToken } from "@/services/auth";
 import { SetStateAction, useCallback, useState } from "react";
 import { FaExclamationCircle } from "react-icons/fa";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { Session } from "next-auth";
 
 type Input = {
   password: string;
@@ -13,7 +13,7 @@ type Input = {
 type Validate = Input;
 
 interface Props {
-  user: User;
+  session: Session | null;
   isChangePassword: boolean;
   setChangePassword: (value: SetStateAction<boolean>) => void;
 }
@@ -110,12 +110,7 @@ export default function FormProfilePassword(props: Props) {
     if (onValidate(inputs)) return;
 
     try {
-      const token = await getToken();
-
-      if (token.status != "success") {
-        setInputLoading(false);
-        return;
-      }
+      const token = await getToken(props.session?.user.refreshToken || "");
 
       const formData = new FormData();
       formData.append("password", inputs.password);
@@ -125,13 +120,13 @@ export default function FormProfilePassword(props: Props) {
       const response = await fetch(
         (process.env.NEXT_PUBLIC_API_URL as string) +
           "/api/users/" +
-          props.user.id,
+          props.session?.user.id,
         {
           body: formData,
           method: "POST",
           credentials: "include",
           headers: {
-            Authorization: "Bearer " + token.authorization.access_token,
+            Authorization: "Bearer " + token,
           },
         }
       );

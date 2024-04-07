@@ -26,6 +26,7 @@ export const handlePageOrderFinished = createAsyncThunk<
     pagination: PaginationType;
   },
   {
+    token: string;
     page: number;
     search?: string;
     limit?: number;
@@ -33,15 +34,18 @@ export const handlePageOrderFinished = createAsyncThunk<
 >(
   "orders/handlePageOrderFinished",
   async ({
+    token,
     page,
     limit,
     search = "",
   }: {
+    token: string;
     page: number;
     search?: string;
     limit?: number;
   }) => {
     const response = await getOrders({
+      token,
       page,
       limit,
       status: "isFinished",
@@ -66,6 +70,7 @@ export const handlePageOrderUnfinished = createAsyncThunk<
     page: number;
     search?: string;
     limit?: number;
+    token: string;
   }
 >(
   "orders/handlePageOrderUnfinished",
@@ -73,12 +78,15 @@ export const handlePageOrderUnfinished = createAsyncThunk<
     page,
     search = "",
     limit,
+    token,
   }: {
     page: number;
     limit?: number;
     search?: string;
+    token: string;
   }) => {
     const response = await getOrders({
+      token,
       page,
       limit,
       status: "isProcess",

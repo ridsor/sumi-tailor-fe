@@ -4,10 +4,12 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken } from "@/services/token";
+import { getToken } from "@/services/auth";
+import { Session } from "next-auth";
 
 interface Props {
   item_code: string;
+  session: Session | null;
 }
 
 export default function OrderConfirmation(props: Props) {
@@ -37,13 +39,7 @@ export default function OrderConfirmation(props: Props) {
       if (result.isConfirmed) {
         setLoading(true);
 
-        const token = await getToken();
-
-        if (token.status != "success") {
-          console.error("Failed to logout");
-          setLoading(false);
-          return;
-        }
+        const token = await getToken(props.session?.user.refreshToken || "");
 
         const confirmResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${props.item_code}/confirm`,
@@ -51,7 +47,7 @@ export default function OrderConfirmation(props: Props) {
             method: "PUT",
             credentials: "include",
             headers: {
-              Authorization: "Bearer " + token.authorization.access_token,
+              Authorization: "Bearer " + token,
             },
           }
         );
@@ -90,9 +86,10 @@ export default function OrderConfirmation(props: Props) {
 
   return (
     <button
+      disabled={loading}
       className="py-3 px-6 bg-two text-white mt-5 rounded-md font-bold tracking-wider uppercase mx-auto block"
       onClick={handleOrderConfirmation}>
-      Konfirmasi
+      {loading ? "Loading..." : "Konfirmasi"}
     </button>
   );
 }

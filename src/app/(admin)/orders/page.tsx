@@ -13,7 +13,7 @@ import OrderList from "@/app/(admin)/orders/OrderList";
 import TokenModal from "./TokenModal";
 import OrdedrSearch from "./OrderSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { useAppDispatch } from "@/lib/redux/hooks";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import {
@@ -21,7 +21,8 @@ import {
   handlePageOrderFinished,
   handlePageOrderUnfinished,
 } from "@/lib/redux/features/ordersSlice";
-import { getToken } from "@/services/token";
+import { getToken } from "@/services/auth";
+import { useSession } from "next-auth/react";
 
 interface OrderInput {
   item_code: string;
@@ -58,12 +59,11 @@ export const ModalContext = createContext<{
 });
 
 export default function OrdersPage() {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
-
-  const orders = useAppSelector((state) => state.orders);
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
@@ -122,12 +122,7 @@ export default function OrdersPage() {
           });
 
         if (result.isConfirmed) {
-          const token = await getToken();
-
-          if (token.status != "success") {
-            console.error("Failed to cancel");
-            return;
-          }
+          const token = await getToken(session?.user.refreshToken || "");
 
           const response = await fetch(
             (process.env.NEXT_PUBLIC_API_URL as string) +
@@ -137,7 +132,7 @@ export default function OrdersPage() {
               method: "DELETE",
               credentials: "include",
               headers: {
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token,
               },
             }
           );
@@ -154,26 +149,33 @@ export default function OrdersPage() {
             router.push("/orders?page=1");
           } else {
             const search = searchParams.get("s") || "";
-            dispatch(handlePageOrderFinished({ page: 1, search }));
-            dispatch(handlePageOrderUnfinished({ page: 1, search }));
+            dispatch(
+              handlePageOrderFinished({
+                page: 1,
+                search,
+                token: session?.user.refreshToken || "",
+              })
+            );
+            dispatch(
+              handlePageOrderUnfinished({
+                page: 1,
+                search,
+                token: session?.user.refreshToken || "",
+              })
+            );
           }
         }
       } catch (e) {
         console.error(e);
       }
     },
-    [dispatch, router, searchParams]
+    [dispatch, router, searchParams, session]
   );
 
   const handleStatusChange = useCallback(
     async (item_code: string) => {
       try {
-        const token = await getToken();
-
-        if (token.status != "success") {
-          console.error("Failed to cancel");
-          return;
-        }
+        const token = await getToken(session?.user.refreshToken || "");
 
         const response = await fetch(
           (process.env.NEXT_PUBLIC_API_URL as string) +
@@ -184,7 +186,7 @@ export default function OrdersPage() {
             method: "PUT",
             credentials: "include",
             headers: {
-              Authorization: "Bearer " + token.authorization.access_token,
+              Authorization: "Bearer " + token,
             },
           }
         );
@@ -201,8 +203,20 @@ export default function OrdersPage() {
           router.push("/orders?page=1");
         } else {
           const search = searchParams.get("s") || "";
-          dispatch(handlePageOrderFinished({ page: 1, search }));
-          dispatch(handlePageOrderUnfinished({ page: 1, search }));
+          dispatch(
+            handlePageOrderFinished({
+              page: 1,
+              search,
+              token: session?.user.refreshToken || "",
+            })
+          );
+          dispatch(
+            handlePageOrderUnfinished({
+              page: 1,
+              search,
+              token: session?.user.refreshToken || "",
+            })
+          );
         }
 
         withReactContent(Swal)
@@ -223,7 +237,7 @@ export default function OrdersPage() {
         console.error(e);
       }
     },
-    [dispatch, router, searchParams]
+    [dispatch, router, searchParams, session]
   );
 
   useEffect(() => {
@@ -239,10 +253,24 @@ export default function OrdersPage() {
       const search = searchParams.get("s") || "";
 
       dispatch(changePage(page));
-      dispatch(handlePageOrderUnfinished({ page, limit, search }));
-      dispatch(handlePageOrderFinished({ page, limit, search }));
+      dispatch(
+        handlePageOrderUnfinished({
+          page,
+          limit,
+          search,
+          token: session?.user.refreshToken || "",
+        })
+      );
+      dispatch(
+        handlePageOrderFinished({
+          page,
+          limit,
+          search,
+          token: session?.user.refreshToken || "",
+        })
+      );
     }
-  }, [searchParams, dispatch, isLoading]);
+  }, [searchParams, dispatch, isLoading, session]);
 
   return (
     <ModalContext.Provider

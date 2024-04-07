@@ -1,15 +1,16 @@
 "use server";
 
 import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
-import { getToken } from "./token";
-import { cookies } from "next/headers";
+import { getToken } from "./auth";
 
 export const getOrders = async ({
+  token,
   page = 1,
   limit = 5,
   status,
   search,
 }: {
+  token: string;
   page?: number;
   limit?: number;
   status: string;
@@ -18,11 +19,7 @@ export const getOrders = async ({
   data: OrderType[];
   pagination: PaginationType;
 }> => {
-  const refreshToken = await getToken();
-
-  if (refreshToken.status != "success") {
-    throw new Error("Failed to fetch data");
-  }
+  const refreshToken = await getToken(token);
 
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
@@ -31,7 +28,7 @@ export const getOrders = async ({
       method: "GET",
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${refreshToken.authorization.access_token}`,
+        Authorization: `Bearer ${refreshToken}`,
       },
       next: {
         revalidate: 60,
@@ -55,15 +52,20 @@ export const getOrders = async ({
   };
 };
 
-export const getOrderById = async (item_code: string, token: string = "") => {
+export const getOrderById = async (
+  item_code: string,
+  token: string = "",
+  refreshToken: string
+) => {
+  const newToken = await getToken(refreshToken);
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${item_code}?token=${token}`,
     {
       method: "GET",
       credentials: "include",
       headers: {
-        Cookie: ("refreshToken=" +
-          cookies().get("refreshToken")?.value) as string,
+        Authorization: "Bearer " + newToken,
       },
       cache: "no-store",
     }
@@ -83,12 +85,8 @@ export const getOrderById = async (item_code: string, token: string = "") => {
   return order.data;
 };
 
-export const getRegisterOrder = async () => {
-  const token = await getToken();
-
-  if (token.status !== "success") {
-    throw new Error("Failed to fetch");
-  }
+export const getRegisterOrder = async (refreshToken: string) => {
+  const token = await getToken(refreshToken);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/orders/register-order`,
@@ -96,9 +94,7 @@ export const getRegisterOrder = async () => {
       method: "GET",
       credentials: "include",
       headers: {
-        Authorization: "Bearer " + token.authorization.access_token,
-        Cookie: ("refreshToken=" +
-          cookies().get("refreshToken")?.value) as string,
+        Authorization: "Bearer " + token,
       },
     }
   );
@@ -111,12 +107,8 @@ export const getRegisterOrder = async () => {
   return register_order.data.register_order_token;
 };
 
-export const resetRegisterOrder = async () => {
-  const token = await getToken();
-
-  if (token.status !== "success") {
-    throw new Error("Failed to fetch");
-  }
+export const resetRegisterOrder = async (refreshToken: string) => {
+  const token = await getToken(refreshToken);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/orders/register-order`,
@@ -124,9 +116,7 @@ export const resetRegisterOrder = async () => {
       method: "POST",
       credentials: "include",
       headers: {
-        Authorization: "Bearer " + token.authorization.access_token,
-        Cookie: ("refreshToken=" +
-          cookies().get("refreshToken")?.value) as string,
+        Authorization: "Bearer " + token,
       },
     }
   );

@@ -5,11 +5,10 @@ import user_img from "@/assets/img/user-img.svg";
 import FormProfilPassword from "./FormProfilePassword";
 import Image from "next/image";
 import { FaExclamationCircle } from "react-icons/fa";
-import { getToken } from "@/services/token";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getUser } from "@/lib/redux/features/userSlice";
+import { getToken, getUser } from "@/services/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { useSession } from "next-auth/react";
 
 type Input = {
   name: string;
@@ -24,9 +23,8 @@ type Validate = {
 };
 
 const ProfilePage = () => {
-  const dispatch = useAppDispatch();
+  const { data: session, update: updateSession } = useSession();
   const imageRef = useRef<HTMLInputElement>(null);
-  const user = useAppSelector((state) => state.user);
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
   const [inputs, setInputs] = useState<Input>({
@@ -121,28 +119,26 @@ const ProfilePage = () => {
 
     if (onValidate(inputs)) return;
 
+    const refreshToken = session?.user.refreshToken || "";
+
     try {
-      const token = await getToken();
-
-      if (token.status != "success") {
-        console.error("Failed to input");
-        setInputLoading(false);
-        return;
-      }
-
+      const token = await getToken(refreshToken);
       const formData = new FormData();
       formData.append("name", inputs.name);
       formData.append("email", inputs.email);
       formData.append("image", (inputs.image as File) || "");
       formData.append("profile", "true");
       const response = await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/users/" + user.id,
+        (process.env.NEXT_PUBLIC_API_URL as string) +
+          "/api/users/" +
+          session?.user.id,
         {
           method: "POST",
           body: formData,
+          cache: "no-store",
           credentials: "include",
           headers: {
-            Authorization: "Bearer " + token.authorization.access_token,
+            Authorization: "Bearer " + token,
           },
         }
       );
@@ -150,7 +146,6 @@ const ProfilePage = () => {
       if (response.status != 200) {
         console.error("Failed to input");
         const result = await response.json();
-        console.log(result);
         if (typeof result.errors.email != "undefined") {
           setValidate((prev) => ({ ...prev, email: result.errors.email }));
         }
@@ -158,9 +153,10 @@ const ProfilePage = () => {
         setInputLoading(false);
         return;
       }
-      const result = await response.json();
 
-      dispatch(getUser());
+      const user = await getUser(refreshToken);
+
+      await updateSession({ ...user.data });
 
       withReactContent(Swal)
         .mixin({
@@ -207,21 +203,17 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
-
-  useEffect(() => {
     setInputs((prev) => ({
       ...prev,
-      name: user.name,
-      email: user.email,
+      name: session?.user.name || "",
+      email: session?.user.email || "",
     }));
-    if (user.image) {
+    if (session?.user.image) {
       setImagePreviewUrl(
-        process.env.NEXT_PUBLIC_API_URL + "/images/" + user.image
+        process.env.NEXT_PUBLIC_API_URL + "/images/" + session?.user.image
       );
     }
-  }, [user]);
+  }, [session]);
 
   return (
     <>
@@ -243,8 +235,8 @@ const ProfilePage = () => {
                     <Image
                       src={imagePreviewUrl ? imagePreviewUrl : user_img}
                       alt=""
-                      width={96}
-                      height={96}
+                      width={100}
+                      height={100}
                       className={`w-full h-full object-cover rounded-full`}
                       priority
                     />
@@ -351,7 +343,7 @@ const ProfilePage = () => {
               <FormProfilPassword
                 setChangePassword={setChangePassword}
                 isChangePassword={isChangePassword}
-                user={user}
+                session={session}
               />
             )}
           </div>

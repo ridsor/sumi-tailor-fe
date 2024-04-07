@@ -11,10 +11,9 @@ import Image from "next/image";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { getToken } from "@/services/token";
 import user_img from "@/assets/img/user-img.svg";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { clearUser, getUser } from "@/lib/redux/features/userSlice";
+import { signOut, useSession } from "next-auth/react";
+import { getToken, logout } from "@/services/auth";
 
 interface Props {
   isSidebar: boolean;
@@ -22,56 +21,29 @@ interface Props {
 }
 
 export default function Aside({ isSidebar, setSidebar }: Props) {
-  const dispatch = useAppDispatch();
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
+  const { data: session } = useSession();
 
-  const user = useAppSelector((state) => state.user);
   const [isLoadingLogout, setLoadingLogout] = useState<boolean>(false);
 
-  const handleLogout = useCallback(async () => {
+  const handleLogout = async () => {
     setLoadingLogout(true);
-
     try {
-      const token = await getToken();
+      const token = await getToken(session?.user.refreshToken || "");
 
-      if (token.status != "success") {
-        console.error("Failed to logout");
+      const res = await logout(token);
+      if (res.status !== "success") {
         setLoadingLogout(false);
         return;
       }
 
-      const response: Response = (await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/logout",
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${token.authorization.access_token}`,
-          },
-          cache: "no-store",
-        }
-      ).catch((err) => {
-        throw err;
-      })) as Response;
-
-      if (response.status != 200) {
-        console.error("Failed to logout");
-        setLoadingLogout(false);
-        return;
-      }
+      await signOut();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
-
-    dispatch(clearUser());
-    router.push("/");
     setLoadingLogout(false);
-  }, [router, dispatch]);
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
+  };
 
   return (
     <aside
@@ -130,15 +102,15 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 <div
                   className={`${
                     isSidebar ? "w-[70px]" : "w-[44px]"
-                  } user-img aspect-square mx-auto mb-1`}>
+                  } user-img aspect-square mx-auto mb-1 relative`}>
                   <Image
                     src={
-                      user.image
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${user.image}`
+                      session?.user.image
+                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${session?.user.image}`
                         : user_img
                     }
-                    width={70}
-                    height={70}
+                    width={100}
+                    height={100}
                     alt="user_img"
                     className="w-full h-full object-cover object-center rounded-full shadow-sm border-2 border-[#d7d3cc]"
                     priority
@@ -147,7 +119,7 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 {isSidebar ? (
                   <>
                     <div className="user-name text-center font-semibold">
-                      {user.name}
+                      {session?.user.name}
                     </div>
                   </>
                 ) : (

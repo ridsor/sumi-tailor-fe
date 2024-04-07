@@ -6,6 +6,7 @@ import { FaTrash } from "react-icons/fa6";
 import { AccountModalContext } from "./page";
 import { User } from "@/services/user";
 import { useAppSelector } from "@/lib/redux/hooks";
+import { useSession } from "next-auth/react";
 
 interface Props {
   user: User;
@@ -14,7 +15,7 @@ interface Props {
 }
 
 export default function AdminItem(props: Props) {
-  const user = useAppSelector((state) => state.user);
+  const { data: session } = useSession();
   const { toggleModal, setAccountInput, setInputAction } =
     useContext(AccountModalContext);
 
@@ -23,7 +24,7 @@ export default function AdminItem(props: Props) {
       <td className="px-2 text-center">{props.no}</td>
       <td className="px-2">{props.user.name}</td>
       <td className="px-2">{props.user.email}</td>
-      {user.role === "super admin" && (
+      {session?.user.role === "super admin" && (
         <td className="align-middle px-2">
           <div className="flex">
             <button

@@ -1,9 +1,9 @@
-"use client";
-
-import { usePathname } from "next/navigation";
+import { headers } from "next/headers";
 
 const Loading = () => {
-  const pathname = usePathname();
+  if (headers().get("referer") !== `${process.env.NEXT_PUBLIC_BASE_URL}/`) {
+    return;
+  }
 
   return (
     <main className="animate-pulse">

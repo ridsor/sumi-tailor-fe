@@ -3,7 +3,7 @@ import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ModalContext } from "./page";
-import { getToken } from "@/services/token";
+import { getToken } from "@/services/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import withReactContent from "sweetalert2-react-content";
@@ -12,6 +12,7 @@ import {
   handlePageOrderFinished,
   handlePageOrderUnfinished,
 } from "@/lib/redux/features/ordersSlice";
+import { useSession } from "next-auth/react";
 
 type Input = {
   name: string;
@@ -28,6 +29,7 @@ export default function OrderInput() {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data: session } = useSession();
 
   const { modal, toggleModal, inputAction, order } = useContext(ModalContext);
   const [InputLoading, setInputLoading] = useState<boolean>(false);
@@ -202,15 +204,9 @@ export default function OrderInput() {
       setInputLoading(true);
 
       try {
+        const token = await getToken(session?.user.refreshToken || "");
+
         if (inputAction == "edit") {
-          const token = await getToken();
-
-          if (token.status != "success") {
-            console.error("Failed to input");
-            setInputLoading(false);
-            return;
-          }
-
           const inputResponse = await fetch(
             (process.env.NEXT_PUBLIC_API_URL as string) +
               "/api/orders/" +
@@ -222,7 +218,7 @@ export default function OrderInput() {
               headers: {
                 "Content-Type": "application/json",
 
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token,
               },
             }
           );
@@ -248,6 +244,7 @@ export default function OrderInput() {
               credentials: "include",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
               },
             }
           );
@@ -272,8 +269,20 @@ export default function OrderInput() {
           router.push("/orders?page=1");
         } else {
           const search = searchParams.get("s") || "";
-          dispatch(handlePageOrderFinished({ page: 1, search }));
-          dispatch(handlePageOrderUnfinished({ page: 1, search }));
+          dispatch(
+            handlePageOrderFinished({
+              page: 1,
+              search,
+              token: session?.user.refreshToken || "",
+            })
+          );
+          dispatch(
+            handlePageOrderUnfinished({
+              page: 1,
+              search,
+              token: session?.user.refreshToken || "",
+            })
+          );
         }
 
         withReactContent(Swal)
@@ -298,6 +307,7 @@ export default function OrderInput() {
       setInputLoading(false);
     },
     [
+      session,
       order.item_code,
       inputs,
       onValidate,

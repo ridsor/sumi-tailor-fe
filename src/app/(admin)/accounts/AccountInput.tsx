@@ -5,10 +5,12 @@ import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AccountModalContext } from "./page";
-import { getToken } from "@/services/token";
+import { getToken, getUser } from "@/services/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 type Props = {
   active: boolean;
@@ -26,6 +28,7 @@ type Input = {
 type Validate = Input;
 
 export default function AdminInput(props: Props) {
+  const { data: session, update: updateSession } = useSession();
   const searchParams = useSearchParams();
   const { inputAction, accountInput } = useContext(AccountModalContext);
 
@@ -169,12 +172,7 @@ export default function AdminInput(props: Props) {
       setInputLoading(true);
 
       try {
-        const token = await getToken();
-
-        if (token.status != "success") {
-          setInputLoading(false);
-          return;
-        }
+        const token = await getToken(session?.user.refreshToken || "");
 
         if (inputAction == "create") {
           const body = JSON.stringify({
@@ -190,7 +188,7 @@ export default function AdminInput(props: Props) {
               credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token,
               },
               body,
             }
@@ -240,7 +238,7 @@ export default function AdminInput(props: Props) {
               credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token,
               },
               body,
             }
@@ -254,6 +252,16 @@ export default function AdminInput(props: Props) {
 
             setInputLoading(false);
             return;
+          }
+
+          if (session?.user.id == accountInput.id) {
+            updateSession({
+              name: inputs.name,
+              email: inputs.email,
+              image: session.user.image,
+              role: session.user.role,
+              refreshToken: session.user.refreshToken,
+            });
           }
         }
 
@@ -281,7 +289,15 @@ export default function AdminInput(props: Props) {
       setInputLoading(false);
       props.opencloseModal();
     },
-    [inputs, onValidate, props, inputAction, accountInput.id, searchParams]
+    [
+      inputs,
+      onValidate,
+      props,
+      inputAction,
+      accountInput.id,
+      searchParams,
+      session,
+    ]
   );
 
   const onChangeEventHanlder = useCallback(
