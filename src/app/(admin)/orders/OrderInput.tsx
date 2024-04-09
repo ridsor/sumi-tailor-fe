@@ -12,8 +12,9 @@ import {
   handlePageOrderFinished,
   handlePageOrderUnfinished,
 } from "@/lib/redux/features/ordersSlice";
+import { createOrder } from "@/services/orders";
 
-type Input = {
+export type OrderInput = {
   name: string;
   email: string;
   no_hp: string;
@@ -22,7 +23,7 @@ type Input = {
   description: string;
 };
 
-type Validate = Input;
+type Validate = OrderInput;
 
 export default function OrderInput() {
   const dispatch = useAppDispatch();
@@ -32,7 +33,7 @@ export default function OrderInput() {
   const { modal, toggleModal, inputAction, order } = useContext(ModalContext);
   const [InputLoading, setInputLoading] = useState<boolean>(false);
 
-  const [inputs, setInputs] = useState<Input>({
+  const [inputs, setInputs] = useState<OrderInput>({
     name: "",
     email: "",
     no_hp: "",
@@ -51,7 +52,14 @@ export default function OrderInput() {
   });
 
   const onValidate = useCallback(
-    ({ name, email, no_hp, address, price, description }: Input): boolean => {
+    ({
+      name,
+      email,
+      no_hp,
+      address,
+      price,
+      description,
+    }: OrderInput): boolean => {
       let result: boolean = false;
 
       // name
@@ -205,12 +213,6 @@ export default function OrderInput() {
         if (inputAction == "edit") {
           const token = await getToken();
 
-          if (token.status != "success") {
-            console.error("Failed to input");
-            setInputLoading(false);
-            return;
-          }
-
           const inputResponse = await fetch(
             (process.env.NEXT_PUBLIC_API_URL as string) +
               "/api/orders/" +
@@ -218,11 +220,9 @@ export default function OrderInput() {
             {
               method: "PUT",
               body: JSON.stringify(inputs),
-              credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token?.authorization.access_token,
               },
             }
           );
@@ -240,26 +240,21 @@ export default function OrderInput() {
             return;
           }
         } else if (inputAction == "create") {
-          const inputResponse = await fetch(
-            (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
-            {
-              method: "POST",
-              body: JSON.stringify(inputs),
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          const createResponse = await createOrder(inputs);
 
-          if (inputResponse.status != 201) {
-            const result = await inputResponse.json();
+          if (createResponse?.status != "success") {
             console.error("Failed to input");
-            if (typeof result.errors.email != "undefined") {
-              setValidate((prev) => ({ ...prev, email: result.errors.email }));
+            if (typeof createResponse?.errors.email != "undefined") {
+              setValidate((prev) => ({
+                ...prev,
+                email: createResponse?.errors.email,
+              }));
             }
-            if (typeof result.errors.no_hp != "undefined") {
-              setValidate((prev) => ({ ...prev, no_hp: result.errors.no_hp }));
+            if (typeof createResponse?.errors.no_hp != "undefined") {
+              setValidate((prev) => ({
+                ...prev,
+                no_hp: createResponse?.errors.no_hp,
+              }));
             }
             setInputLoading(false);
             return;

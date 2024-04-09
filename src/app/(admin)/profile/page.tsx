@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { getUser } from "@/lib/redux/features/userSlice";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import ProfileLoading from "./loading";
 
 type Input = {
   name: string;
@@ -117,9 +118,9 @@ const ProfilePage = () => {
 
   const onSubmitEventHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setInputLoading(true);
 
     if (onValidate(inputs)) return;
+    setInputLoading(true);
 
     try {
       const token = await getToken();

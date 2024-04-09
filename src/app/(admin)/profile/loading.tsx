@@ -1,4 +1,4 @@
-export default function loading() {
+export default function ProfileLoading() {
   return (
     <>
       <section className="animate-pulse py-16">
