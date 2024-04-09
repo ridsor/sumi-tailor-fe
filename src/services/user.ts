@@ -13,21 +13,16 @@ export interface User {
 export const getUsers = async (search: string = ""): Promise<User[]> => {
   const refreshToken = await getToken();
 
-  if (refreshToken.status != "success") {
-    throw new Error("Failed to fetch data");
-  }
-
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL + `/api/users?search=` + search,
     {
       method: "GET",
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${refreshToken.authorization.access_token}`,
-        Cookie: "refreshToken=" + cookies().get("refreshToken")?.value,
+        Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 0,
+        revalidate: 60,
       },
     }
   );

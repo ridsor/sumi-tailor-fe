@@ -3,6 +3,7 @@
 import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
 import { getToken } from "./token";
 import { cookies } from "next/headers";
+import { OrderInput } from "@/app/(admin)/orders/OrderInput";
 
 export const getOrders = async ({
   page = 1,
@@ -20,10 +21,6 @@ export const getOrders = async ({
 }> => {
   const refreshToken = await getToken();
 
-  if (refreshToken.status != "success") {
-    throw new Error("Failed to fetch data");
-  }
-
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
       `/api/orders?status=${status}&page=${page}&limit=${limit}&search=${search}`,
@@ -31,7 +28,7 @@ export const getOrders = async ({
       method: "GET",
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${refreshToken.authorization.access_token}`,
+        Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
         revalidate: 60,
@@ -56,14 +53,14 @@ export const getOrders = async ({
 };
 
 export const getOrderById = async (item_code: string, token: string = "") => {
+  const refreshToken = await getToken();
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${item_code}?token=${token}`,
     {
       method: "GET",
-      credentials: "include",
       headers: {
-        Cookie: ("refreshToken=" +
-          cookies().get("refreshToken")?.value) as string,
+        Authorization: "Bearer " + refreshToken.authorization.access_token,
       },
       cache: "no-store",
     }
@@ -137,4 +134,24 @@ export const resetRegisterOrder = async () => {
 
   const register_order = await res.json();
   return register_order.data.token;
+};
+
+export const createOrder = async (inputs: OrderInput) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
+    {
+      method: "POST",
+      body: JSON.stringify(inputs),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token?.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.json) {
+    return response.json();
+  }
 };

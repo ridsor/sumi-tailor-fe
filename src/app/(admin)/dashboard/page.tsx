@@ -40,12 +40,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 export default async function DashboardPage() {
   const dashboard = await getDashboard().catch((e) => console.error(e));
-  const order_total = dashboard.data.map(
-    (x: { order_total: number }) => x.order_total
-  );
-  const total_income = dashboard.data.map(
-    (x: { total_income: number }) => x.total_income
-  );
+  const order_total =
+    dashboard?.data.map((x: { order_total: number }) => x.order_total) || [];
+  const total_income =
+    dashboard?.data.map((x: { total_income: number }) => x.total_income) || [];
   const chartOrder: {
     options: ApexOptions;
     series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
@@ -105,6 +103,15 @@ export default async function DashboardPage() {
       },
     },
   };
+
+  const percentOrderTotal =
+    order_total[4] !== 0
+      ? Math.round((order_total[5] / order_total[4]) * 100) - 100
+      : 0;
+  const percentTotalIncome =
+    order_total[4] !== 0
+      ? Math.round((total_income[5] / total_income[4]) * 100) - 100
+      : 0;
 
   return (
     <>
@@ -168,10 +175,8 @@ export default async function DashboardPage() {
                                   100 >
                                   0 &&
                                 "+"}
-                              {order_total[4] !== 0
-                                ? Math.round(
-                                    (order_total[5] / order_total[4]) * 100
-                                  ) - 100
+                              {!isNaN(percentOrderTotal)
+                                ? percentOrderTotal
                                 : 0}
                               %
                             </span>
@@ -227,10 +232,8 @@ export default async function DashboardPage() {
                                   100 >
                                   0 &&
                                 "+"}
-                              {total_income[4] !== 0
-                                ? Math.round(
-                                    (total_income[5] / total_income[4]) * 100
-                                  ) - 100
+                              {!isNaN(percentTotalIncome)
+                                ? percentTotalIncome
                                 : 0}
                               %
                             </span>

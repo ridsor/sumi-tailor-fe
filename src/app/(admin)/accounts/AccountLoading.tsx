@@ -1,6 +1,3 @@
-import { FaEdit } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa6";
-
 export default function AccountLoading() {
   return (
     <div className="w-full overflow-x-auto">

@@ -2,7 +2,6 @@
 
 import AdminList from "./AccountList";
 import AdminInput from "./AccountInput";
-
 import {
   SetStateAction,
   createContext,
@@ -44,7 +43,7 @@ export const AccountModalContext = createContext<{
   setInputAction: () => {},
 });
 
-const AccountPage = () => {
+export default function AccountPage() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -78,7 +77,7 @@ const AccountPage = () => {
       .then((result) =>
         setUsers({
           loading: false,
-          data: result,
+          data: result || [],
         })
       )
       .catch((e) => setUsers({ loading: false, data: [] }));
@@ -126,7 +125,7 @@ const AccountPage = () => {
             <h1 className="text-3xl font-one mb-3 tracking-wide font-semibold">
               Admin
             </h1>
-            {user.role === "super admin" && (
+            {user.role === "super admin" && isLoading && (
               <button
                 aria-label="Add account"
                 onClick={() => {
@@ -161,6 +160,4 @@ const AccountPage = () => {
       </section>
     </AccountModalContext.Provider>
   );
-};
-
-export default AccountPage;
+}
