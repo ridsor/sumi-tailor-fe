@@ -1,13 +1,8 @@
 "use client";
 
+import { InputsLogin, login } from "@/services/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-
-interface InputsLogin {
-  email: string;
-  password: string;
-  remember_me: boolean;
-}
 
 export default function FormLogin() {
   const router = useRouter();
@@ -37,33 +32,16 @@ export default function FormLogin() {
     }
 
     try {
-      const login = await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(inputsLogin),
-          credentials: "include",
-          cache: "no-store",
-        }
-      )
-        .then((res) => res.json())
-        .catch((err) => {
-          throw err;
-        });
-
-      if (login.status != "success") {
+      const res = await login(inputsLogin);
+      if (res?.status != "success") {
         setValidate({ email: "Email", password: "Password" });
-        console.log(login.message);
+        console.log(res.message);
         setLoading(false);
         return;
       }
 
       const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
       router.push(callbackUrl);
-      1;
     } catch (e) {
       console.error(e);
       setLoading(false);

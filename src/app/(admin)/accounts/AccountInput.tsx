@@ -9,6 +9,8 @@ import { getToken } from "@/services/token";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
+import { getUser } from "@/lib/redux/features/userSlice";
+import { useAppDispatch } from "@/lib/redux/hooks";
 
 type Props = {
   active: boolean;
@@ -27,6 +29,7 @@ type Validate = Input;
 
 export default function AdminInput(props: Props) {
   const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
   const { inputAction, accountInput } = useContext(AccountModalContext);
 
   const [inputs, setInputs] = useState<Input>({
@@ -170,12 +173,7 @@ export default function AdminInput(props: Props) {
 
       try {
         const token = await getToken();
-
-        if (token.status != "success") {
-          setInputLoading(false);
-          return;
-        }
-
+        
         if (inputAction == "create") {
           const body = JSON.stringify({
             name: inputs.name,
@@ -187,10 +185,9 @@ export default function AdminInput(props: Props) {
             (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/register",
             {
               method: "POST",
-              credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token?.authorization.access_token,
               },
               body,
             }
@@ -237,10 +234,9 @@ export default function AdminInput(props: Props) {
               accountInput.id,
             {
               method: "POST",
-              credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + token.authorization.access_token,
+                Authorization: "Bearer " + token?.authorization.access_token,
               },
               body,
             }
@@ -255,6 +251,8 @@ export default function AdminInput(props: Props) {
             setInputLoading(false);
             return;
           }
+
+          dispatch(getUser());
         }
 
         withReactContent(Swal)
@@ -281,7 +279,15 @@ export default function AdminInput(props: Props) {
       setInputLoading(false);
       props.opencloseModal();
     },
-    [inputs, onValidate, props, inputAction, accountInput.id, searchParams]
+    [
+      inputs,
+      onValidate,
+      props,
+      inputAction,
+      accountInput.id,
+      searchParams,
+      dispatch,
+    ]
   );
 
   const onChangeEventHanlder = useCallback(

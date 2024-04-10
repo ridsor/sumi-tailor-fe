@@ -15,6 +15,7 @@ import { getToken } from "@/services/token";
 import user_img from "@/assets/img/user-img.svg";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { clearUser, getUser } from "@/lib/redux/features/userSlice";
+import { logout } from "@/services/auth";
 
 interface Props {
   isSidebar: boolean;
@@ -33,29 +34,9 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
     setLoadingLogout(true);
 
     try {
-      const token = await getToken();
+      const response = await logout();
 
-      if (token.status != "success") {
-        console.error("Failed to logout");
-        setLoadingLogout(false);
-        return;
-      }
-
-      const response: Response = (await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/logout",
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${token.authorization.access_token}`,
-          },
-          cache: "no-store",
-        }
-      ).catch((err) => {
-        throw err;
-      })) as Response;
-
-      if (response.status != 200) {
+      if (response?.status != "success") {
         console.error("Failed to logout");
         setLoadingLogout(false);
         return;

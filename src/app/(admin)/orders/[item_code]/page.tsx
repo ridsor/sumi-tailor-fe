@@ -2,7 +2,7 @@ import { getOrderById } from "@/services/orders";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import OrderConfirmation from "./OrderConfirmation";
-import { getUser } from "@/services/token";
+import { fetchAuth } from "@/services/auth";
 
 interface Props {
   params: { item_code: string };
@@ -51,7 +51,8 @@ export const generateMetadata = async ({
 };
 
 export default async function DetailOrder(props: Props) {
-  const user = await getUser().catch((e) => console.error(e));
+  const user = await fetchAuth().catch((e) => console.error(e));
+  console.log(user);
 
   const order = await getOrderById(
     props.params.item_code,
@@ -130,7 +131,7 @@ export default async function DetailOrder(props: Props) {
                   : " -"}
               </div>
             </div>
-            {user?.ok && (
+            {user?.status === "success" && (
               <OrderConfirmation item_code={props.params.item_code} />
             )}
           </div>
