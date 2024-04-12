@@ -7,7 +7,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "api.ridsor.my.id",
+        hostname: "sumitailor.ridsor.my.id",
         port: "",
         pathname: "/**",
       },
