@@ -3,6 +3,7 @@
   display: flex !important;
   flex-direction: column;
 }
+
 .slick-list {
   order: 2;
 }

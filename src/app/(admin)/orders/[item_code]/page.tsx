@@ -52,13 +52,11 @@ export const generateMetadata = async ({
 
 export default async function DetailOrder(props: Props) {
   const user = await fetchAuth().catch((e) => console.error(e));
-  console.log(user);
 
   const order = await getOrderById(
     props.params.item_code,
     props.searchParams.token as string
   ).catch((e) => {
-    console.error(e);
     if (e.message === "Authorization") {
       redirect("/");
     } else {

@@ -173,7 +173,6 @@ export default function AdminInput(props: Props) {
 
       try {
         const token = await getToken();
-
         if (inputAction == "create") {
           const body = JSON.stringify({
             name: inputs.name,

@@ -12,9 +12,9 @@ export const getToken = async () => {
       },
       cache: "no-store",
     }
-  ).then((res) => {
-    return res.json();
-  });
+  );
 
-  return response;
+  if (response.ok) {
+    return response.json();
+  }
 };
