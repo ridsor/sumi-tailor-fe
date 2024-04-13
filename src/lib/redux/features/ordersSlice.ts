@@ -136,6 +136,9 @@ const ordersSlice = createSlice({
       state.ordersFinished.pagination.page = action.payload;
       state.ordersUnfinished.pagination.page = action.payload;
     },
+    changeOrdersItemLoading(state, action: PayloadAction<boolean>) {
+      state.ordersItemLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -181,6 +184,6 @@ const ordersSlice = createSlice({
   },
 });
 
-export const { changePage } = ordersSlice.actions;
+export const { changePage, changeOrdersItemLoading } = ordersSlice.actions;
 
 export default ordersSlice.reducer;
