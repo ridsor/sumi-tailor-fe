@@ -41,13 +41,6 @@ export default function OrderList(props: Props) {
         <OrderLoading />
       ) : (
         <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
-          <Pagination
-            totalPages={Math.ceil(
-              Number(ordersUnfinished.pagination.total) /
-                Number(ordersUnfinished.pagination.limit)
-            )}
-            page={Number(ordersUnfinished.pagination.page)}
-          />
           {ordersItemLoading ? (
             <OrdersItemLoading />
           ) : ordersUnfinished.data.length > 0 ? (
@@ -75,13 +68,6 @@ export default function OrderList(props: Props) {
         <OrderLoading />
       ) : (
         <div className="orders finished !flex flex-col gap-2 pb-10 w-full p-1">
-          <Pagination
-            totalPages={Math.ceil(
-              Number(ordersFinished.pagination.total) /
-                Number(ordersFinished.pagination.limit)
-            )}
-            page={Number(ordersFinished.pagination.page)}
-          />
           {ordersItemLoading ? (
             <OrdersItemLoading />
           ) : ordersFinished.data.length > 0 ? (

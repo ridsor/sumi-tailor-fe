@@ -81,19 +81,19 @@ export default function OrderItem(props: Props) {
       <div className="description order-4  text-[13px] self-center w-full lg:w-0 lg:flex-1 p-2 lg:p-0 lg:py-2.5 lg:border-t-0 border-t">
         {props.order.description ? props.order.description : "-"}
       </div>
-      <div className="order-3 lg:order-6 text-lg self-center ml-auto lg:mx-6 p-2 flex">
+      <div className="order-3 lg:order-6 text-lg self-center ml-auto lg:mx-6 p-2 flex relative">
         <button
           className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative z-20"
           aria-label="Menu Order"
           onClick={handleBtnActionOrder}>
           <FaEllipsisVertical />
         </button>
-        <div className="menu-item absolute z-30 top-[calc(100%-.8rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in">
-          <ul className="bg-white p-1 gap-1 flex flex-col text-[12px] border rounded-md text-[#172838]">
+        <div className="menu-item absolute z-30 top-[calc(100%)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in">
+          <ul className="bg-white gap-1 flex flex-col text-[12px] border rounded-md text-[#172838]">
             {props.order.status == "isFinished" ? (
               <li>
                 <button
-                  className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
+                  className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
                   onClick={() => props.onStatusChange(props.order.item_code)}>
                   <FaArrowRotateLeft />
                   Belum Selesai
@@ -102,7 +102,7 @@ export default function OrderItem(props: Props) {
             ) : (
               <li>
                 <button
-                  className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
+                  className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
                   onClick={() => props.onStatusChange(props.order.item_code)}>
                   <FaCircleCheck />
                   Selesai
@@ -111,7 +111,7 @@ export default function OrderItem(props: Props) {
             )}
             <li>
               <button
-                className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
+                className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
                 onClick={() => {
                   toggleModal();
                   setInputAction("edit");
@@ -138,7 +138,7 @@ export default function OrderItem(props: Props) {
             {user.role === "super admin" && (
               <li>
                 <button
-                  className="hover:bg-[#F8F8F8] px-2.5 w-full text-left flex items-center gap-x-2"
+                  className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
                   onClick={() => props.onCancel(props.order.item_code)}>
                   <FaTimesCircle />
                   Batalkan
