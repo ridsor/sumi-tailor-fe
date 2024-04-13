@@ -122,7 +122,6 @@ export default function OrdersPage() {
 
         if (result.isConfirmed) {
           dispatch(changeOrdersItemLoading(true));
-
           const token = await getToken();
 
           if (token.status != "success") {
@@ -170,7 +169,6 @@ export default function OrdersPage() {
     async (item_code: string) => {
       try {
         dispatch(changeOrdersItemLoading(true));
-
         const token = await getToken();
 
         if (token.status != "success") {

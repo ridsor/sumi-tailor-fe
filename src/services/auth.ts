@@ -41,7 +41,6 @@ export const login = async (inputs: InputsLogin) => {
 
 export const logout = async () => {
   cookies().delete("refreshToken");
-
   const token = await getToken();
 
   const response = await fetch(
