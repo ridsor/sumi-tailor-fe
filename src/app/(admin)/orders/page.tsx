@@ -170,7 +170,7 @@ export default function OrdersPage() {
     async (item_code: string) => {
       try {
         dispatch(changeOrdersItemLoading(true));
-        
+
         const token = await getToken();
 
         if (token.status != "success") {
