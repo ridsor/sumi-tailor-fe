@@ -60,7 +60,7 @@ export const getOrderById = async (item_code: string, token: string = "") => {
     {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + refreshToken.authorization.access_token,
+        Authorization: "Bearer " + refreshToken?.authorization.access_token,
       },
       cache: "no-store",
     }
