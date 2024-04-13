@@ -57,7 +57,6 @@ export default async function DetailOrder(props: Props) {
     props.params.item_code,
     props.searchParams.token as string
   ).catch((e) => {
-    console.error(e, "tes");
     if (e.message === "Authorization") {
       redirect("/");
     } else {
