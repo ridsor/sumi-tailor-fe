@@ -92,7 +92,7 @@ export default function OrderConfirmation(props: Props) {
     <button
       className="py-3 px-6 bg-two text-white mt-5 rounded-md font-bold tracking-wider uppercase mx-auto block"
       onClick={handleOrderConfirmation}>
-      Konfirmasi
+      {!loading ? "Konfirmasi" : "Loading..."}
     </button>
   );
 }
