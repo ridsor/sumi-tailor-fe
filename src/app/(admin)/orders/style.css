@@ -6,6 +6,10 @@
 .slick-list {
   order: 2;
 }
+.orders {
+  position: relative;
+}
+
 .slick-dots {
   margin-bottom: 28px;
   border-radius: 0.375rem /* 6px */;

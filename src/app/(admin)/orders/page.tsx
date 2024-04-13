@@ -13,10 +13,11 @@ import OrderList from "@/app/(admin)/orders/OrderList";
 import TokenModal from "./TokenModal";
 import OrdedrSearch from "./OrderSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { useAppDispatch } from "@/lib/redux/hooks";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import {
+  changeOrdersItemLoading,
   changePage,
   handlePageOrderFinished,
   handlePageOrderUnfinished,
@@ -62,8 +63,6 @@ export default function OrdersPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
-
-  const orders = useAppSelector((state) => state.orders);
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
@@ -122,6 +121,7 @@ export default function OrdersPage() {
           });
 
         if (result.isConfirmed) {
+          dispatch(changeOrdersItemLoading(true));
           const token = await getToken();
 
           if (token.status != "success") {
@@ -168,6 +168,7 @@ export default function OrdersPage() {
   const handleStatusChange = useCallback(
     async (item_code: string) => {
       try {
+        dispatch(changeOrdersItemLoading(true));
         const token = await getToken();
 
         if (token.status != "success") {

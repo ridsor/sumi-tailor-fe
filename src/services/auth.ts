@@ -40,6 +40,7 @@ export const login = async (inputs: InputsLogin) => {
 };
 
 export const logout = async () => {
+  cookies().delete("refreshToken");
   const token = await getToken();
 
   const response = await fetch(
@@ -55,7 +56,6 @@ export const logout = async () => {
   );
 
   if (response.ok) {
-    cookies().delete("refreshToken");
     return response.json();
   }
 };
