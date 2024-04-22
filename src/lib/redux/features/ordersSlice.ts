@@ -8,7 +8,7 @@ export interface OrderType {
   no_hp: "";
   address: "";
   price: number | null;
-  description: string | null;
+  note: string;
   status: string;
   created_at: string | number;
   updated_at: string | number;
