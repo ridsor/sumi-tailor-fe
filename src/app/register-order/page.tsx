@@ -84,9 +84,9 @@ export default function RegisterOrderPage() {
 
     // description
     if (!inputs.note) {
-      result.push("Deskripsi tidak boleh kosong");
+      result.push("Catatan tidak boleh kosong");
     } else if (inputs.note.length >= 1000) {
-      result.push("Deskripsi harus maks 1000 karakter");
+      result.push("Catatan harus maks 1000 karakter");
     }
 
     return result;

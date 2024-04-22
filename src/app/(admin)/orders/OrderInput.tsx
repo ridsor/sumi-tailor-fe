@@ -164,13 +164,13 @@ export default function OrderInput() {
       if (!note) {
         setValidate((prev) => ({
           ...prev,
-          note: "Deskripsi tidak boleh kosong",
+          note: "Catatan tidak boleh kosong",
         }));
         result = true;
       } else if (note.length > 1000) {
         setValidate((prev) => ({
           ...prev,
-          note: "Deskripsi harus memiliki maks 1000 karakter",
+          note: "Catatan harus memiliki maks 1000 karakter",
         }));
         result = true;
       } else {
@@ -482,8 +482,8 @@ export default function OrderInput() {
           </div>
           <div className="form-input mb-3 relative">
             <textarea
-              name="description"
-              placeholder="Deskripsi"
+              name="note"
+              placeholder="Catatan"
               rows={3}
               className={`${
                 validate.note ? "border-fail pr-11" : ""
