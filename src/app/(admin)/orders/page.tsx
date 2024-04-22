@@ -31,7 +31,7 @@ interface OrderInput {
   no_hp: string;
   address: string;
   price: string;
-  description: string;
+  note: string;
 }
 
 export const ModalContext = createContext<{
@@ -53,7 +53,7 @@ export const ModalContext = createContext<{
     no_hp: "",
     address: "",
     price: "",
-    description: "",
+    note: "",
   },
   setOrder: () => {},
 });
@@ -76,7 +76,7 @@ export default function OrdersPage() {
     no_hp: "",
     address: "",
     price: "",
-    description: "",
+    note: "",
   });
 
   const toggleOrderModal = useCallback(() => {
@@ -122,7 +122,7 @@ export default function OrdersPage() {
 
         if (result.isConfirmed) {
           dispatch(changeOrdersItemLoading(true));
-          
+
           const token = await getToken();
 
           if (token.status != "success") {
@@ -170,7 +170,7 @@ export default function OrdersPage() {
     async (item_code: string) => {
       try {
         dispatch(changeOrdersItemLoading(true));
-        
+
         const token = await getToken();
 
         if (token.status != "success") {
@@ -273,7 +273,7 @@ export default function OrdersPage() {
                     no_hp: "",
                     address: "",
                     price: "",
-                    description: "",
+                    note: "",
                   });
                 }}
                 className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
