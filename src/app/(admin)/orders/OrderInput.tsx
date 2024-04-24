@@ -105,13 +105,13 @@ export default function OrderInput() {
       if (!no_hp) {
         setValidate((prev) => ({
           ...prev,
-          no_hp: "Kategori tidak boleh kosong",
+          no_hp: "No HP tidak boleh kosong",
         }));
         result = true;
       } else if (no_hp.length > 100) {
         setValidate((prev) => ({
           ...prev,
-          no_hp: "Kategori harus memiliki maks 100 karakter",
+          no_hp: "No HP harus memiliki maks 100 karakter",
         }));
         result = true;
       } else {
@@ -125,13 +125,13 @@ export default function OrderInput() {
       if (!address) {
         setValidate((prev) => ({
           ...prev,
-          address: "Kategori tidak boleh kosong",
+          address: "Alamat tidak boleh kosong",
         }));
         result = true;
       } else if (address.length > 1000) {
         setValidate((prev) => ({
           ...prev,
-          address: "Kategori harus memiliki maks 1000 karakter",
+          address: "Alamat harus memiliki maks 1000 karakter",
         }));
         result = true;
       } else {
