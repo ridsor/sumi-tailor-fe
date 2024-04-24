@@ -100,7 +100,7 @@ export default function TokenModal(props: Props) {
             <div className="py-4 flex items-center justify-center gap-x-3">
               <span
                 id="order_register_url_token"
-                className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical]">
+                className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical] text-blue-600">
                 {orderRegisterToken}
               </span>
               <button

@@ -239,26 +239,26 @@ export default function RegisterOrderPage() {
                     />
                   )}
                 </div>
-                <h2 className="text-fail text-center mt-3">WARNING !!!</h2>
-                <p className="text-center text-base">
-                  Simpan dan Gunakan qrcode ini untuk memeriksa/mengambil
-                  pesanan Anda.
-                </p>
-                <button
-                  className="px-3 py-2 my-3 bg-[#444] hover:bg-[#333] border text-white rounded-md block mx-auto mt-3"
-                  onClick={handleDownloadQRCode}>
-                  Download
-                </button>
                 <div className="mb-4 flex items-center justify-center gap-x-3 px-4">
                   <span
                     id="order_register_url_token"
-                    className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical]">
+                    className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical] text-blue-600">
                     {orderToken}
                   </span>
                   <button onClick={copyTokenURL} className="text-xl">
                     <FaCopy />
                   </button>
                 </div>
+                <h2 className="text-fail text-center">WARNING !!!</h2>
+                <p className="text-center text-base">
+                  Simpan dan Gunakan qrcode/link ini untuk memeriksa/mengambil
+                  pesanan Anda.
+                </p>
+                <button
+                  className="px-3 py-2 my-3 bg-[#444] hover:bg-[#333] border text-white rounded-md block mx-auto mb-4"
+                  onClick={handleDownloadQRCode}>
+                  Download
+                </button>
               </article>
             </div>
           </Modal>

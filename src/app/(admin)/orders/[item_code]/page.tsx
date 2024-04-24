@@ -117,9 +117,7 @@ export default async function DetailOrder(props: Props) {
             </div>
           </div>
           <div className="p-4 border-y-8">
-            <div
-              className="border rounded-md py-2 px-3 border-five"
-              id="description">
+            <div className="border rounded-md py-2 px-3 border-five" id="note">
               <p>{order.note}</p>
               <hr className="my-3 border-five" />
               <div className="text-[12px]">Total Harga</div>
