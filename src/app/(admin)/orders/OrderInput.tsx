@@ -20,7 +20,7 @@ export type OrderInput = {
   no_hp: string;
   address: string;
   price: string;
-  description: string;
+  note: string;
 };
 
 type Validate = OrderInput;
@@ -39,7 +39,7 @@ export default function OrderInput() {
     no_hp: "",
     address: "",
     price: "",
-    description: "",
+    note: "",
   });
 
   const [validate, setValidate] = useState<Validate>({
@@ -48,18 +48,11 @@ export default function OrderInput() {
     no_hp: "",
     address: "",
     price: "",
-    description: "",
+    note: "",
   });
 
   const onValidate = useCallback(
-    ({
-      name,
-      email,
-      no_hp,
-      address,
-      price,
-      description,
-    }: OrderInput): boolean => {
+    ({ name, email, no_hp, address, price, note }: OrderInput): boolean => {
       let result: boolean = false;
 
       // name
@@ -112,13 +105,13 @@ export default function OrderInput() {
       if (!no_hp) {
         setValidate((prev) => ({
           ...prev,
-          no_hp: "Kategori tidak boleh kosong",
+          no_hp: "No HP tidak boleh kosong",
         }));
         result = true;
       } else if (no_hp.length > 100) {
         setValidate((prev) => ({
           ...prev,
-          no_hp: "Kategori harus memiliki maks 100 karakter",
+          no_hp: "No HP harus memiliki maks 100 karakter",
         }));
         result = true;
       } else {
@@ -132,13 +125,13 @@ export default function OrderInput() {
       if (!address) {
         setValidate((prev) => ({
           ...prev,
-          address: "Kategori tidak boleh kosong",
+          address: "Alamat tidak boleh kosong",
         }));
         result = true;
-      } else if (address.length > 100) {
+      } else if (address.length > 1000) {
         setValidate((prev) => ({
           ...prev,
-          address: "Kategori harus memiliki maks 100 karakter",
+          address: "Alamat harus memiliki maks 1000 karakter",
         }));
         result = true;
       } else {
@@ -168,22 +161,22 @@ export default function OrderInput() {
         }));
       }
 
-      if (!description) {
+      if (!note) {
         setValidate((prev) => ({
           ...prev,
-          description: "Deskripsi tidak boleh kosong",
+          note: "Catatan tidak boleh kosong",
         }));
         result = true;
-      } else if (description.length > 500) {
+      } else if (note.length > 1000) {
         setValidate((prev) => ({
           ...prev,
-          description: "Deskripsi harus memiliki maks 100 karakter",
+          note: "Catatan harus memiliki maks 1000 karakter",
         }));
         result = true;
       } else {
         setValidate((prev) => ({
           ...prev,
-          description: "",
+          note: "",
         }));
       }
 
@@ -202,7 +195,7 @@ export default function OrderInput() {
         no_hp: "",
         address: "",
         price: "",
-        description: "",
+        note: "",
       });
 
       if (onValidate(inputs)) return;
@@ -321,7 +314,7 @@ export default function OrderInput() {
       no_hp: "",
       address: "",
       price: "",
-      description: "",
+      note: "",
     });
 
     setInputs({
@@ -330,7 +323,7 @@ export default function OrderInput() {
       no_hp: order.no_hp,
       address: order.address,
       price: order.price,
-      description: order.description,
+      note: order.note,
     });
 
     if (inputAction == "create")
@@ -340,7 +333,7 @@ export default function OrderInput() {
         no_hp: "",
         address: "",
         price: "",
-        description: "",
+        note: "",
       });
   }, [order, inputAction]);
 
@@ -489,15 +482,15 @@ export default function OrderInput() {
           </div>
           <div className="form-input mb-3 relative">
             <textarea
-              name="description"
-              placeholder="Deskripsi"
+              name="note"
+              placeholder="Catatan"
               rows={3}
               className={`${
-                validate.description ? "border-fail pr-11" : ""
+                validate.note ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
               onChange={onChangeEventHandler}
-              value={inputs.description}></textarea>
-            {validate.description ? (
+              value={inputs.note}></textarea>
+            {validate.note ? (
               <div className="absolute top-0 right-0 left-0 bottom-0">
                 <button
                   type={"button"}
@@ -505,7 +498,7 @@ export default function OrderInput() {
                   <FaExclamationCircle />
                 </button>
                 <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.description}</span>
+                  <span>{validate.note}</span>
                 </div>
               </div>
             ) : (

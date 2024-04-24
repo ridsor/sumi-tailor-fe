@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import OrderConfirmation from "./OrderConfirmation";
 import { fetchAuth } from "@/services/auth";
+import { OrderType } from "@/lib/redux/features/ordersSlice";
 
 interface Props {
   params: { item_code: string };
@@ -53,7 +54,7 @@ export const generateMetadata = async ({
 export default async function DetailOrder(props: Props) {
   const user = await fetchAuth().catch((e) => console.error(e));
 
-  const order = await getOrderById(
+  const order: OrderType = await getOrderById(
     props.params.item_code,
     props.searchParams.token as string
   ).catch((e) => {
@@ -116,10 +117,8 @@ export default async function DetailOrder(props: Props) {
             </div>
           </div>
           <div className="p-4 border-y-8">
-            <div
-              className="border rounded-md py-2 px-3 border-five"
-              id="description">
-              <p>{order.description}</p>
+            <div className="border rounded-md py-2 px-3 border-five" id="note">
+              <p>{order.note}</p>
               <hr className="my-3 border-five" />
               <div className="text-[12px]">Total Harga</div>
               <div className="font-bold" id="price">

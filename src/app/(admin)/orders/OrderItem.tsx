@@ -79,7 +79,7 @@ export default function OrderItem(props: Props) {
         </div>
       </div>
       <div className="description order-4  text-[13px] self-center w-full lg:w-0 lg:flex-1 p-2 lg:p-0 lg:py-2.5 lg:border-t-0 border-t">
-        {props.order.description ? props.order.description : "-"}
+        {props.order.note ? props.order.note : "-"}
       </div>
       <div className="order-3 lg:order-6 text-lg self-center ml-auto lg:mx-6 p-2 flex relative">
         <button
@@ -125,10 +125,7 @@ export default function OrderItem(props: Props) {
                       props.order.price === null
                         ? ""
                         : props.order.price.toString(),
-                    description:
-                      props.order.description === null
-                        ? ""
-                        : props.order.description,
+                    note: props.order.note === null ? "" : props.order.note,
                   });
                 }}>
                 <FaPenToSquare />

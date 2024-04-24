@@ -17,7 +17,7 @@ interface RegisterOrderInput {
   no_hp: string;
   address: string;
   price: string;
-  description: string;
+  note: string;
 }
 
 export default function RegisterOrderPage() {
@@ -32,7 +32,7 @@ export default function RegisterOrderPage() {
     no_hp: "",
     address: "",
     price: "",
-    description: "",
+    note: "",
   });
   const [validate, setValidate] = useState<string[]>([]);
   const [isInputLoading, setInputLoading] = useState<boolean>(false);
@@ -71,8 +71,8 @@ export default function RegisterOrderPage() {
     // address
     if (!inputs.address) {
       result.push("Alamat tidak boleh kosong");
-    } else if (inputs.address.length >= 500) {
-      result.push("Alamat harus maks 500 karakter");
+    } else if (inputs.address.length >= 1000) {
+      result.push("Alamat harus maks 1000 karakter");
     }
 
     // price
@@ -83,10 +83,10 @@ export default function RegisterOrderPage() {
     }
 
     // description
-    if (!inputs.description) {
-      result.push("Deskripsi tidak boleh kosong");
-    } else if (inputs.description.length >= 500) {
-      result.push("Deskripsi harus maks 500 karakter");
+    if (!inputs.note) {
+      result.push("Catatan tidak boleh kosong");
+    } else if (inputs.note.length >= 1000) {
+      result.push("Catatan harus maks 1000 karakter");
     }
 
     return result;
@@ -179,7 +179,7 @@ export default function RegisterOrderPage() {
           no_hp: "",
           address: "",
           price: "",
-          description: "",
+          note: "",
         });
       } catch (e) {
         console.log(e);
@@ -214,7 +214,7 @@ export default function RegisterOrderPage() {
           <Modal active={isModal} openclose={toggleModal}>
             <div className="container max-w-full">
               <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
-                QR Code
+                QR Code Pesanan Anda
                 <button
                   className="absolute top-1/2 -translate-y-1/2 right-3"
                   onClick={() => toggleModal()}>
@@ -239,21 +239,26 @@ export default function RegisterOrderPage() {
                     />
                   )}
                 </div>
-                <button
-                  className="px-3 py-2 my-3 bg-[#444] hover:bg-[#333] border text-white rounded-md block mx-auto mt-3"
-                  onClick={handleDownloadQRCode}>
-                  Download
-                </button>
                 <div className="mb-4 flex items-center justify-center gap-x-3 px-4">
                   <span
                     id="order_register_url_token"
-                    className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical]">
+                    className="fleading- text-ellipsis w-full overflow-hidden [display:-webkit-box] [-webkit-line-clamp:1] [-webkit-box-orient:vertical] text-blue-600">
                     {orderToken}
                   </span>
                   <button onClick={copyTokenURL} className="text-xl">
                     <FaCopy />
                   </button>
                 </div>
+                <h2 className="text-fail text-center">WARNING !!!</h2>
+                <p className="text-center text-base">
+                  Simpan dan Gunakan qrcode/link ini untuk memeriksa/mengambil
+                  pesanan Anda.
+                </p>
+                <button
+                  className="px-3 py-2 my-3 bg-[#444] hover:bg-[#333] border text-white rounded-md block mx-auto mb-4"
+                  onClick={handleDownloadQRCode}>
+                  Download
+                </button>
               </article>
             </div>
           </Modal>
@@ -267,7 +272,7 @@ export default function RegisterOrderPage() {
               priority
             />
             <h1 className="text-[#21334A] text-lg font-one font-semibold mb-3">
-              MENDAFTAR PESANAN
+              DAFTAR PESANAN
             </h1>
             {validate.length > 0 && (
               <div
@@ -361,23 +366,23 @@ export default function RegisterOrderPage() {
             </div>
             <div className="form-input border border-[#DDDDDD] rounded-sm relative md:mt-3 mb-5">
               <label
-                htmlFor="description"
+                htmlFor="note"
                 className="text-[#21334A] text-sm font-bold absolute top-0 pt-1 left-3 bg-white right-0">
-                DESKRIPSI<span className="text-fail">*</span>
+                CATATAN<span className="text-fail">*</span>
               </label>
               <textarea
                 rows={3}
                 className="font-medium h-full w-full rounded-sm px-3 pt-7 pb-3 focus:[box-shadow:0_0_3px_3px_rgba(68,94,54,.7)] outline-none"
-                name="description"
+                name="note"
                 onChange={handleChange}
-                value={inputs.description}
-                id="description"></textarea>
+                value={inputs.note}
+                id="note"></textarea>
             </div>
             <div className="form-input">
               <button
                 type="submit"
                 className="py-2 px-3 bg-two rounded-sm text-white block w-full font-semibold font-two text-lg hover:bg-four  focus:ring focus:ring-[rgba(179,203,166,.5)]">
-                {isInputLoading ? "Loading..." : "SIMPAN"}
+                {isInputLoading ? "Loading..." : "DAFTAR"}
               </button>
             </div>
           </form>
