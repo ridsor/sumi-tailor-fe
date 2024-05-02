@@ -32,6 +32,7 @@ interface OrderInput {
   address: string;
   price: string;
   note: string;
+  image: string;
 }
 
 export const ModalContext = createContext<{
@@ -54,6 +55,7 @@ export const ModalContext = createContext<{
     address: "",
     price: "",
     note: "",
+    image: "",
   },
   setOrder: () => {},
 });
@@ -77,6 +79,7 @@ export default function OrdersPage() {
     address: "",
     price: "",
     note: "",
+    image: "",
   });
 
   const toggleOrderModal = useCallback(() => {
@@ -274,6 +277,7 @@ export default function OrdersPage() {
                     address: "",
                     price: "",
                     note: "",
+                    image: "",
                   });
                 }}
                 className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">

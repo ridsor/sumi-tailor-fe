@@ -21,6 +21,7 @@ export type OrderInput = {
   address: string;
   price: string;
   note: string;
+  image: File | string;
 };
 
 type Validate = OrderInput;
@@ -40,6 +41,7 @@ export default function OrderInput() {
     address: "",
     price: "",
     note: "",
+    image: "",
   });
 
   const [validate, setValidate] = useState<Validate>({
@@ -49,10 +51,19 @@ export default function OrderInput() {
     address: "",
     price: "",
     note: "",
+    image: "",
   });
 
   const onValidate = useCallback(
-    ({ name, email, no_hp, address, price, note }: OrderInput): boolean => {
+    ({
+      name,
+      email,
+      no_hp,
+      address,
+      price,
+      note,
+      image,
+    }: OrderInput): boolean => {
       let result: boolean = false;
 
       // name
@@ -76,29 +87,25 @@ export default function OrderInput() {
       var rs = email;
       var atps = rs.indexOf("@");
       var dots = rs.lastIndexOf(".");
-      if (!email) {
-        setValidate((prev) => ({
-          ...prev,
-          email: "Email tidak boleh kosong",
-        }));
-        result = true;
-      } else if (atps < 1 || dots < atps + 2 || dots + 2 >= rs.length) {
-        setValidate((prev) => ({
-          ...prev,
-          email: "Email tidak valid",
-        }));
-        result = true;
-      } else if (email.length > 100) {
-        setValidate((prev) => ({
-          ...prev,
-          email: "Email harus memiliki maks 100 karakter",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          email: "",
-        }));
+      if (email) {
+        if (atps < 1 || dots < atps + 2 || dots + 2 >= rs.length) {
+          setValidate((prev) => ({
+            ...prev,
+            email: "Email tidak valid",
+          }));
+          result = true;
+        } else if (email.length > 100) {
+          setValidate((prev) => ({
+            ...prev,
+            email: "Email harus memiliki maks 100 karakter",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            email: "",
+          }));
+        }
       }
 
       // no_hp
@@ -180,6 +187,31 @@ export default function OrderInput() {
         }));
       }
 
+      // image
+      try {
+        image = image as File;
+        if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "Berkas tidak mendukung",
+          }));
+          result = true;
+        } else if (image.size > 5 * 1000 * 1024) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "File harus kurang dari 5mb",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            image: "",
+          }));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
       return result;
     },
     []
@@ -196,6 +228,7 @@ export default function OrderInput() {
         address: "",
         price: "",
         note: "",
+        image: "",
       });
 
       if (onValidate(inputs)) return;
@@ -315,6 +348,7 @@ export default function OrderInput() {
       address: "",
       price: "",
       note: "",
+      image: "",
     });
 
     setInputs({
@@ -324,6 +358,7 @@ export default function OrderInput() {
       address: order.address,
       price: order.price,
       note: order.note,
+      image: order.image,
     });
 
     if (inputAction == "create")
@@ -334,6 +369,7 @@ export default function OrderInput() {
         address: "",
         price: "",
         note: "",
+        image: "",
       });
   }, [order, inputAction]);
 
