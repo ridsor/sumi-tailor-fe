@@ -65,12 +65,14 @@ export default async function DetailOrder(props: Props) {
     }
   });
 
-  let date = Intl.DateTimeFormat("id-ID", {
+  let date = new Intl.DateTimeFormat("id-ID", {
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
+    timeZone: "Asia/Jayapura",
+
     hour12: false,
   }).format(new Date(order.updated_at));
 
