@@ -29,7 +29,6 @@ export default function DetailOrder() {
     data: {
       item_code: "",
       name: "",
-      email: "",
       no_hp: "",
       address: "",
       price: null,
