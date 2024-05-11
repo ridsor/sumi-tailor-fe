@@ -67,10 +67,10 @@ export default function DetailOrder() {
     <Loading />
   ) : (
     <main>
-      <section className="py-15">
+      <section className="py-15 md:text-base">
         <div className="container border-4 h-screen flex flex-col max-h-[1080px] min-h-[508px]">
           <div className="flex justify-between px-4 py-2 border-b border-five items-center">
-            <h1 className="font-bold text-xl">Detail Pesanan</h1>
+            <h1 className="font-bold text-xl md:text-3xl">Detail Pesanan</h1>
             <OrderMenu
               order={order.data}
               user={user}
@@ -78,7 +78,7 @@ export default function DetailOrder() {
             />
           </div>
           <div className="px-4">
-            <h2 className="font-semibold text-base border-b py-2 mb-3 border-five">
+            <h2 className="font-semibold text-base md:text-xl border-b py-2 mb-3 border-five">
               Pesanan{" "}
               {order.data.status === "isFinished" ? "Selesai" : "Diproses"}
             </h2>
