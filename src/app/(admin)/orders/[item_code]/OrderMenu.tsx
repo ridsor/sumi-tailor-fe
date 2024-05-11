@@ -130,16 +130,14 @@ export default function OrderMenu(props: Props) {
                 Edit
               </button>
             </li>
-            {props.user.role === "super admin" && (
-              <li>
-                <button
-                  className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
-                  onClick={() => handleCancelOrder(props.order.item_code)}>
-                  <FaTimesCircle />
-                  Batalkan
-                </button>
-              </li>
-            )}
+            <li>
+              <button
+                className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
+                onClick={() => handleCancelOrder(props.order.item_code)}>
+                <FaTimesCircle />
+                Batalkan
+              </button>
+            </li>
           </ul>
         </div>
       </div>

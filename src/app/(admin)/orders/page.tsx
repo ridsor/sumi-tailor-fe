@@ -17,7 +17,6 @@ import {
 interface OrderInput {
   item_code: string;
   name: string;
-  email: string;
   no_hp: string;
   address: string;
   price: string;
@@ -36,26 +35,23 @@ export default function OrdersPage() {
   const [isTokenModal, setTokenModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
 
-  const toggleOrderModal = useCallback(() => {
+  const toggleOrderModal = () => {
     setOrderModal((prev) => !prev);
-  }, []);
-  const toggleTokenModal = useCallback(() => {
+  };
+  const toggleTokenModal = () => {
     setTokenModal((prev) => !prev);
-  }, []);
-  const handleOrderSearch = useCallback(
-    (value: string) => {
-      clearTimeout(searchTimeout);
+  };
+  const handleOrderSearch = (value: string) => {
+    clearTimeout(searchTimeout);
 
-      setSearchTimeout(
-        setTimeout(() => {
-          const params = new URLSearchParams(searchParams.toString());
-          params.set("s", value);
-          router.push(pathname + "?" + params.toString());
-        }, 1000)
-      );
-    },
-    [searchTimeout, pathname, searchParams, router]
-  );
+    setSearchTimeout(
+      setTimeout(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("s", value);
+        router.push(pathname + "?" + params.toString());
+      }, 1000)
+    );
+  };
 
   useEffect(() => {
     if (isLoading) {

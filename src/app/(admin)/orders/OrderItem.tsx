@@ -9,16 +9,6 @@ interface Props {
 }
 
 export default function OrderItem(props: Props) {
-  const handleBtnActionOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const menuItem = document.querySelectorAll(".menu-item");
-    menuItem.forEach((x) => {
-      if (!e.currentTarget.nextElementSibling?.classList.contains("active")) {
-        x.classList.remove("active");
-      }
-    });
-    e.currentTarget.nextElementSibling?.classList.toggle("active");
-  };
-
   const images = [
     {
       src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`,

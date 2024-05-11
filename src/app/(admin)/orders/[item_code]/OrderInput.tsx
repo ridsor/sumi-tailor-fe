@@ -8,7 +8,6 @@ import { createOrder } from "@/services/orders";
 
 export type OrderInput = {
   name: string;
-  email: string;
   no_hp: string;
   address: string;
   price: string;
@@ -27,7 +26,6 @@ export default function OrderInput(props: Props) {
   const [InputLoading, setInputLoading] = useState<boolean>(false);
   const [inputs, setInputs] = useState<OrderInput>({
     name: "",
-    email: "",
     no_hp: "",
     address: "",
     price: "",
@@ -37,7 +35,6 @@ export default function OrderInput(props: Props) {
 
   const [validate, setValidate] = useState<Validate>({
     name: "",
-    email: "",
     no_hp: "",
     address: "",
     price: "",
@@ -45,175 +42,145 @@ export default function OrderInput(props: Props) {
     image: "",
   });
 
-  const onValidate = useCallback(
-    ({
-      name,
-      email,
-      no_hp,
-      address,
-      price,
-      note,
-      image,
-    }: OrderInput): boolean => {
-      let result: boolean = false;
+  const onValidate = ({
+    name,
+    no_hp,
+    address,
+    price,
+    note,
+    image,
+  }: OrderInput): boolean => {
+    let result: boolean = false;
 
-      // name
-      if (!name) {
-        setValidate((prev) => ({ ...prev, name: "Nama tidak boleh kosong" }));
-        result = true;
-      } else if (name.length > 100) {
+    // name
+    if (!name) {
+      setValidate((prev) => ({ ...prev, name: "Nama tidak boleh kosong" }));
+      result = true;
+    } else if (name.length > 100) {
+      setValidate((prev) => ({
+        ...prev,
+        name: "Nama harus memiliki maks 100 karakter",
+      }));
+      result = true;
+    } else {
+      setValidate((prev) => ({
+        ...prev,
+        name: "",
+      }));
+    }
+
+    // no_hp
+    if (!no_hp) {
+      setValidate((prev) => ({
+        ...prev,
+        no_hp: "Kategori tidak boleh kosong",
+      }));
+      result = true;
+    } else if (no_hp.length > 100) {
+      setValidate((prev) => ({
+        ...prev,
+        no_hp: "Kategori harus memiliki maks 100 karakter",
+      }));
+      result = true;
+    } else {
+      setValidate((prev) => ({
+        ...prev,
+        no_hp: "",
+      }));
+    }
+
+    // address
+    if (!address) {
+      setValidate((prev) => ({
+        ...prev,
+        address: "Kategori tidak boleh kosong",
+      }));
+      result = true;
+    } else if (address.length > 1000) {
+      setValidate((prev) => ({
+        ...prev,
+        address: "Kategori harus memiliki maks 1000 karakter",
+      }));
+      result = true;
+    } else {
+      setValidate((prev) => ({
+        ...prev,
+        address: "",
+      }));
+    }
+
+    // price
+    if (isNaN(parseInt(price)) && price !== "") {
+      setValidate((prev) => ({
+        ...prev,
+        price: "Harga harus angka",
+      }));
+      result = true;
+    } else if (price.length > 500) {
+      setValidate((prev) => ({
+        ...prev,
+        price: "Harga harus memiliki maks 100 karakter",
+      }));
+      result = true;
+    } else {
+      setValidate((prev) => ({
+        ...prev,
+        price: "",
+      }));
+    }
+
+    if (!note) {
+      setValidate((prev) => ({
+        ...prev,
+        note: "Catatan tidak boleh kosong",
+      }));
+      result = true;
+    } else if (note.length > 1000) {
+      setValidate((prev) => ({
+        ...prev,
+        note: "Catatan harus memiliki maks 1000 karakter",
+      }));
+      result = true;
+    } else {
+      setValidate((prev) => ({
+        ...prev,
+        note: "",
+      }));
+    }
+
+    // image
+    try {
+      image = image as File;
+      if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
         setValidate((prev) => ({
           ...prev,
-          name: "Nama harus memiliki maks 100 karakter",
+          image: "Berkas tidak mendukung",
+        }));
+        result = true;
+      } else if (image.size > 5 * 1000 * 1024) {
+        setValidate((prev) => ({
+          ...prev,
+          image: "File harus kurang dari 5mb",
         }));
         result = true;
       } else {
         setValidate((prev) => ({
           ...prev,
-          name: "",
+          image: "",
         }));
       }
+    } catch (e) {
+      console.error(e);
+    }
 
-      // email
-      var rs = email;
-      var atps = rs.indexOf("@");
-      var dots = rs.lastIndexOf(".");
-      if (email) {
-        if (atps < 1 || dots < atps + 2 || dots + 2 >= rs.length) {
-          setValidate((prev) => ({
-            ...prev,
-            email: "Email tidak valid",
-          }));
-          result = true;
-        } else if (email.length > 100) {
-          setValidate((prev) => ({
-            ...prev,
-            email: "Email harus memiliki maks 100 karakter",
-          }));
-          result = true;
-        } else {
-          setValidate((prev) => ({
-            ...prev,
-            email: "",
-          }));
-        }
-      }
-
-      // no_hp
-      if (!no_hp) {
-        setValidate((prev) => ({
-          ...prev,
-          no_hp: "Kategori tidak boleh kosong",
-        }));
-        result = true;
-      } else if (no_hp.length > 100) {
-        setValidate((prev) => ({
-          ...prev,
-          no_hp: "Kategori harus memiliki maks 100 karakter",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          no_hp: "",
-        }));
-      }
-
-      // address
-      if (!address) {
-        setValidate((prev) => ({
-          ...prev,
-          address: "Kategori tidak boleh kosong",
-        }));
-        result = true;
-      } else if (address.length > 1000) {
-        setValidate((prev) => ({
-          ...prev,
-          address: "Kategori harus memiliki maks 1000 karakter",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          address: "",
-        }));
-      }
-
-      // price
-      if (isNaN(parseInt(price)) && price !== "") {
-        setValidate((prev) => ({
-          ...prev,
-          price: "Harga harus angka",
-        }));
-        result = true;
-      } else if (price.length > 500) {
-        setValidate((prev) => ({
-          ...prev,
-          price: "Harga harus memiliki maks 100 karakter",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          price: "",
-        }));
-      }
-
-      if (!note) {
-        setValidate((prev) => ({
-          ...prev,
-          note: "Catatan tidak boleh kosong",
-        }));
-        result = true;
-      } else if (note.length > 1000) {
-        setValidate((prev) => ({
-          ...prev,
-          note: "Catatan harus memiliki maks 1000 karakter",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          note: "",
-        }));
-      }
-
-      // image
-      try {
-        image = image as File;
-        if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
-          setValidate((prev) => ({
-            ...prev,
-            image: "Berkas tidak mendukung",
-          }));
-          result = true;
-        } else if (image.size > 5 * 1000 * 1024) {
-          setValidate((prev) => ({
-            ...prev,
-            image: "File harus kurang dari 5mb",
-          }));
-          result = true;
-        } else {
-          setValidate((prev) => ({
-            ...prev,
-            image: "",
-          }));
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-      return result;
-    },
-    []
-  );
+    return result;
+  };
 
   const onSubmitEventHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setValidate({
       name: "",
-      email: "",
       no_hp: "",
       address: "",
       price: "",
@@ -277,10 +244,9 @@ export default function OrderInput(props: Props) {
     }));
   };
 
-  useEffect(() => {
+  const resetInput = () => {
     setValidate({
       name: "",
-      email: "",
       no_hp: "",
       address: "",
       price: "",
@@ -289,13 +255,16 @@ export default function OrderInput(props: Props) {
     });
     setInputs({
       name: "",
-      email: "",
       no_hp: "",
       address: "",
       price: "",
       note: "",
       image: "",
     });
+  };
+
+  useEffect(() => {
+    resetInput();
   }, []);
 
   return (
@@ -331,32 +300,6 @@ export default function OrderInput(props: Props) {
                 </button>
                 <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
                   <span>{validate.name}</span>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="form-input mb-3 relative">
-            <input
-              type="email"
-              placeholder="Email"
-              name="email"
-              className={`${
-                validate.email ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
-              onChange={onChangeEventHandler}
-              value={inputs.email}
-            />
-            {validate.email ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.email}</span>
                 </div>
               </div>
             ) : (
@@ -445,7 +388,7 @@ export default function OrderInput(props: Props) {
             <textarea
               name="note"
               placeholder="Catatan"
-              rows={3}
+              rows={4}
               className={`${
                 validate.note ? "border-fail pr-11" : ""
               } w-full border rounded-sm py-2 px-3 relative z-10`}
