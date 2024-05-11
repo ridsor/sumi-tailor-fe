@@ -5,11 +5,12 @@ export interface OrderType {
   item_code: string;
   name: string;
   email: string;
-  no_hp: "";
-  address: "";
+  no_hp: string;
+  address: string;
   price: number | null;
   note: string;
   status: string;
+  image: string;
   created_at: string | number;
   updated_at: string | number;
 }

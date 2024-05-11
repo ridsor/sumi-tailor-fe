@@ -4,14 +4,12 @@ import "slick-carousel/slick/slick.css";
 import "./style.css";
 import Order from "./OrderItem";
 import Pagination from "@/components/fragments/Pagination";
-import OrderLoading from "./OrderLoading";
-import OrdersItemLoading from "./OrdersItemLoading";
 import { useAppSelector } from "@/lib/redux/hooks";
+import "lightbox.js-react/dist/index.css";
+import OrdersLoading from "./OrdersLoading";
 
 interface Props {
   isLoading: boolean;
-  onCancel: (item_code: string) => void;
-  onStatusChange: (item_code: string) => void;
 }
 
 export default function OrderList(props: Props) {
@@ -37,20 +35,13 @@ export default function OrderList(props: Props) {
 
   return (
     <Slider {...sliderSettings}>
-      {ordersUnfinished.loading || props.isLoading ? (
-        <OrderLoading />
+      {ordersUnfinished.loading || ordersItemLoading || props.isLoading ? (
+        <OrdersLoading />
       ) : (
         <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
-          {ordersItemLoading ? (
-            <OrdersItemLoading />
-          ) : ordersUnfinished.data.length > 0 ? (
+          {ordersUnfinished.data.length > 0 ? (
             ordersUnfinished.data.map((order) => (
-              <Order
-                key={order.item_code}
-                order={order}
-                onCancel={props.onCancel}
-                onStatusChange={props.onStatusChange}
-              />
+              <Order key={order.item_code} order={order} />
             ))
           ) : (
             <>Data Pesanan tidak ditemukan</>
@@ -64,20 +55,13 @@ export default function OrderList(props: Props) {
           />
         </div>
       )}
-      {ordersFinished.loading || props.isLoading ? (
-        <OrderLoading />
+      {ordersFinished.loading || ordersItemLoading || props.isLoading ? (
+        <OrdersLoading />
       ) : (
         <div className="orders finished !flex flex-col gap-2 pb-10 w-full p-1">
-          {ordersItemLoading ? (
-            <OrdersItemLoading />
-          ) : ordersFinished.data.length > 0 ? (
+          {ordersFinished.data.length > 0 ? (
             ordersFinished.data.map((order) => (
-              <Order
-                key={order.item_code}
-                order={order}
-                onCancel={props.onCancel}
-                onStatusChange={props.onStatusChange}
-              />
+              <Order key={order.item_code} order={order} />
             ))
           ) : (
             <>Data Pesanan tidak ditemukan</>
