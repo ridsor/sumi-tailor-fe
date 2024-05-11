@@ -1,4 +1,4 @@
-import OrderLoading from "./OrderLoading";
+import OrdersLoading from "./OrdersLoading";
 
 export default function page() {
   return (
@@ -13,7 +13,7 @@ export default function page() {
                 <div className="w-[90px] rounded-md mb-5 h-[30px] bg-[#bdc3c7]"></div>
                 <div className="w-[90px] rounded-md h-[30px] bg-[#bdc3c7]"></div>
               </div>
-              <OrderLoading />
+              <OrdersLoading />
             </div>
           </div>
         </div>

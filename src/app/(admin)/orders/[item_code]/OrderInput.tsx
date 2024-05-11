@@ -1,16 +1,9 @@
 import { FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { getToken } from "@/services/token";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { useCallback, useEffect, useState } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
 import { createOrder } from "@/services/orders";
 
 export type OrderInput = {
@@ -26,17 +19,12 @@ export type OrderInput = {
 type Validate = OrderInput;
 
 interface Props {
+  isModal: boolean;
   toggleModal: () => void;
-  modal: boolean;
 }
 
 export default function OrderInput(props: Props) {
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const [InputLoading, setInputLoading] = useState<boolean>(false);
-
   const [inputs, setInputs] = useState<OrderInput>({
     name: "",
     email: "",
@@ -220,89 +208,74 @@ export default function OrderInput(props: Props) {
     []
   );
 
-  const onSubmitEventHandler = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const onSubmitEventHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      setValidate({
-        name: "",
-        email: "",
-        no_hp: "",
-        address: "",
-        price: "",
-        note: "",
-        image: "",
-      });
+    setValidate({
+      name: "",
+      email: "",
+      no_hp: "",
+      address: "",
+      price: "",
+      note: "",
+      image: "",
+    });
 
-      if (onValidate(inputs)) return;
+    if (onValidate(inputs)) return;
 
-      setInputLoading(true);
+    setInputLoading(true);
 
-      try {
-        const createResponse = await createOrder(inputs);
+    try {
+      const createResponse = await createOrder(inputs);
 
-        if (createResponse?.status != "success") {
-          console.error("Failed to input");
-          if (typeof createResponse?.errors.email != "undefined") {
-            setValidate((prev) => ({
-              ...prev,
-              email: createResponse?.errors.email,
-            }));
-          }
-          if (typeof createResponse?.errors.no_hp != "undefined") {
-            setValidate((prev) => ({
-              ...prev,
-              no_hp: createResponse?.errors.no_hp,
-            }));
-          }
-          setInputLoading(false);
-          return;
+      if (createResponse?.status != "success") {
+        console.error("Failed to input");
+        if (typeof createResponse?.errors.email != "undefined") {
+          setValidate((prev) => ({
+            ...prev,
+            email: createResponse?.errors.email,
+          }));
         }
-
-        if (
-          searchParams.get("page") != null &&
-          searchParams.get("page") != "1"
-        ) {
-          router.push("/orders?page=1");
-        } else {
-          const search = searchParams.get("s") || "";
-          dispatch(handlePageOrderFinished({ page: 1, search }));
-          dispatch(handlePageOrderUnfinished({ page: 1, search }));
+        if (typeof createResponse?.errors.no_hp != "undefined") {
+          setValidate((prev) => ({
+            ...prev,
+            no_hp: createResponse?.errors.no_hp,
+          }));
         }
-
-        withReactContent(Swal)
-          .mixin({
-            customClass: {
-              popup: "max-w-[200px] w-full h-[100px]",
-              icon: "scale-50 -translate-y-8",
-            },
-            buttonsStyling: false,
-          })
-          .fire({
-            position: "top-end",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 500,
-          });
-      } catch (e) {
-        console.log(e);
+        setInputLoading(false);
+        return;
       }
 
-      props.toggleModal();
-      setInputLoading(false);
-    },
-    [inputs, onValidate, dispatch, router, searchParams, props]
-  );
+      withReactContent(Swal)
+        .mixin({
+          customClass: {
+            popup: "max-w-[200px] w-full h-[100px]",
+            icon: "scale-50 -translate-y-8",
+          },
+          buttonsStyling: false,
+        })
+        .fire({
+          position: "top-end",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 500,
+        });
+    } catch (e) {
+      console.log(e);
+    }
 
-  const onChangeEventHandler = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setInputs((prev) => ({
-        ...prev,
-        [e.target.name]: e.target.value,
-      }));
-    },
-    []
-  );
+    props.toggleModal();
+    setInputLoading(false);
+  };
+
+  const onChangeEventHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setInputs((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   useEffect(() => {
     setValidate({
@@ -326,7 +299,7 @@ export default function OrderInput(props: Props) {
   }, []);
 
   return (
-    <Modal active={props.modal} openclose={props.toggleModal}>
+    <Modal active={props.isModal} openclose={props.toggleModal}>
       <div className="container max-w-full">
         <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
           Buat Pesanan

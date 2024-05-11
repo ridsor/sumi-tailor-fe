@@ -9,7 +9,7 @@ const enableNavbar = ["/dashboard", "/profile", "/accounts", "/orders"];
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const [isSidebar, setSidebar] = useState<boolean>(true);
+  const [isSidebar, setSidebar] = useState<boolean>(false);
 
   return enableNavbar.includes(pathname) ? (
     <>

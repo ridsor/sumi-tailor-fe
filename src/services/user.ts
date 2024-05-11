@@ -7,7 +7,6 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  status: string;
 }
 
 export const getUsers = async (search: string = ""): Promise<User[]> => {

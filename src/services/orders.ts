@@ -52,11 +52,14 @@ export const getOrders = async ({
   };
 };
 
-export const getOrderById = async (item_code: string, token: string = "") => {
+export const getOrderById = async (
+  item_code: string,
+  token: string = ""
+): Promise<OrderType> => {
   const refreshToken = await getToken();
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${item_code}?token=${token}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${item_code}`,
     {
       method: "GET",
       headers: {
@@ -64,9 +67,7 @@ export const getOrderById = async (item_code: string, token: string = "") => {
       },
       cache: "no-store",
     }
-  ).catch((e) => {
-    throw e;
-  });
+  );
 
   if (res.status == 403) {
     throw new Error("Authorization");
@@ -153,5 +154,47 @@ export const createOrder = async (inputs: OrderInput) => {
 
   if (response.json) {
     return response.json();
+  }
+};
+
+export const cancelOrder = async (item_code: string) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders/" + item_code,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        Authorization: "Bearer " + token.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.status != 200) {
+    console.error("Failed to cancel");
+    return;
+  }
+};
+export const changeStatusOrder = async (item_code: string) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) +
+      "/api/orders/" +
+      item_code +
+      "/status",
+    {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        Authorization: "Bearer " + token?.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.status != 200) {
+    console.error("Failed to cancel");
+    return;
   }
 };
