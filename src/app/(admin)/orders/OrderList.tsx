@@ -44,7 +44,9 @@ export default function OrderList(props: Props) {
               <Order key={order.item_code} order={order} />
             ))
           ) : (
-            <>Data Pesanan tidak ditemukan</>
+            <h2 className="font-semibold text-base my-10 text-center">
+              Data Pesanan tidak ditemukan
+            </h2>
           )}
           <Pagination
             totalPages={Math.ceil(
@@ -64,7 +66,9 @@ export default function OrderList(props: Props) {
               <Order key={order.item_code} order={order} />
             ))
           ) : (
-            <>Data Pesanan tidak ditemukan</>
+            <h2 className="font-semibold text-base my-10 text-center">
+              Data Pesanan tidak ditemukan
+            </h2>
           )}
           <Pagination
             totalPages={Math.ceil(
