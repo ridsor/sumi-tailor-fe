@@ -1,6 +1,5 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { getToken } from "./token";
 
 export interface User {
@@ -21,7 +20,7 @@ export const getUsers = async (search: string = ""): Promise<User[]> => {
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 60,
+        revalidate: 3600 * 24,
       },
     }
   );

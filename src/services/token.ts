@@ -10,7 +10,9 @@ export const getToken = async () => {
       headers: {
         Authorization: "Bearer " + cookies().get("refreshToken")?.value,
       },
-      cache: "no-store",
+      next: {
+        revalidate: 3600 * 24,
+      },
     }
   );
 
