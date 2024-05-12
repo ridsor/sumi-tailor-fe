@@ -40,9 +40,16 @@ export default function OrderList(props: Props) {
       ) : (
         <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
           {ordersUnfinished.data.length > 0 ? (
-            ordersUnfinished.data.map((order) => (
-              <Order key={order.item_code} order={order} />
-            ))
+            <div className="columns-[350px] lg:columns-2 gap-3">
+              {ordersUnfinished.data.map((order) => (
+                <>
+                  <Order key={order.item_code} order={order} />
+                  <Order key={order.item_code} order={order} />
+                  <Order key={order.item_code} order={order} />
+                  <Order key={order.item_code} order={order} />
+                </>
+              ))}
+            </div>
           ) : (
             <h2 className="font-semibold text-base my-10 text-center">
               Data Pesanan tidak ditemukan
