@@ -1,7 +1,7 @@
 import { FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import withReactContent from "sweetalert2-react-content";
@@ -11,6 +11,9 @@ import {
   handlePageOrderUnfinished,
 } from "@/lib/redux/features/ordersSlice";
 import { createOrder } from "@/services/orders";
+import cloud_upload_outlined from "@/assets/img/icons/cloud-upload-outlined.svg";
+import Image from "next/image";
+import { SlideshowLightbox } from "lightbox.js-react";
 
 export type OrderInput = {
   name: string;
@@ -29,12 +32,13 @@ interface Props {
 }
 
 export default function OrderInput(props: Props) {
+  const imageRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const [InputLoading, setInputLoading] = useState<boolean>(false);
-
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
   const [inputs, setInputs] = useState<OrderInput>({
     name: "",
     no_hp: "",
@@ -162,7 +166,13 @@ export default function OrderInput(props: Props) {
     // image
     try {
       image = image as File;
-      if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
+      if (!image) {
+        setValidate((prev) => ({
+          ...prev,
+          image: "Foto pesanan tidak boleh kosong",
+        }));
+        result = true;
+      } else if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
         setValidate((prev) => ({
           ...prev,
           image: "Berkas tidak mendukung",
@@ -186,8 +196,12 @@ export default function OrderInput(props: Props) {
 
     return result;
   };
-
+  console.log(validate);
   const resetInput = () => {
+    setImagePreviewUrl("");
+    if (imageRef.current) {
+      imageRef.current.value = "";
+    }
     setValidate({
       name: "",
       no_hp: "",
@@ -276,9 +290,32 @@ export default function OrderInput(props: Props) {
     }));
   };
 
+  const onChangeEventHandlerImage = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+
+    setInputs((prev) => ({
+      ...prev,
+      [e.target.name]: files?.item(0),
+    }));
+
+    try {
+      setImagePreviewUrl(URL.createObjectURL(files?.item(0) as File));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleImageClick = () => {
+    imageRef.current?.click();
+  };
+
   useEffect(() => {
-    resetInput();
-  }, []);
+    if (props.modal) {
+      resetInput();
+    }
+  }, [props.modal]);
 
   return (
     <Modal active={props.modal} openclose={props.toggleModal}>
@@ -300,7 +337,7 @@ export default function OrderInput(props: Props) {
               name="name"
               className={`${
                 validate.name ? "border-fail pr-11 relative" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
+              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
               onChange={onChangeEventHandler}
               value={inputs.name}
             />
@@ -326,7 +363,7 @@ export default function OrderInput(props: Props) {
               name="no_hp"
               className={`${
                 validate.no_hp ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
+              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
               onChange={onChangeEventHandler}
               value={inputs.no_hp}
             />
@@ -352,7 +389,7 @@ export default function OrderInput(props: Props) {
               name="address"
               className={`${
                 validate.address ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
+              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
               onChange={onChangeEventHandler}
               value={inputs.address}
             />
@@ -378,7 +415,7 @@ export default function OrderInput(props: Props) {
               name="price"
               className={`${
                 validate.price ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
+              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
               onChange={onChangeEventHandler}
               value={inputs.price}
             />
@@ -404,7 +441,7 @@ export default function OrderInput(props: Props) {
               rows={4}
               className={`${
                 validate.note ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10`}
+              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
               onChange={onChangeEventHandler}
               value={inputs.note}></textarea>
             {validate.note ? (
@@ -421,6 +458,72 @@ export default function OrderInput(props: Props) {
             ) : (
               ""
             )}
+          </div>
+          <div className="form-input mb-8 relative">
+            <div
+              className={`${
+                validate.image ? "border-fail" : "bg-[#F4F4F4]"
+              } border-dashed flex flex-col items-center border-2  p-4`}>
+              <input
+                ref={imageRef}
+                type="file"
+                placeholder="Foto Pesanan"
+                name="image"
+                id="image"
+                accept="image/png, image/jpeg, image/jpg"
+                onChange={onChangeEventHandlerImage}
+                hidden
+              />
+              {imagePreviewUrl ? (
+                <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400">
+                  <SlideshowLightbox
+                    showControls={false}
+                    lightboxIdentifier="lightbox2"
+                    framework="next"
+                    fullScreen={true}
+                    modalClose="clickOutside"
+                    images={[{ src: imagePreviewUrl, alt: "Foto Pesanan" }]}>
+                    <Image
+                      src={imagePreviewUrl}
+                      alt="Foto Pesanan"
+                      width={250}
+                      height={250}
+                      className="w-full h-auto object-cover"
+                      data-lightboxjs="lightbox2"
+                      quality={50}
+                    />
+                  </SlideshowLightbox>
+                </div>
+              ) : (
+                <>
+                  <Image src={cloud_upload_outlined} alt="" />
+                  <p className="text-[#afafaf] font-semibold text-base">
+                    Upload Foto Pesanan (JPG, JPEG, PNG)
+                  </p>
+                </>
+              )}
+              <button
+                type="button"
+                onClick={handleImageClick}
+                id="btn_upload_image"
+                className="block text-two font-semibold  bg-white border mt-4 rounded-[5px] border-[#d4d4d4] py-[10px] px-[17px] relative z-50">
+                Browse File
+              </button>
+              {validate.image ? (
+                <div className="absolute top-0 right-0 left-0 bottom-0">
+                  <button
+                    type={"button"}
+                    className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                    <FaExclamationCircle />
+                  </button>
+                  <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                    <span>{validate.image as string}</span>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
           <div className="form-input">
             <button className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold">
