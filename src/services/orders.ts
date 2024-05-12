@@ -31,7 +31,7 @@ export const getOrders = async ({
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 60,
+        revalidate: 3600 * 24,
       },
     }
   );
@@ -65,7 +65,9 @@ export const getOrderById = async (
       headers: {
         Authorization: "Bearer " + refreshToken?.authorization.access_token,
       },
-      cache: "no-store",
+      next: {
+        revalidate: 3600 * 24,
+      },
     }
   );
 

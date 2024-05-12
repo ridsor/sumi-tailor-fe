@@ -18,7 +18,6 @@ export const login = async (inputs: InputsLogin) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(inputs),
-      cache: "no-store",
     }
   );
 
@@ -52,7 +51,6 @@ export const logout = async () => {
       headers: {
         Authorization: `Bearer ${token.authorization.access_token}`,
       },
-      cache: "no-store",
     }
   );
 
@@ -69,7 +67,9 @@ export const fetchAuth = async () => {
       headers: {
         Authorization: "Bearer " + cookies().get("refreshToken")?.value,
       },
-      cache: "no-store",
+      next: {
+        revalidate: 3600 * 24,
+      },
       credentials: "include",
     }
   );

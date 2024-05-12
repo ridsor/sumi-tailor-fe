@@ -11,7 +11,9 @@ export const getDashboard = async () => {
     headers: {
       Authorization: `Bearer ${refreshToken.authorization.access_token}`,
     },
-    cache: "no-store",
+    next: {
+      revalidate: 3600 * 24,
+    },
   });
   if (!res.ok && res.status != 200) {
     throw new Error("Failed to fetch data");
