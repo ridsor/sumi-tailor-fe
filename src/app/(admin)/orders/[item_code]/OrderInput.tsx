@@ -185,13 +185,7 @@ export default function OrderInput(props: Props) {
     // image
     try {
       image = image as File;
-      if (!image) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "Foto pesanan tidak boleh kosong",
-        }));
-        result = true;
-      } else if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
+      if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
         setValidate((prev) => ({
           ...prev,
           image: "Berkas tidak mendukung",
@@ -238,7 +232,7 @@ export default function OrderInput(props: Props) {
       address: props.order.address,
       price: props.order.price != null ? String(props.order.price) : "",
       note: props.order.note,
-      image: props.order.image,
+      image: "",
     });
   }, [props]);
 
