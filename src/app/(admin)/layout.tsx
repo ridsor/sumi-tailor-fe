@@ -2,7 +2,7 @@
 
 import Aside from "@/components/layouts/UserLayout/Aside";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const enableNavbar = ["/dashboard", "/profile", "/accounts", "/orders"];
 
@@ -10,6 +10,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const [isSidebar, setSidebar] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (window.innerWidth >= 640) {
+      setSidebar(true);
+    }
+  }, []);
 
   return enableNavbar.includes(pathname) ? (
     <>
