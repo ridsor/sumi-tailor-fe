@@ -196,7 +196,7 @@ export default function OrderInput(props: Props) {
 
     return result;
   };
-  console.log(validate);
+
   const resetInput = () => {
     setImagePreviewUrl("");
     if (imageRef.current) {
@@ -475,7 +475,7 @@ export default function OrderInput(props: Props) {
                 hidden
               />
               {imagePreviewUrl ? (
-                <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400">
+                <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400 lightbox-image">
                   <SlideshowLightbox
                     showControls={false}
                     lightboxIdentifier="lightbox2"
