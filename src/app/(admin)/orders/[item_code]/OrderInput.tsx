@@ -1,10 +1,17 @@
 import { FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useCallback, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { createOrder } from "@/services/orders";
+import { OrderType } from "@/lib/redux/features/ordersSlice";
 
 export type OrderInput = {
   name: string;
@@ -20,6 +27,14 @@ type Validate = OrderInput;
 interface Props {
   isModal: boolean;
   toggleModal: () => void;
+  setOrder: Dispatch<
+    SetStateAction<{
+      loading: boolean;
+      data: OrderType & {
+        item_code: string;
+      };
+    }>
+  >;
 }
 
 export default function OrderInput(props: Props) {
