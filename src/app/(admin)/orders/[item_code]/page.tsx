@@ -5,6 +5,7 @@ import { OrderType } from "@/lib/redux/features/ordersSlice";
 import { getDay, getMonth, getTime, getYear } from "@/utils/order";
 import OrderMenu from "./OrderMenu";
 import "../style.css";
+import "lightbox.js-react/dist/index.css";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { getOrderById } from "@/services/orders";
@@ -12,6 +13,8 @@ import { useParams } from "next/navigation";
 import { getUser } from "@/lib/redux/features/userSlice";
 import Loading from "./loading";
 import OrderInput from "./OrderInput";
+import { SlideshowLightbox } from "lightbox.js-react";
+import Image from "next/image";
 
 export default function DetailOrder() {
   const dispatch = useAppDispatch();
@@ -39,6 +42,13 @@ export default function DetailOrder() {
       updated_at: "",
     },
   });
+
+  const images = [
+    {
+      src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${order.data.image}`,
+      alt: order.data.name,
+    },
+  ];
 
   const toggleInputModal = () => setInputModal((prev) => !prev);
 
@@ -114,11 +124,33 @@ export default function DetailOrder() {
             </div>
           </div>
           <div className="p-4 border-t-8 flex-1 flex flex-col">
+            <div className="order-image min-w-[150px] w-[150px] h-[150px] relative z-20 overflow-hidden rounded-sm mb-3">
+              <SlideshowLightbox
+                showControls={false}
+                lightboxIdentifier="lightbox1"
+                framework="next"
+                fullScreen={true}
+                modalClose="clickOutside"
+                images={images}>
+                {images.map((image, i) => (
+                  <Image
+                    key={i}
+                    src={image.src}
+                    alt={image.alt}
+                    width={300}
+                    height={300}
+                    className="w-full h-auto object-cover"
+                    data-lightboxjs="lightbox1"
+                    quality={50}
+                  />
+                ))}
+              </SlideshowLightbox>
+            </div>
             <div
               className="border flex flex-col rounded-md py-2 px-3 border-five flex-1"
               id="note">
               <h6 className="font-semibold">Catatan</h6>
-              <p className="flex-1">{order.data.note}</p>
+              <p className="flex-1">{order.data.note} lorem100</p>
               <hr className="my-3 border-five" />
               <div className="text-[12px]">Total Harga</div>
               <div className="font-bold" id="price">
@@ -133,7 +165,11 @@ export default function DetailOrder() {
         </div>
       </section>
       <section>
-        <OrderInput isModal={isInputModal} toggleModal={toggleInputModal} />
+        <OrderInput
+          isModal={isInputModal}
+          toggleModal={toggleInputModal}
+          setOrder={setOrder}
+        />
       </section>
     </main>
   );
