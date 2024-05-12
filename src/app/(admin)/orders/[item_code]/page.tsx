@@ -124,7 +124,7 @@ export default function DetailOrder() {
             </div>
           </div>
           <div className="p-4 border-t-8 flex-1 flex flex-col">
-            <div className="order-image min-w-[150px] w-[150px] h-[150px] relative z-20 overflow-hidden rounded-sm mb-3">
+            <div className="lightbox-image min-w-[150px] w-[150px] h-[150px] relative z-20 overflow-hidden rounded-sm mb-3">
               <SlideshowLightbox
                 showControls={false}
                 lightboxIdentifier="lightbox1"
@@ -169,6 +169,7 @@ export default function DetailOrder() {
           isModal={isInputModal}
           toggleModal={toggleInputModal}
           setOrder={setOrder}
+          order={order.data}
         />
       </section>
     </main>

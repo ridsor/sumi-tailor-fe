@@ -23,7 +23,7 @@ export default function OrderItem(props: Props) {
         className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10 hover:bg-[rgba(0,0,0,.1)]"
         aria-label="Order Item"></Link>
       <div className="flex-1 self-center">
-        <div className="order-image min-w-[80px] w-[80px] h-[80px] relative z-20 overflow-hidden rounded-sm p-1.5">
+        <div className="order-image lightbox-image min-w-[80px] w-[80px] h-[80px] relative z-20 overflow-hidden rounded-sm p-1.5">
           <SlideshowLightbox
             showControls={false}
             lightboxIdentifier="lightbox1"
