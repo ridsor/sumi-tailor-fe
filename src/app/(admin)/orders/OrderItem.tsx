@@ -17,13 +17,13 @@ export default function OrderItem(props: Props) {
   ];
 
   return (
-    <div className="order flex border rounded-md shadow-sm relative p-2">
+    <div className="order flex border rounded-md shadow-sm relative">
       <Link
         href={`/orders/${props.order.item_code}`}
         className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10 hover:bg-[rgba(0,0,0,.1)]"
         aria-label="Order Item"></Link>
       <div className="flex-1 self-center">
-        <div className="order-image min-w-[80px] w-[80px] h-[80px] relative z-20 overflow-hidden rounded-sm">
+        <div className="order-image min-w-[80px] w-[80px] h-[80px] relative z-20 overflow-hidden rounded-sm p-1.5">
           <SlideshowLightbox
             showControls={false}
             lightboxIdentifier="lightbox1"
@@ -46,7 +46,7 @@ export default function OrderItem(props: Props) {
           </SlideshowLightbox>
         </div>
       </div>
-      <div className="order-body py-1.5 px-3 flex flex-col gap-y-1 w-full">
+      <div className="order-body py-1.5 px-1.5 sm:px-3 flex flex-col gap-y-1 w-full">
         <h4 className="font-semibold text-base">{props.order.name}</h4>
         <div className="grid flex-1 sm:grid-flow-col">
           <div className="date text-blue-400">{`${getDay(
@@ -54,7 +54,7 @@ export default function OrderItem(props: Props) {
           )} ${getMonth(props.order.updated_at)} ${getYear(
             props.order.updated_at
           )}, ${getTime(props.order.updated_at)} WIT`}</div>
-          <div className="price font-semibold text-two text-base justify-self-end mt-1 self-end">
+          <div className="price font-semibold text-two sm:text-base justify-self-end mt-1 self-end">
             Rp10.000
           </div>
         </div>
