@@ -9,16 +9,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {
-  OrderType,
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
-import { createOrder } from "@/services/orders";
+import { OrderType } from "@/lib/redux/features/ordersSlice";
+import { editOrder } from "@/services/orders";
 import cloud_upload_outlined from "@/assets/img/icons/cloud-upload-outlined.svg";
 import Image from "next/image";
 import { SlideshowLightbox } from "lightbox.js-react";
@@ -249,16 +244,24 @@ export default function OrderInput(props: Props) {
     setInputLoading(true);
 
     try {
-      const createResponse = await createOrder(inputs);
+      const formData = new FormData();
+      formData.append("name", inputs.name);
+      formData.append("no_hp", inputs.no_hp);
+      formData.append("address", inputs.address);
+      formData.append("price", inputs.price);
+      formData.append("note", inputs.note);
+      formData.append("image", inputs.image as File);
 
-      console.log(createResponse);
+      const editResponse = await editOrder(props.order.item_code, formData);
 
-      if (createResponse?.status != "success") {
+      console.log(editResponse);
+
+      if (editResponse?.status != "success") {
         console.error("Failed to input");
-        if (typeof createResponse?.errors.no_hp != "undefined") {
+        if (typeof editResponse?.errors.no_hp != "undefined") {
           setValidate((prev) => ({
             ...prev,
-            no_hp: createResponse?.errors.no_hp,
+            no_hp: editResponse?.errors.no_hp,
           }));
         }
         setInputLoading(false);
