@@ -124,12 +124,6 @@ const ProfilePage = () => {
     try {
       const token = await getToken();
 
-      if (token.status != "success") {
-        console.error("Failed to input");
-        setInputLoading(false);
-        return;
-      }
-
       const formData = new FormData();
       formData.append("name", inputs.name);
       formData.append("email", inputs.email);
@@ -140,7 +134,6 @@ const ProfilePage = () => {
         {
           method: "POST",
           body: formData,
-          credentials: "include",
           headers: {
             Authorization: "Bearer " + token.authorization.access_token,
           },

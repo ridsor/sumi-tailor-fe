@@ -53,8 +53,6 @@ interface Props {
 export default function OrderInput(props: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
   const [InputLoading, setInputLoading] = useState<boolean>(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
@@ -253,6 +251,8 @@ export default function OrderInput(props: Props) {
     try {
       const createResponse = await createOrder(inputs);
 
+      console.log(createResponse);
+
       if (createResponse?.status != "success") {
         console.error("Failed to input");
         if (typeof createResponse?.errors.no_hp != "undefined") {
@@ -263,14 +263,6 @@ export default function OrderInput(props: Props) {
         }
         setInputLoading(false);
         return;
-      }
-
-      if (searchParams.get("page") != null && searchParams.get("page") != "1") {
-        router.push("/orders?page=1");
-      } else {
-        const search = searchParams.get("s") || "";
-        dispatch(handlePageOrderFinished({ page: 1, search }));
-        dispatch(handlePageOrderUnfinished({ page: 1, search }));
       }
 
       withReactContent(Swal)
@@ -287,6 +279,7 @@ export default function OrderInput(props: Props) {
           showConfirmButton: false,
           timer: 500,
         });
+      // props.setOrder({ ...prev });
     } catch (e) {
       console.log(e);
     }
