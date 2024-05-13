@@ -3,7 +3,6 @@
 import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
 import { getToken } from "./token";
 import { cookies } from "next/headers";
-import { OrderInput } from "@/app/(admin)/orders/OrderInput";
 
 export const getOrders = async ({
   page = 1,
@@ -164,7 +163,7 @@ export const editOrder = async (item_code: string, formData: FormData) => {
   const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders/" + item_code,
     {
-      method: "PUT",
+      method: "POST",
       body: formData,
       headers: {
         Authorization: "Bearer " + token?.authorization.access_token,

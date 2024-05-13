@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { useAppDispatch } from "@/lib/redux/hooks";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { OrderType } from "@/lib/redux/features/ordersSlice";
@@ -47,7 +46,6 @@ interface Props {
 
 export default function OrderInput(props: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
 
   const [InputLoading, setInputLoading] = useState<boolean>(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
@@ -178,23 +176,25 @@ export default function OrderInput(props: Props) {
     // image
     try {
       image = image as File;
-      if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "Berkas tidak mendukung",
-        }));
-        result = true;
-      } else if (image.size > 5 * 1000 * 1024) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "File harus kurang dari 5mb",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          image: "",
-        }));
+      if (image) {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "Berkas tidak mendukung",
+          }));
+          result = true;
+        } else if (image.size > 5 * 1000 * 1024) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "File harus kurang dari 5mb",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            image: "",
+          }));
+        }
       }
     } catch (e) {
       console.error(e);
@@ -254,8 +254,6 @@ export default function OrderInput(props: Props) {
 
       const editResponse = await editOrder(props.order.item_code, formData);
 
-      console.log(editResponse);
-
       if (editResponse?.status != "success") {
         console.error("Failed to input");
         if (typeof editResponse?.errors.no_hp != "undefined") {
@@ -282,7 +280,11 @@ export default function OrderInput(props: Props) {
           showConfirmButton: false,
           timer: 500,
         });
-      // props.setOrder({ ...prev });
+
+      props.setOrder({
+        loading: false,
+        data: editResponse.data,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -326,7 +328,6 @@ export default function OrderInput(props: Props) {
       resetInput();
     }
   }, [props.isModal, resetInput]);
-
   return (
     <Modal active={props.isModal} openclose={props.toggleModal}>
       <div className="container max-w-full">
@@ -492,9 +493,20 @@ export default function OrderInput(props: Props) {
                     framework="next"
                     fullScreen={true}
                     modalClose="clickOutside"
-                    images={[{ src: imagePreviewUrl, alt: "Foto Pesanan" }]}>
+                    images={[
+                      {
+                        src: imagePreviewUrl.includes("http")
+                          ? imagePreviewUrl
+                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`,
+                        alt: "Foto Pesanan",
+                      },
+                    ]}>
                     <Image
-                      src={imagePreviewUrl}
+                      src={
+                        imagePreviewUrl.includes("http")
+                          ? imagePreviewUrl
+                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`
+                      }
                       alt="Foto Pesanan"
                       width={250}
                       height={250}
