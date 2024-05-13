@@ -4,14 +4,12 @@ import "slick-carousel/slick/slick.css";
 import "./style.css";
 import Order from "./OrderItem";
 import Pagination from "@/components/fragments/Pagination";
-import OrderLoading from "./OrderLoading";
-import OrdersItemLoading from "./OrdersItemLoading";
 import { useAppSelector } from "@/lib/redux/hooks";
+import "lightbox.js-react/dist/index.css";
+import OrdersLoading from "./OrdersLoading";
 
 interface Props {
   isLoading: boolean;
-  onCancel: (item_code: string) => void;
-  onStatusChange: (item_code: string) => void;
 }
 
 export default function OrderList(props: Props) {
@@ -37,23 +35,20 @@ export default function OrderList(props: Props) {
 
   return (
     <Slider {...sliderSettings}>
-      {ordersUnfinished.loading || props.isLoading ? (
-        <OrderLoading />
+      {ordersUnfinished.loading || ordersItemLoading || props.isLoading ? (
+        <OrdersLoading />
       ) : (
         <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
-          {ordersItemLoading ? (
-            <OrdersItemLoading />
-          ) : ordersUnfinished.data.length > 0 ? (
-            ordersUnfinished.data.map((order) => (
-              <Order
-                key={order.item_code}
-                order={order}
-                onCancel={props.onCancel}
-                onStatusChange={props.onStatusChange}
-              />
-            ))
+          {ordersUnfinished.data.length > 0 ? (
+            <div className="columns-[350px] lg:columns-2 gap-3">
+              {ordersUnfinished.data.map((order) => (
+                <Order key={order.item_code} order={order} />
+              ))}
+            </div>
           ) : (
-            <>Data Pesanan tidak ditemukan</>
+            <h2 className="font-semibold text-base my-10 text-center">
+              Data Pesanan tidak ditemukan
+            </h2>
           )}
           <Pagination
             totalPages={Math.ceil(
@@ -64,23 +59,20 @@ export default function OrderList(props: Props) {
           />
         </div>
       )}
-      {ordersFinished.loading || props.isLoading ? (
-        <OrderLoading />
+      {ordersFinished.loading || ordersItemLoading || props.isLoading ? (
+        <OrdersLoading />
       ) : (
         <div className="orders finished !flex flex-col gap-2 pb-10 w-full p-1">
-          {ordersItemLoading ? (
-            <OrdersItemLoading />
-          ) : ordersFinished.data.length > 0 ? (
-            ordersFinished.data.map((order) => (
-              <Order
-                key={order.item_code}
-                order={order}
-                onCancel={props.onCancel}
-                onStatusChange={props.onStatusChange}
-              />
-            ))
+          {ordersFinished.data.length > 0 ? (
+            <div className="columns-[350px] lg:columns-2 gap-3">
+              {ordersFinished.data.map((order) => (
+                <Order key={order.item_code} order={order} />
+              ))}
+            </div>
           ) : (
-            <>Data Pesanan tidak ditemukan</>
+            <h2 className="font-semibold text-base my-10 text-center">
+              Data Pesanan tidak ditemukan
+            </h2>
           )}
           <Pagination
             totalPages={Math.ceil(

@@ -1,148 +1,67 @@
-import {
-  FaArrowRotateLeft,
-  FaCircleCheck,
-  FaEllipsisVertical,
-  FaPenToSquare,
-} from "react-icons/fa6";
-import { FaTimesCircle } from "react-icons/fa";
-import { getDay, getMonth, getTime } from "@/utils/order";
-import { useContext } from "react";
-import { ModalContext } from "./page";
+import { getDay, getMonth, getTime, getYear } from "@/utils/order";
 import { OrderType } from "@/lib/redux/features/ordersSlice";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/redux/hooks";
+import Image from "next/image";
+import { SlideshowLightbox } from "lightbox.js-react";
 
 interface Props {
   order: OrderType;
-  onCancel: (item_code: string) => void;
-  onStatusChange: (item_code: string) => void;
 }
 
 export default function OrderItem(props: Props) {
-  const { toggleModal, setInputAction, setOrder } = useContext(ModalContext);
-  const user = useAppSelector((state) => state.user);
-
-  const handleBtnActionOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const menuItem = document.querySelectorAll(".menu-item");
-    menuItem.forEach((x) => {
-      if (!e.currentTarget.nextElementSibling?.classList.contains("active")) {
-        x.classList.remove("active");
-      }
-    });
-    e.currentTarget.nextElementSibling?.classList.toggle("active");
-  };
+  const images = [
+    {
+      src: props.order.image.startsWith("http")
+        ? props.order.image
+        : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`,
+      alt: props.order.name,
+    },
+  ];
 
   return (
-    <div className="order flex border rounded-md shadow-sm flex-wrap relative">
+    <div className="order flex border rounded-md shadow-sm relative mb-3">
       <Link
         href={`/orders/${props.order.item_code}`}
-        className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10"
+        className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10 hover:bg-[rgba(0,0,0,.1)]"
         aria-label="Order Item"></Link>
-      <div className="flex flex-col relative items-center px-8 lg:px-10 py-2.5 after:content-[''] after:block after:h-[70%] w-1 after:border-r after:absolute after:-translate-y-1/2 after:top-1/2 after:right-0 order-1 self-center">
-        <div className="month font-medium leading-none">
-          {getMonth(props.order.updated_at)}
-        </div>
-        <div className="tgl font-medium text-3xl leading-none">
-          {getDay(props.order.updated_at)}
-        </div>
-        <div className="time leading-none text-[12px]">
-          {getTime(props.order.updated_at)}
+      <div className="flex-1 self-center">
+        <div className="order-image lightbox-image min-w-[80px] w-[80px] h-[80px] relative z-20 overflow-hidden rounded-sm p-1.5">
+          <SlideshowLightbox
+            showControls={false}
+            lightboxIdentifier={`${props.order.item_code}`}
+            framework="next"
+            fullScreen={true}
+            modalClose="clickOutside"
+            images={images}>
+            {images.map((image, i) => (
+              <Image
+                key={i}
+                src={image.src}
+                alt={image.alt}
+                width={250}
+                height={250}
+                className="w-full h-auto object-cover"
+                data-lightboxjs={`${props.order.item_code}`}
+                quality={50}
+              />
+            ))}
+          </SlideshowLightbox>
         </div>
       </div>
-      <div className="order-2 flex-1 lg:flex-none">
-        <div className="px-3 lg:px-6 py-2.5 flex flex-col justify-center min-h-full">
-          <div className="name text-[13px] font-medium text-gray-600 mb-1">
-            {props.order.name}
-          </div>
-          <div className="category leading-none text-[13px]">
-            {props.order.no_hp}
-          </div>
-          <div className="price text-[13px] text-gray-600 font-medium">
-            {props.order.email}
-          </div>
-        </div>
-      </div>
-      <div className="order-4 lg:order-3 w-full lg:w-auto">
-        <div className="px-3 lg:px-6 pb-2.5 md:py-2.5 flex flex-col justify-center min-h-full lg:max-w-[300px]">
-          <div className="price text-[13px] text-gray-600 font-medium">
+      <div className="order-body py-1.5 px-1.5 sm:px-3 flex flex-col gap-y-1 w-full">
+        <h4 className="font-semibold text-base">{props.order.name}</h4>
+        <div className="grid flex-1 sm:grid-flow-col">
+          <div className="date text-blue-400">{`${getDay(
+            props.order.updated_at
+          )} ${getMonth(props.order.updated_at)} ${getYear(
+            props.order.updated_at
+          )}, ${getTime(props.order.updated_at)} WIT`}</div>
+          <div className="price font-semibold text-two sm:text-base justify-self-end mt-1 self-end">
             Rp
             {props.order.price
               ? new Intl.NumberFormat("id-ID").format(props.order.price)
               : " -"}
           </div>
-          <div className="name text-[13px] font-medium text-gray-600">
-            Alamat
-          </div>
-          <div className="address leading-none text-[13px]">
-            {props.order.address}
-          </div>
-        </div>
-      </div>
-      <div className="description order-4  text-[13px] self-center w-full lg:w-0 lg:flex-1 p-2 lg:p-0 lg:py-2.5 lg:border-t-0 border-t">
-        {props.order.note ? props.order.note : "-"}
-      </div>
-      <div className="order-3 lg:order-6 text-lg self-center ml-auto lg:mx-6 p-2 flex relative">
-        <button
-          className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative z-20"
-          aria-label="Menu Order"
-          onClick={handleBtnActionOrder}>
-          <FaEllipsisVertical />
-        </button>
-        <div className="menu-item absolute z-30 top-[calc(100%)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in">
-          <ul className="bg-white gap-1 flex flex-col text-[12px] border rounded-md text-[#172838]">
-            {props.order.status == "isFinished" ? (
-              <li>
-                <button
-                  className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
-                  onClick={() => props.onStatusChange(props.order.item_code)}>
-                  <FaArrowRotateLeft />
-                  Belum Selesai
-                </button>
-              </li>
-            ) : (
-              <li>
-                <button
-                  className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
-                  onClick={() => props.onStatusChange(props.order.item_code)}>
-                  <FaCircleCheck />
-                  Selesai
-                </button>
-              </li>
-            )}
-            <li>
-              <button
-                className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
-                onClick={() => {
-                  toggleModal();
-                  setInputAction("edit");
-                  setOrder({
-                    item_code: props.order.item_code,
-                    name: props.order.name,
-                    email: props.order.email,
-                    no_hp: props.order.no_hp,
-                    address: props.order.address,
-                    price:
-                      props.order.price === null
-                        ? ""
-                        : props.order.price.toString(),
-                    note: props.order.note === null ? "" : props.order.note,
-                  });
-                }}>
-                <FaPenToSquare />
-                Edit
-              </button>
-            </li>
-            {user.role === "super admin" && (
-              <li>
-                <button
-                  className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
-                  onClick={() => props.onCancel(props.order.item_code)}>
-                  <FaTimesCircle />
-                  Batalkan
-                </button>
-              </li>
-            )}
-          </ul>
         </div>
       </div>
     </div>

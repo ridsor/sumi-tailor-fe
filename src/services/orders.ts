@@ -3,7 +3,6 @@
 import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
 import { getToken } from "./token";
 import { cookies } from "next/headers";
-import { OrderInput } from "@/app/(admin)/orders/OrderInput";
 
 export const getOrders = async ({
   page = 1,
@@ -31,7 +30,7 @@ export const getOrders = async ({
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 60,
+        revalidate: 3600 * 24,
       },
     }
   );
@@ -52,21 +51,24 @@ export const getOrders = async ({
   };
 };
 
-export const getOrderById = async (item_code: string, token: string = "") => {
+export const getOrderById = async (
+  item_code: string,
+  token: string = ""
+): Promise<OrderType> => {
   const refreshToken = await getToken();
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${item_code}?token=${token}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${item_code}`,
     {
       method: "GET",
       headers: {
         Authorization: "Bearer " + refreshToken?.authorization.access_token,
       },
-      cache: "no-store",
+      next: {
+        revalidate: 3600 * 24,
+      },
     }
-  ).catch((e) => {
-    throw e;
-  });
+  );
 
   if (res.status == 403) {
     throw new Error("Authorization");
@@ -136,16 +138,15 @@ export const resetRegisterOrder = async () => {
   return register_order.data.token;
 };
 
-export const createOrder = async (inputs: OrderInput) => {
+export const createOrder = async (formData: FormData) => {
   const token = await getToken();
 
   const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
     {
       method: "POST",
-      body: JSON.stringify(inputs),
+      body: formData,
       headers: {
-        "Content-Type": "application/json",
         Authorization: "Bearer " + token?.authorization.access_token,
       },
     }
@@ -153,5 +154,66 @@ export const createOrder = async (inputs: OrderInput) => {
 
   if (response.json) {
     return response.json();
+  }
+};
+
+export const editOrder = async (item_code: string, formData: FormData) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders/" + item_code,
+    {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: "Bearer " + token?.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.json) {
+    return response.json();
+  }
+};
+
+export const cancelOrder = async (item_code: string) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders/" + item_code,
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        Authorization: "Bearer " + token.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.status != 200) {
+    console.error("Failed to cancel");
+    return;
+  }
+};
+export const changeStatusOrder = async (item_code: string) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) +
+      "/api/orders/" +
+      item_code +
+      "/status",
+    {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        Authorization: "Bearer " + token?.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.status != 200) {
+    console.error("Failed to cancel");
+    return;
   }
 };

@@ -4,14 +4,14 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export interface OrderType {
   item_code: string;
   name: string;
-  email: string;
-  no_hp: "";
-  address: "";
+  no_hp: string;
+  address: string;
   price: number | null;
   note: string;
   status: string;
-  created_at: string | number;
-  updated_at: string | number;
+  image: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PaginationType {
