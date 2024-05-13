@@ -90,23 +90,25 @@ const ProfilePage = () => {
 
     try {
       image = image as File;
-      if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "Berkas tidak mendukung",
-        }));
-        result = true;
-      } else if (image.size > 1 * 1000 * 1024) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "File harus kurang dari 1024",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          image: "",
-        }));
+      if (image) {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "Berkas tidak mendukung",
+          }));
+          result = true;
+        } else if (image.size > 1 * 1000 * 1024) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "File harus kurang dari 1024",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            image: "",
+          }));
+        }
       }
     } catch (e) {
       console.error(e);
