@@ -211,9 +211,7 @@ export default function OrderInput(props: Props) {
   };
 
   const resetInput = useCallback(() => {
-    setImagePreviewUrl(
-      `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`
-    );
+    setImagePreviewUrl(`${props.order.image}`);
     if (imageRef.current) {
       imageRef.current.value = "";
     }
@@ -494,7 +492,7 @@ export default function OrderInput(props: Props) {
                 <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400 lightbox-image">
                   <SlideshowLightbox
                     showControls={false}
-                    lightboxIdentifier="lightbox2"
+                    lightboxIdentifier="lightbox-edit-order"
                     framework="next"
                     fullScreen={true}
                     modalClose="clickOutside"
@@ -505,7 +503,7 @@ export default function OrderInput(props: Props) {
                       width={250}
                       height={250}
                       className="!w-full !h-full object-cover object-center"
-                      data-lightboxjs="lightbox2"
+                      data-lightboxjs="lightbox-edit-order"
                       quality={50}
                     />
                   </SlideshowLightbox>

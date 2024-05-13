@@ -62,7 +62,7 @@ export default function OrdersPage() {
         : 1;
       const limit = searchParams.has("limit")
         ? Number(searchParams.get("limit"))
-        : 5;
+        : 8;
       const search = searchParams.get("s") || "";
 
       dispatch(changePage(page));
