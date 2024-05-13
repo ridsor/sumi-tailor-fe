@@ -141,6 +141,7 @@ export default function DetailOrder() {
                     alt={image.alt}
                     width={300}
                     height={300}
+                    priority
                     className="w-full h-auto object-cover"
                     data-lightboxjs={order.data.item_code}
                     quality={50}
@@ -152,7 +153,7 @@ export default function DetailOrder() {
               className="border flex flex-col rounded-md py-2 px-3 border-five flex-1"
               id="note">
               <h6 className="font-semibold">Catatan</h6>
-              <p className="flex-1">{order.data.note} lorem100</p>
+              <p className="flex-1">{order.data.note}</p>
               <hr className="my-3 border-five" />
               <div className="text-[12px]">Total Harga</div>
               <div className="font-bold" id="price">
