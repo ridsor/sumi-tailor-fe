@@ -478,7 +478,7 @@ export default function OrderInput(props: Props) {
                 <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400 lightbox-image">
                   <SlideshowLightbox
                     showControls={false}
-                    lightboxIdentifier="lightbox2"
+                    lightboxIdentifier="lightbox-create-order"
                     framework="next"
                     fullScreen={true}
                     modalClose="clickOutside"
@@ -489,7 +489,7 @@ export default function OrderInput(props: Props) {
                       width={250}
                       height={250}
                       className="w-full h-auto object-cover"
-                      data-lightboxjs="lightbox2"
+                      data-lightboxjs="lightbox-create-order"
                       quality={50}
                     />
                   </SlideshowLightbox>

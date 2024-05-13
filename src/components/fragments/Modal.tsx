@@ -35,7 +35,8 @@ export default function Modal({
         onClick={() => openclose()}></div>
       <div className="w-full h-full overflow-auto py-5">
         <div
-          className={`max-w-[${size}px] mx-auto w-full flex items-center min-h-full`}>
+          className={`mx-auto w-full flex items-center min-h-full`}
+          style={{ maxWidth: size }}>
           <div
             className={`w-full rounded-md min-h-fit shadow-md relative z-20 ${
               !bg ? "bg-white" : ""

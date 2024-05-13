@@ -45,7 +45,7 @@ export default function DetailOrder() {
 
   const images = [
     {
-      src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${order.data.image}`,
+      src: `${order.data.image}`,
       alt: order.data.name,
     },
   ];
@@ -127,7 +127,7 @@ export default function DetailOrder() {
             <div className="lightbox-image min-w-[150px] w-[150px] h-[150px] relative z-20 overflow-hidden rounded-sm mb-3">
               <SlideshowLightbox
                 showControls={false}
-                lightboxIdentifier="lightbox1"
+                lightboxIdentifier={order.data.item_code}
                 framework="next"
                 fullScreen={true}
                 modalClose="clickOutside"
@@ -140,7 +140,7 @@ export default function DetailOrder() {
                     width={300}
                     height={300}
                     className="w-full h-auto object-cover"
-                    data-lightboxjs="lightbox1"
+                    data-lightboxjs={order.data.item_code}
                     quality={50}
                   />
                 ))}

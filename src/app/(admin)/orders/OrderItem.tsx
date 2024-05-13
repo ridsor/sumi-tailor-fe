@@ -11,7 +11,7 @@ interface Props {
 export default function OrderItem(props: Props) {
   const images = [
     {
-      src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`,
+      src: `${props.order.image}`,
       alt: props.order.name,
     },
   ];
@@ -26,7 +26,7 @@ export default function OrderItem(props: Props) {
         <div className="order-image lightbox-image min-w-[80px] w-[80px] h-[80px] relative z-20 overflow-hidden rounded-sm p-1.5">
           <SlideshowLightbox
             showControls={false}
-            lightboxIdentifier="lightbox1"
+            lightboxIdentifier={`${props.order.item_code}`}
             framework="next"
             fullScreen={true}
             modalClose="clickOutside"
@@ -39,7 +39,7 @@ export default function OrderItem(props: Props) {
                 width={250}
                 height={250}
                 className="w-full h-auto object-cover"
-                data-lightboxjs="lightbox1"
+                data-lightboxjs={`${props.order.item_code}`}
                 quality={50}
               />
             ))}

@@ -12,6 +12,9 @@ export default function OrdersLoading() {
         <div className="w-[36px] aspect-square rounded-full bg-[#bdc3c7]"></div>
         <div className="w-[36px] aspect-square rounded-full bg-[#bdc3c7]"></div>
         <div className="w-[36px] aspect-square rounded-full bg-[#bdc3c7]"></div>
+        <div className="w-[36px] aspect-square rounded-full bg-[#bdc3c7]"></div>
+        <div className="w-[36px] aspect-square rounded-full bg-[#bdc3c7]"></div>
+        <div className="w-[36px] aspect-square rounded-full bg-[#bdc3c7]"></div>
       </div>
     </div>
   );
