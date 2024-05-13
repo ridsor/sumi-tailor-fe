@@ -246,7 +246,6 @@ export default function OrderInput(props: Props) {
       formData.append("image", inputs.image as File);
 
       const createResponse = await createOrder(formData);
-      console.log(createResponse);
 
       if (createResponse?.status != "success") {
         console.error("Failed to input");

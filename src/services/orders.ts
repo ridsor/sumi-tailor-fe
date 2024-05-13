@@ -158,6 +158,25 @@ export const createOrder = async (formData: FormData) => {
   }
 };
 
+export const editOrder = async (item_code: string, formData: FormData) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders/" + item_code,
+    {
+      method: "PUT",
+      body: formData,
+      headers: {
+        Authorization: "Bearer " + token?.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.json) {
+    return response.json();
+  }
+};
+
 export const cancelOrder = async (item_code: string) => {
   const token = await getToken();
 
