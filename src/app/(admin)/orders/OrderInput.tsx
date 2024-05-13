@@ -237,7 +237,16 @@ export default function OrderInput(props: Props) {
     setInputLoading(true);
 
     try {
-      const createResponse = await createOrder(inputs);
+      const formData = new FormData();
+      formData.append("name", inputs.name);
+      formData.append("no_hp", inputs.no_hp);
+      formData.append("address", inputs.address);
+      formData.append("price", inputs.price);
+      formData.append("note", inputs.note);
+      formData.append("image", inputs.image as File);
+
+      const createResponse = await createOrder(formData);
+      console.log(createResponse);
 
       if (createResponse?.status != "success") {
         console.error("Failed to input");

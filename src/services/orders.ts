@@ -139,16 +139,15 @@ export const resetRegisterOrder = async () => {
   return register_order.data.token;
 };
 
-export const createOrder = async (inputs: OrderInput) => {
+export const createOrder = async (formData: FormData) => {
   const token = await getToken();
 
   const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
     {
       method: "POST",
-      body: JSON.stringify(inputs),
+      body: formData,
       headers: {
-        "Content-Type": "application/json",
         Authorization: "Bearer " + token?.authorization.access_token,
       },
     }

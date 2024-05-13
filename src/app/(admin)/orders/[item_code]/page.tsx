@@ -45,7 +45,9 @@ export default function DetailOrder() {
 
   const images = [
     {
-      src: `${order.data.image}`,
+      src: order.data.image.startsWith("http")
+        ? order.data.image
+        : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${order.data.image}`,
       alt: order.data.name,
     },
   ];
@@ -79,7 +81,7 @@ export default function DetailOrder() {
     <main>
       <section className="py-15 md:text-base">
         <div className="container border-4 h-screen flex flex-col max-h-[1080px] min-h-[508px]">
-          <div className="flex justify-between px-4 py-2 border-b border-five items-center">
+          <div className="flex justify-between px-4 py-2 border-b border-five items-center gap-2">
             <h1 className="font-bold text-xl md:text-3xl">Detail Pesanan</h1>
             <OrderMenu
               order={order.data}
@@ -93,26 +95,26 @@ export default function DetailOrder() {
               {order.data.status === "isFinished" ? "Selesai" : "Diproses"}
             </h2>
             <div className="flex mb-2">
-              <div className="flex justify-between flex-1">
-                <span>Nama</span>
+              <div className="flex justify-between flex-1 gap-2">
+                <span className="font-semibold">Nama</span>
                 <span id="name">{order.data.name}</span>
               </div>
             </div>
             <div className="flex mb-2">
-              <div className="flex justify-between flex-1">
-                <span>No Handphone</span>
+              <div className="flex justify-between flex-1 gap-2">
+                <span className="font-semibold">No Handphone</span>
                 <span id="no_hp">{order.data.no_hp}</span>
               </div>
             </div>
             <div className="flex mb-2">
-              <div className="flex justify-between flex-1">
-                <span>Alamat</span>
+              <div className="flex justify-between flex-1 gap-2">
+                <span className="font-semibold">Alamat</span>
                 <span id="address">{order.data.address}</span>
               </div>
             </div>
             <div className="flex mb-3">
-              <div className="flex justify-between flex-1">
-                <span>Tanggal Pembelian</span>
+              <div className="flex justify-between flex-1 gap-2">
+                <span className="font-semibold">Tanggal Pemesanan</span>
                 <span id="date">
                   {`${getDay(order.data.updated_at)} ${getMonth(
                     order.data.updated_at
