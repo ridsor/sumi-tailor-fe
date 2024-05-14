@@ -30,19 +30,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     }
-
-    if (pathname === "/register-order") {
-      const token = request.nextUrl.searchParams.get("token") || "";
-      const registerOrderResponse = await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) +
-          "/api/orders/register-order/check?token=" +
-          token
-      );
-
-      if (registerOrderResponse.status != 200) {
-        return NextResponse.redirect(new URL("/", request.url));
-      }
-    }
   } catch (e) {
     console.error(e);
     return NextResponse.redirect(new URL("/", request.url));

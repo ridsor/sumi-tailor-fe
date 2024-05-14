@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import OrderInput from "@/app/(admin)/orders/OrderInput";
 import OrderList from "@/app/(admin)/orders/OrderList";
-import TokenModal from "./TokenModal";
 import OrderSearch from "./OrderSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
@@ -37,15 +36,12 @@ export default function OrdersPage() {
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
-  const [isTokenModal, setTokenModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
 
   const toggleOrderModal = () => {
     setOrderModal((prev) => !prev);
   };
-  const toggleTokenModal = () => {
-    setTokenModal((prev) => !prev);
-  };
+
   const handleOrderSearch = (value: string) => {
     clearTimeout(searchTimeout);
 
@@ -107,12 +103,6 @@ export default function OrdersPage() {
             <OrderInput modal={isOrderModal} toggleModal={toggleOrderModal} />
             <div className="relative">
               <h2 className="text-2xl font-bold mb-2">Daftar Pesanan</h2>
-              <button
-                className="text-gray-500 mb-4"
-                onClick={() => toggleTokenModal()}>
-                Token pendaftaran pesanan
-              </button>
-              <TokenModal active={isTokenModal} openclose={toggleTokenModal} />
               <OrderSearch
                 onSearch={handleOrderSearch}
                 value={searchParams.get("s") || ""}
