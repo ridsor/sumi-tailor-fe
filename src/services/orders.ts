@@ -54,7 +54,7 @@ export const getOrders = async ({
 export const getOrderById = async (
   item_code: string,
   token: string = ""
-): Promise<OrderType> => {
+): Promise<OrderType | undefined> => {
   const refreshToken = await getToken();
 
   const res = await fetch(
@@ -70,16 +70,10 @@ export const getOrderById = async (
     }
   );
 
-  if (res.status == 403) {
-    throw new Error("Authorization");
+  if (res.status == 200) {
+    const order = await res.json();
+    return order.data;
   }
-
-  if (res.status != 200) {
-    throw new Error("Failed to fetch data");
-  }
-  const order = await res.json();
-
-  return order.data;
 };
 
 export const getRegisterOrder = async () => {

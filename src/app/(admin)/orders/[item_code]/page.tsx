@@ -15,6 +15,7 @@ import Loading from "./loading";
 import OrderInput from "./OrderInput";
 import { SlideshowLightbox } from "lightbox.js-react";
 import Image from "next/image";
+import NotFound from "./NotFound";
 
 export default function DetailOrder() {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ export default function DetailOrder() {
 
   const [isInputModal, setInputModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [isNotFound, setNotFound] = useState<boolean>(false);
   const [order, setOrder] = useState<{
     loading: boolean;
     data: OrderType & { item_code: string };
@@ -71,12 +73,18 @@ export default function DetailOrder() {
   useEffect(() => {
     if (!isLoading) {
       try {
-        getOrderById(params.item_code).then((order) =>
-          setOrder({
-            loading: false,
-            data: order,
-          })
-        );
+        getOrderById(params.item_code).then((order) => {
+          if (order) {
+            setNotFound(false);
+
+            setOrder({
+              loading: false,
+              data: order,
+            });
+          } else {
+            setNotFound(true);
+          }
+        });
       } catch (e) {
         console.error(e);
       }
@@ -85,9 +93,15 @@ export default function DetailOrder() {
     }
   }, [isLoading, params.item_code]);
 
-  return order.loading ? (
-    <Loading />
-  ) : (
+  if (isNotFound) {
+    return <NotFound />;
+  }
+
+  if (order.loading) {
+    return <Loading />;
+  }
+
+  return (
     <main>
       <section className="py-15 md:text-base">
         <div className="container border-4 h-screen flex flex-col max-h-[1080px] min-h-[508px]">
