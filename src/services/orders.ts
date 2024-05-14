@@ -31,6 +31,7 @@ export const getOrders = async ({
       },
       next: {
         revalidate: 3600 * 24,
+        tags: ["orders"],
       },
     }
   );
@@ -189,6 +190,7 @@ export const cancelOrder = async (item_code: string) => {
     return;
   }
 };
+
 export const changeStatusOrder = async (item_code: string) => {
   const token = await getToken();
 

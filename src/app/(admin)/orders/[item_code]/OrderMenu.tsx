@@ -1,6 +1,11 @@
 "use client";
 
-import { OrderType } from "@/lib/redux/features/ordersSlice";
+import {
+  OrderType,
+  changePage,
+  handlePageOrderFinished,
+  handlePageOrderUnfinished,
+} from "@/lib/redux/features/ordersSlice";
 import {
   FaArrowRotateLeft,
   FaCircleCheck,
@@ -13,6 +18,9 @@ import { cancelOrder, changeStatusOrder } from "@/services/orders";
 import { FaTimesCircle } from "react-icons/fa";
 import { User } from "@/lib/redux/features/userSlice";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { useAppDispatch } from "@/lib/redux/hooks";
 
 interface Props {
   order: OrderType & { item_code: string };
@@ -22,6 +30,8 @@ interface Props {
 }
 
 export default function OrderMenu(props: Props) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [orderMenu, setOrderMenu] = useState<boolean>(false);
 
   const handleStatusChange = async (item_code: string) => {
@@ -74,21 +84,29 @@ export default function OrderMenu(props: Props) {
       if (result.isConfirmed) {
         const isDelete = cancelOrder(item_code);
         if (!isDelete) {
-          withReactContent(Swal)
-            .mixin({
-              customClass: {
-                popup: "max-w-[200px] w-full h-[100px]",
-                icon: "scale-50 -translate-y-8",
-              },
-              buttonsStyling: false,
-            })
-            .fire({
-              position: "top-end",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 500,
-            });
+          return;
         }
+        withReactContent(Swal)
+          .mixin({
+            customClass: {
+              popup: "max-w-[200px] w-full h-[100px]",
+              icon: "scale-50 -translate-y-8",
+            },
+            buttonsStyling: false,
+          })
+          .fire({
+            position: "top-end",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 500,
+          });
+
+        setTimeout(async () => {
+          await dispatch(handlePageOrderUnfinished({ page: 1, limit: 8 }));
+          await dispatch(handlePageOrderFinished({ page: 1, limit: 8 }));
+
+          router.push("/orders");
+        }, 500);
       }
     } catch (e) {
       console.error(e);
