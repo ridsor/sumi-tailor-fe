@@ -111,7 +111,7 @@ const Header = () => {
             <Link
               aria-label="Halaman User"
               href={user.id !== "" ? "/dashboard" : "/login"}
-              className="bg-white p-3 rounded-full block hover:ring ring-[rgba(255,255,255,.3)]">
+              className="bg-white p-3 rounded-full block active:ring ring-[rgba(255,255,255,.3)]">
               <FaUser className="fill-two" size="1.2rem" />
             </Link>
           </div>
