@@ -129,7 +129,7 @@ export default async function DashboardPage() {
               <div className="w-full lg:w-8/12">
                 <div className="flex gap-2 h-full">
                   <div className="w-1/2 h-full">
-                    <div className="h-full p-3 flex items-center justify-center bg-white border-[#d7d3cc] border w-full max-w-[300px] mx-auto rounded-xl">
+                    <div className="h-full p-2 flex items-center justify-center bg-white border-[#d7d3cc] border w-full max-w-[300px] mx-auto rounded-xl">
                       <div>
                         <div className="text-center font-semibold">
                           Total Pesanan Bulan Ini
@@ -186,14 +186,14 @@ export default async function DashboardPage() {
                     </div>
                   </div>
                   <div className="w-1/2 h-full">
-                    <div className="flex items-center justify-center h-full p-3s bg-white border-[#d7d3cc] border w-full max-w-[300px] mx-auto rounded-xl">
+                    <div className="flex items-center justify-center h-full p-2 bg-white border-[#d7d3cc] border w-full max-w-[300px] mx-auto rounded-xl">
                       <div>
                         <div className="text-center font-semibold">
                           Total Penghasilan Bulan Ini
                         </div>
                         <div className="flex justify-center items-center gap-2 flex-col lg:flex-row">
                           <div className="value font-bold text-xl lg:text-2xl">
-                            Rp. {abbreviateNumber(total_income[5])}
+                            Rp{abbreviateNumber(total_income[5])}
                           </div>
                           <div
                             className={`${

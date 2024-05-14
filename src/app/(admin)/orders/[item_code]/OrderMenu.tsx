@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import { cancelOrder, changeStatusOrder } from "@/services/orders";
 import { FaTimesCircle } from "react-icons/fa";
 import { User } from "@/lib/redux/features/userSlice";
+import { useState } from "react";
 
 interface Props {
   order: OrderType & { item_code: string };
@@ -20,9 +21,7 @@ interface Props {
 }
 
 export default function OrderMenu(props: Props) {
-  const handleBtnActionOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.nextElementSibling?.classList.toggle("active");
-  };
+  const [orderMenu, setOrderMenu] = useState<boolean>(false);
 
   const handleStatusChange = async (item_code: string) => {
     try {
@@ -94,14 +93,24 @@ export default function OrderMenu(props: Props) {
 
   return (
     <>
+      {orderMenu && (
+        <button
+          onClick={() => setOrderMenu(false)}
+          className="hamburger fixed z-30 top-0 bottom-0 right-0 left-0 bg-transparent"></button>
+      )}
       <div className="text-lg flex relative">
         <button
-          className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative z-20"
-          aria-label="Menu Order"
-          onClick={handleBtnActionOrder}>
+          className="bg-[#F8F8F8] p-3 rounded-md shadow-sm border relative z-50"
+          aria-label="Order Menu"
+          onClick={() => setOrderMenu((prev) => !prev)}>
           <FaEllipsisVertical />
         </button>
-        <div className="menu-item absolute z-30 top-[calc(100%+1rem)] right-0 w-[250px] pointer-events-none opacity-0 transition-all ease-in">
+        <div
+          className={`${
+            orderMenu
+              ? "opacity-100 pointer-events-auto"
+              : "pointer-events-none opacity-0"
+          } order-menu absolute z-40 top-[calc(100%+1rem)] right-0 w-[250px] transition-all ease-in`}>
           <ul className="bg-white gap-1 flex flex-col text-[12px] border rounded-md text-[#172838]">
             {props.order.status == "isFinished" ? (
               <li>
