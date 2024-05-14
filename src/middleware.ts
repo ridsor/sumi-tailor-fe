@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchAuth } from "./services/auth";
+import { routeFiltering } from "./utils/middleware";
 
 export const protectedRoutes = [
   "/dashboard",
   "/profile",
-  "/orders",
+  "/orders*",
   "/accounts",
 ];
 export const authRoutes = ["/login"];
+export const authDynamicRoutes = ["/orders"];
 export const publicRoutes = ["/", "/about", "/gallery", "/service"];
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
   try {
-    if (protectedRoutes.includes(pathname)) {
+    if (routeFiltering(pathname, protectedRoutes)) {
       const user = await fetchAuth();
 
       if (user?.status != "success") {
