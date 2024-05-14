@@ -328,6 +328,7 @@ export default function OrderInput(props: Props) {
       resetInput();
     }
   }, [props.isModal, resetInput]);
+
   return (
     <Modal active={props.isModal} openclose={props.toggleModal}>
       <div className="container max-w-full">
