@@ -54,7 +54,7 @@ export default function DetailOrder() {
 
   const toggleInputModal = () => setInputModal((prev) => !prev);
 
-  const handleChangeStatus = (status: string) => {
+  const handleChangeStatus = () => {
     setOrder((prev) => ({
       ...prev,
       data: {
