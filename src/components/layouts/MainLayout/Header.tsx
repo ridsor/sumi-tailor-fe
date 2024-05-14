@@ -68,7 +68,7 @@ const Header = () => {
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
                     }`}>
-                    Home
+                    Beranda
                   </Link>
                 </li>
                 <li>
@@ -79,7 +79,7 @@ const Header = () => {
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
                     }`}>
-                    About Us
+                    Tentang Kami
                   </Link>
                 </li>
                 <li>
@@ -90,7 +90,7 @@ const Header = () => {
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
                     }`}>
-                    Gallery
+                    Galeri
                   </Link>
                 </li>
                 <li>
@@ -101,7 +101,7 @@ const Header = () => {
                         ? "after:w-5"
                         : "after:w-0 hover:after:w-5 lg:text-[#cdcdcd] hover:lg:text-white"
                     }`}>
-                    Service
+                    Layanan
                   </Link>
                 </li>
               </ul>
@@ -111,7 +111,7 @@ const Header = () => {
             <Link
               aria-label="Halaman User"
               href={user.id !== "" ? "/dashboard" : "/login"}
-              className="bg-white p-3 rounded-full block">
+              className="bg-white p-3 rounded-full block active:ring ring-[rgba(255,255,255,.3)]">
               <FaUser className="fill-two" size="1.2rem" />
             </Link>
           </div>

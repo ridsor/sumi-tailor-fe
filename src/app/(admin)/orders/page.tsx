@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import OrderInput from "@/app/(admin)/orders/OrderInput";
 import OrderList from "@/app/(admin)/orders/OrderList";
