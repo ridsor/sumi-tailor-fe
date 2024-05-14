@@ -18,6 +18,7 @@ interface Props {
   order: OrderType & { item_code: string };
   user: User;
   toggleModal: () => void;
+  onChangeStatus: (status: string) => void;
 }
 
 export default function OrderMenu(props: Props) {
@@ -29,6 +30,9 @@ export default function OrderMenu(props: Props) {
       if (!isChange) {
         return;
       }
+
+      props.onChangeStatus(props.order.status);
+
       withReactContent(Swal)
         .mixin({
           customClass: {

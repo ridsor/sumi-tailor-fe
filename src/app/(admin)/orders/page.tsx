@@ -7,7 +7,7 @@ import OrderList from "@/app/(admin)/orders/OrderList";
 import TokenModal from "./TokenModal";
 import OrderSearch from "./OrderSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   changePage,
   handlePageOrderFinished,
@@ -29,6 +29,11 @@ export default function OrdersPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
+
+  const ordersFinished = useAppSelector((state) => state.orders.ordersFinished);
+  const ordersUnfinished = useAppSelector(
+    (state) => state.orders.ordersUnfinished
+  );
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
@@ -57,18 +62,33 @@ export default function OrdersPage() {
     if (isLoading) {
       setLoading(false);
     } else {
-      const page = searchParams.has("page")
-        ? Number(searchParams.get("page"))
+      const ofpage = searchParams.has("ofpage")
+        ? Number(searchParams.get("ofpage"))
+        : 1;
+      const oupage = searchParams.has("oupage")
+        ? Number(searchParams.get("oupage"))
         : 1;
       const limit = searchParams.has("limit")
         ? Number(searchParams.get("limit"))
         : 8;
       const search = searchParams.get("s") || "";
 
-      dispatch(changePage(page));
-      dispatch(handlePageOrderUnfinished({ page, limit, search }));
-      dispatch(handlePageOrderFinished({ page, limit, search }));
+      dispatch(
+        changePage({
+          ordersFinished: ofpage,
+          ordersUnfinished: oupage,
+        })
+      );
+
+      if (ordersFinished.pagination.page != ofpage) {
+        dispatch(handlePageOrderFinished({ page: ofpage, limit, search }));
+      }
+
+      if (ordersUnfinished.pagination.page != oupage) {
+        dispatch(handlePageOrderUnfinished({ page: oupage, limit, search }));
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, dispatch, isLoading]);
 
   return (
@@ -97,7 +117,11 @@ export default function OrdersPage() {
                 onSearch={handleOrderSearch}
                 value={searchParams.get("s") || ""}
               />
-              <OrderList isLoading={isLoading} />
+              <OrderList
+                isLoading={isLoading}
+                ordersFinished={ordersFinished}
+                ordersUnfinished={ordersUnfinished}
+              />
             </div>
           </article>
         </div>

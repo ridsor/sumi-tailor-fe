@@ -54,6 +54,16 @@ export default function DetailOrder() {
 
   const toggleInputModal = () => setInputModal((prev) => !prev);
 
+  const handleChangeStatus = (status: string) => {
+    setOrder((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data,
+        status: prev.data.status === "isProcess" ? "isFinished" : "isProcess",
+      },
+    }));
+  };
+
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
@@ -84,6 +94,7 @@ export default function DetailOrder() {
           <div className="flex justify-between px-4 py-2 border-b border-five items-center gap-2">
             <h1 className="font-bold text-xl md:text-3xl">Detail Pesanan</h1>
             <OrderMenu
+              onChangeStatus={handleChangeStatus}
               order={order.data}
               user={user}
               toggleModal={toggleInputModal}
@@ -91,8 +102,10 @@ export default function DetailOrder() {
           </div>
           <div className="px-4">
             <h2 className="font-semibold text-base md:text-xl border-b py-2 mb-3 border-five">
-              Pesanan{" "}
-              {order.data.status === "isFinished" ? "Selesai" : "Diproses"}
+              Status Pesanan:{" "}
+              <span className="font-bold">
+                {order.data.status === "isFinished" ? "Selesai" : "Diproses"}
+              </span>
             </h2>
             <div className="flex mb-2">
               <div className="flex justify-between flex-1 gap-2">
