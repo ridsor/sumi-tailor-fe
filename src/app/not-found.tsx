@@ -17,21 +17,21 @@ export default function notfound() {
               <div className="relative md:flex-[.5] min-w-fit flex-1">
                 <h1 className="font-bold font-one text-3xl text-black">404</h1>
                 <h2 className="font-semibold font-one text-xl text-black">
-                  Ooops!
+                  Uuups!
                 </h2>
                 <h2 className="font-semibold font-one text-xl text-black mb-3">
-                  Page Not Found
+                  Halaman Tidak Ditemukan
                 </h2>
                 <p className="text-two text-sm mb-6">
-                  This page doesnt exist or was removed!
+                  Pesanan ini tidak ada atau telah dihapus!
                   <br />
-                  We suggent you back yto home
+                  Kami menyarankan Anda kembali ke rumah
                 </p>
                 <Link
                   href="/"
                   className="relative inline-block before:rounded-full before:content-[''] before:block before:w-full before:h-full before:absolute before:-top-0.5 before:-left-0.5 before:bg-four">
                   <div className="px-6 py-2 text-black border border-black rounded-full bg-transparent relative">
-                    Back to home
+                    Kembali Ke Beranda
                   </div>
                 </Link>
               </div>
