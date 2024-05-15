@@ -5,12 +5,18 @@ import Swal from "sweetalert2";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getToken } from "@/services/token";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import {
+  handlePageOrderFinished,
+  handlePageOrderUnfinished,
+} from "@/lib/redux/features/ordersSlice";
 
 interface Props {
   item_code: string;
 }
 
 export default function OrderConfirmation(props: Props) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -77,9 +83,12 @@ export default function OrderConfirmation(props: Props) {
             timer: 500,
           });
 
-        setTimeout(() => {
-          router.push("/orders");
+        setTimeout(async () => {
+          await dispatch(handlePageOrderUnfinished({ page: 1, limit: 8 }));
+          await dispatch(handlePageOrderFinished({ page: 1, limit: 8 }));
+
           setLoading(false);
+          router.push("/orders");
         }, 500);
       } else {
       }
