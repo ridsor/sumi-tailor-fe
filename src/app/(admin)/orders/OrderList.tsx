@@ -4,23 +4,25 @@ import "slick-carousel/slick/slick.css";
 import "./style.css";
 import Order from "./OrderItem";
 import Pagination from "@/components/fragments/Pagination";
-import { useAppSelector } from "@/lib/redux/hooks";
 import "lightbox.js-react/dist/index.css";
 import OrdersLoading from "./OrdersLoading";
+import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
 
 interface Props {
   isLoading: boolean;
+  ordersFinished: {
+    data: OrderType[];
+    pagination: PaginationType;
+    loading: boolean;
+  };
+  ordersUnfinished: {
+    data: OrderType[];
+    pagination: PaginationType;
+    loading: boolean;
+  };
 }
 
 export default function OrderList(props: Props) {
-  const ordersItemLoading = useAppSelector(
-    (state) => state.orders.ordersItemLoading
-  );
-  const ordersFinished = useAppSelector((state) => state.orders.ordersFinished);
-  const ordersUnfinished = useAppSelector(
-    (state) => state.orders.ordersUnfinished
-  );
-
   const sliderSettings = useMemo(
     () => ({
       dots: true,
@@ -35,13 +37,13 @@ export default function OrderList(props: Props) {
 
   return (
     <Slider {...sliderSettings}>
-      {ordersUnfinished.loading || ordersItemLoading || props.isLoading ? (
+      {props.ordersUnfinished.loading || props.isLoading ? (
         <OrdersLoading />
       ) : (
         <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
-          {ordersUnfinished.data.length > 0 ? (
+          {props.ordersUnfinished.data.length > 0 ? (
             <div className="columns-[350px] lg:columns-2 gap-3">
-              {ordersUnfinished.data.map((order) => (
+              {props.ordersUnfinished.data.map((order) => (
                 <Order key={order.item_code} order={order} />
               ))}
             </div>
@@ -51,21 +53,22 @@ export default function OrderList(props: Props) {
             </h2>
           )}
           <Pagination
+            status="isProcess"
             totalPages={Math.ceil(
-              Number(ordersUnfinished.pagination.total) /
-                Number(ordersUnfinished.pagination.limit)
+              Number(props.ordersUnfinished.pagination.total) /
+                Number(props.ordersUnfinished.pagination.limit)
             )}
-            page={Number(ordersUnfinished.pagination.page)}
+            page={Number(props.ordersUnfinished.pagination.page)}
           />
         </div>
       )}
-      {ordersFinished.loading || ordersItemLoading || props.isLoading ? (
+      {props.ordersFinished.loading || props.isLoading ? (
         <OrdersLoading />
       ) : (
         <div className="orders finished !flex flex-col gap-2 pb-10 w-full p-1">
-          {ordersFinished.data.length > 0 ? (
+          {props.ordersFinished.data.length > 0 ? (
             <div className="columns-[350px] lg:columns-2 gap-3">
-              {ordersFinished.data.map((order) => (
+              {props.ordersFinished.data.map((order) => (
                 <Order key={order.item_code} order={order} />
               ))}
             </div>
@@ -75,11 +78,12 @@ export default function OrderList(props: Props) {
             </h2>
           )}
           <Pagination
+            status="isFinished"
             totalPages={Math.ceil(
-              Number(ordersFinished.pagination.total) /
-                Number(ordersFinished.pagination.limit)
+              Number(props.ordersFinished.pagination.total) /
+                Number(props.ordersFinished.pagination.limit)
             )}
-            page={Number(ordersFinished.pagination.page)}
+            page={Number(props.ordersFinished.pagination.page)}
           />
         </div>
       )}

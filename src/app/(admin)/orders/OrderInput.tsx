@@ -259,12 +259,23 @@ export default function OrderInput(props: Props) {
         return;
       }
 
-      if (searchParams.get("page") != null && searchParams.get("page") != "1") {
-        router.push("/orders?page=1");
+      if (
+        searchParams.get("oupage") != null &&
+        searchParams.get("oupage") != "1"
+      ) {
+        router.push("/orders");
+      } else {
+        const search = searchParams.get("s") || "";
+        dispatch(handlePageOrderUnfinished({ page: 1, search }));
+      }
+      if (
+        searchParams.get("ofpage") != null &&
+        searchParams.get("ofpage") != "1"
+      ) {
+        router.push("/orders");
       } else {
         const search = searchParams.get("s") || "";
         dispatch(handlePageOrderFinished({ page: 1, search }));
-        dispatch(handlePageOrderUnfinished({ page: 1, search }));
       }
 
       withReactContent(Swal)

@@ -17,7 +17,7 @@ export interface OrderType {
 export interface PaginationType {
   limit: number;
   total: number;
-  page: number;
+  page?: number;
 }
 
 export const handlePageOrderFinished = createAsyncThunk<
@@ -105,14 +105,12 @@ const initialState: {
     pagination: PaginationType;
     loading: boolean;
   };
-  ordersItemLoading: boolean;
 } = {
   ordersFinished: {
     data: [],
     pagination: {
       limit: 5,
       total: 1,
-      page: 1,
     },
     loading: true,
   },
@@ -121,29 +119,33 @@ const initialState: {
     pagination: {
       limit: 5,
       total: 1,
-      page: 1,
     },
     loading: true,
   },
-  ordersItemLoading: false,
 };
 
 const ordersSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
-    changePage(state, action: PayloadAction<number>) {
-      state.ordersFinished.pagination.page = action.payload;
-      state.ordersUnfinished.pagination.page = action.payload;
-    },
-    changeOrdersItemLoading(state, action: PayloadAction<boolean>) {
-      state.ordersItemLoading = action.payload;
+    changePage(
+      state,
+      action: PayloadAction<{
+        ordersFinished: number;
+        ordersUnfinished: number;
+      }>
+    ) {
+      state.ordersFinished.pagination.page = action.payload.ordersFinished;
+      state.ordersUnfinished.pagination.page = action.payload.ordersUnfinished;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(handlePageOrderFinished.pending, (state) => {
-        state.ordersItemLoading = true;
+        state.ordersFinished.loading = true;
+      })
+      .addCase(handlePageOrderUnfinished.pending, (state) => {
+        state.ordersUnfinished.loading = true;
       })
       .addCase(
         handlePageOrderFinished.fulfilled,
@@ -174,16 +176,14 @@ const ordersSlice = createSlice({
           state.ordersUnfinished.data = action.payload.data;
           state.ordersUnfinished.pagination = action.payload.pagination;
           state.ordersUnfinished.loading = false;
-          state.ordersItemLoading = false;
         }
       )
       .addCase(handlePageOrderUnfinished.rejected, (state) => {
         state.ordersUnfinished.loading = false;
-        state.ordersItemLoading = false;
       });
   },
 });
 
-export const { changePage, changeOrdersItemLoading } = ordersSlice.actions;
+export const { changePage } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

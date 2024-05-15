@@ -15,6 +15,7 @@ import Loading from "./loading";
 import OrderInput from "./OrderInput";
 import { SlideshowLightbox } from "lightbox.js-react";
 import Image from "next/image";
+import NotFound from "./NotFound";
 
 export default function DetailOrder() {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ export default function DetailOrder() {
 
   const [isInputModal, setInputModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [isNotFound, setNotFound] = useState<boolean>(false);
   const [order, setOrder] = useState<{
     loading: boolean;
     data: OrderType & { item_code: string };
@@ -54,6 +56,16 @@ export default function DetailOrder() {
 
   const toggleInputModal = () => setInputModal((prev) => !prev);
 
+  const handleChangeStatus = () => {
+    setOrder((prev) => ({
+      ...prev,
+      data: {
+        ...prev.data,
+        status: prev.data.status === "isProcess" ? "isFinished" : "isProcess",
+      },
+    }));
+  };
+
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
@@ -61,12 +73,18 @@ export default function DetailOrder() {
   useEffect(() => {
     if (!isLoading) {
       try {
-        getOrderById(params.item_code).then((order) =>
-          setOrder({
-            loading: false,
-            data: order,
-          })
-        );
+        getOrderById(params.item_code).then((order) => {
+          if (order) {
+            setNotFound(false);
+
+            setOrder({
+              loading: false,
+              data: order,
+            });
+          } else {
+            setNotFound(true);
+          }
+        });
       } catch (e) {
         console.error(e);
       }
@@ -75,15 +93,22 @@ export default function DetailOrder() {
     }
   }, [isLoading, params.item_code]);
 
-  return order.loading ? (
-    <Loading />
-  ) : (
+  if (isNotFound) {
+    return <NotFound />;
+  }
+
+  if (order.loading) {
+    return <Loading />;
+  }
+
+  return (
     <main>
       <section className="py-15 md:text-base">
         <div className="container border-4 h-screen flex flex-col max-h-[1080px] min-h-[508px]">
           <div className="flex justify-between px-4 py-2 border-b border-five items-center gap-2">
             <h1 className="font-bold text-xl md:text-3xl">Detail Pesanan</h1>
             <OrderMenu
+              onChangeStatus={handleChangeStatus}
               order={order.data}
               user={user}
               toggleModal={toggleInputModal}
@@ -91,8 +116,10 @@ export default function DetailOrder() {
           </div>
           <div className="px-4">
             <h2 className="font-semibold text-base md:text-xl border-b py-2 mb-3 border-five">
-              Pesanan{" "}
-              {order.data.status === "isFinished" ? "Selesai" : "Diproses"}
+              Status Pesanan:{" "}
+              <span className="font-bold">
+                {order.data.status === "isFinished" ? "Selesai" : "Diproses"}
+              </span>
             </h2>
             <div className="flex mb-2">
               <div className="flex justify-between flex-1 gap-2">
