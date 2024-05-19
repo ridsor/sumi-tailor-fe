@@ -35,12 +35,14 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <main>
-      <section className="bg-three">
+      <section className="bg-three py-36 ">
         <div className="container">
-          <div className="row pt-36 min-h-[600px] h-auto px-4 flex flex-wrap">
+          <div className="row h-auto px-4 flex flex-wrap">
             <article className="w-full lg:w-1/2">
               <h2 className="mb-4 text-3xl lg:text-4xl tracking-wide font-one text-one">
-                Selamat Datang di Sumi Tailor <br />
+                Selamat Datang di{" "}
+                <span className="whitespace-nowrap">Sumi Tailor</span>
+                <br />
                 Kami Tempat Fashion Bertemu Kesempurnaan!
               </h2>
               <p className="text-one w-5/6 mb-6">
@@ -53,8 +55,13 @@ export default function HomePage() {
               <div className="flex gap-x-3 mb-6">
                 <Link
                   href="/about"
-                  className="text-three bg-two py-3 px-5 rounded-full flex items-center gap-x-1.5 hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)]">
+                  className="text-two bg-transparent py-2 px-3 sm:py-3 sm:px-5 border border-two rounded-lg flex items-center gap-x-1.5 hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)]">
                   Selengkapnya
+                </Link>
+                <Link
+                  href="/order-list"
+                  className="text-three bg-two py-2 px-3 sm:py-3 sm:px-5 rounded-lg flex items-center gap-x-1.5 hover:bg-[#638d4c] focus:ring focus:ring-[rgba(179,203,166,.5)]">
+                  Cek Pesanan Anda
                   <FaArrowRightLong className="fill-three" />
                 </Link>
               </div>

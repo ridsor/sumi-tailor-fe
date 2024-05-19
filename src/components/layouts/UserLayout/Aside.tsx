@@ -11,7 +11,6 @@ import Image from "next/image";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { getToken } from "@/services/token";
 import user_img from "@/assets/img/user-img.svg";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { clearUser, getUser } from "@/lib/redux/features/userSlice";
@@ -166,7 +165,9 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                   <Link
                     href="/orders"
                     className={`${
-                      pathname === "/orders" ? "bg-four" : ""
+                      pathname === "/orders" || pathname === "/orders/history"
+                        ? "bg-four"
+                        : ""
                     } flex items-center hover:bg-four rounded-md active:ring active:ring-three`}>
                     <div className="p-3">
                       <FaShoppingCart className="text-xl" />

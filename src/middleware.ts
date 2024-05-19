@@ -9,7 +9,6 @@ export const protectedRoutes = [
   "/accounts",
 ];
 export const authRoutes = ["/login"];
-export const authDynamicRoutes = ["/orders"];
 export const publicRoutes = ["/", "/about", "/gallery", "/service"];
 
 export async function middleware(request: NextRequest) {

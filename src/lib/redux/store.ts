@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ordersReducer from "./features/ordersSlice";
 import userReducer from "./features/userSlice";
+import orderHistoryReducer from "./features/orderHistorySlice";
 
 export const store = () => {
   return configureStore({
     reducer: {
       orders: ordersReducer,
       user: userReducer,
+      orderHistory: orderHistoryReducer,
     },
   });
 };
