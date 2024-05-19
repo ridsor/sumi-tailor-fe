@@ -1,29 +1,20 @@
 "use client";
 
-import OrderConfirmation from "./OrderConfirmation";
 import { OrderType } from "@/lib/redux/features/ordersSlice";
 import { getDay, getMonth, getTime, getYear } from "@/utils/order";
-import OrderMenu from "./OrderMenu";
 import "@/app/(admin)/orders/style.css";
 import "lightbox.js-react/dist/index.css";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getOrderById } from "@/services/orders";
+import { getOrderHistoryById } from "@/services/orders";
 import { useParams } from "next/navigation";
-import { getUser } from "@/lib/redux/features/userSlice";
 import Loading from "./loading";
-import OrderInput from "./OrderInput";
 import { SlideshowLightbox } from "lightbox.js-react";
 import Image from "next/image";
-import NotFound from "@/app/(admin)/orders/[item_code]/NotFound";
+import NotFound from "@/app/(admin)/orders/history/[item_code]/NotFound";
 
 export default function DetailOrder() {
-  const dispatch = useAppDispatch();
   const params = useParams<{ item_code: string }>();
 
-  const user = useAppSelector((state) => state.user);
-
-  const [isInputModal, setInputModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [isNotFound, setNotFound] = useState<boolean>(false);
   const [order, setOrder] = useState<{
@@ -54,26 +45,10 @@ export default function DetailOrder() {
     },
   ];
 
-  const toggleInputModal = () => setInputModal((prev) => !prev);
-
-  const handleChangeStatus = () => {
-    setOrder((prev) => ({
-      ...prev,
-      data: {
-        ...prev.data,
-        status: prev.data.status === "isProcess" ? "isFinished" : "isProcess",
-      },
-    }));
-  };
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
-
   useEffect(() => {
     if (!isLoading) {
       try {
-        getOrderById(params.item_code).then((order) => {
+        getOrderHistoryById(params.item_code).then((order) => {
           if (order) {
             setNotFound(false);
 
@@ -107,21 +82,9 @@ export default function DetailOrder() {
         <div className="container border-4 h-screen flex flex-col max-h-[1080px] min-h-[508px]">
           <div className="flex justify-between px-4 py-2 border-b border-five items-center gap-2">
             <h1 className="font-bold text-xl md:text-3xl">Detail Pesanan</h1>
-            <OrderMenu
-              onChangeStatus={handleChangeStatus}
-              order={order.data}
-              user={user}
-              toggleModal={toggleInputModal}
-            />
           </div>
           <div className="px-4">
-            <h2 className="font-semibold text-base md:text-xl border-b py-2 mb-3 border-five">
-              Status Pesanan:{" "}
-              <span className="font-bold">
-                {order.data.status === "isFinished" ? "Selesai" : "Diproses"}
-              </span>
-            </h2>
-            <div className="flex mb-2">
+            <div className="flex mb-2 mt-3">
               <div className="flex justify-between flex-1 gap-2">
                 <span className="font-semibold">Nama</span>
                 <span id="name">{order.data.name}</span>
@@ -190,17 +153,8 @@ export default function DetailOrder() {
                   : " -"}
               </div>
             </div>
-            <OrderConfirmation item_code={params.item_code} />
           </div>
         </div>
-      </section>
-      <section>
-        <OrderInput
-          isModal={isInputModal}
-          toggleModal={toggleInputModal}
-          setOrder={setOrder}
-          order={order.data}
-        />
       </section>
     </main>
   );

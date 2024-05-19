@@ -7,7 +7,14 @@ import Footer from "@/components/layouts/MainLayout/Footer";
 import { josenfin_sans, quicksand } from "@/fonts";
 import ReduxProvider from "@/components/fragments/ReduxProvider";
 
-const enableNavbar = ["/", "/about", "/gallery", "/service", "/login"];
+const enableNavbar = [
+  "/",
+  "/about",
+  "/gallery",
+  "/service",
+  "/login",
+  "/order-list",
+];
 
 export default function RootLayout({
   children,

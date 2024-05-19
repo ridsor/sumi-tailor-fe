@@ -13,10 +13,16 @@ import {
 type Props = {
   page: number;
   totalPages: number;
-  status: string;
+  status?: string;
+  className?: string;
 };
 
-export default function Paginate({ status, totalPages, page }: Props) {
+export default function Paginate({
+  totalPages,
+  page,
+  status,
+  className = "",
+}: Props) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const nextPageRef = useRef<HTMLAnchorElement>(null);
@@ -41,24 +47,27 @@ export default function Paginate({ status, totalPages, page }: Props) {
     setPageAnimation(animate);
   };
 
-  const handleChangePage = (status: string, page: number) => {
+  const handleChangePage = (page: number, status?: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (status == "isFinished") {
       params.set("ofpage", String(page));
     } else if (status == "isProcess") {
       params.set("oupage", String(page));
+    } else {
+      params.set("page", String(page));
     }
     const url = pathname + "?" + params.toString();
     return url;
   };
 
   return (
-    <div className="pagination flex justify-center flex-row gap-3 font-semibold flex-wrap">
+    <div
+      className={`${className} pagination flex justify-center flex-row gap-3 font-semibold flex-wrap`}>
       <div className="w-full lg:w-fit flex justify-center gap-3">
         {page >= 4 ? (
           <Link
             aria-label="Previous page"
-            href={handleChangePage(status, 1)}
+            href={handleChangePage(1, status)}
             className="leading-none aspect-square w-9 flex justify-center items-center bg-gray-200 text-base rounded-full text-[#0F0F0F]">
             <FaAnglesLeft />
           </Link>
@@ -68,7 +77,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
         <Link
           aria-label="Previous page"
           ref={previousPageRef}
-          href={handleChangePage(status, page - 1)}
+          href={handleChangePage(page - 1, status)}
           onClick={() => {
             handlePreviousPage();
           }}
@@ -81,7 +90,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
       {page >= 3 ? (
         <Link
           aria-label="Previous page"
-          href={handleChangePage(status, page - 2)}
+          href={handleChangePage(page - 2, status)}
           onClick={() => {
             handlePreviousPage();
           }}
@@ -94,7 +103,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
       {page > 1 ? (
         <Link
           aria-label="Previous page"
-          href={handleChangePage(status, page - 1)}
+          href={handleChangePage(page - 1, status)}
           onClick={() => {
             handlePreviousPage();
           }}
@@ -106,7 +115,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
       )}
       <Link
         aria-label="Current page"
-        href={handleChangePage(status, page)}
+        href={handleChangePage(page, status)}
         onClick={() => {
           handlePreviousPage();
         }}
@@ -116,7 +125,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
       {page < totalPages ? (
         <Link
           aria-label="Next Page"
-          href={handleChangePage(status, page + 1)}
+          href={handleChangePage(page + 1, status)}
           onClick={() => {
             handleNextPage();
           }}
@@ -129,7 +138,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
       {page <= totalPages - 2 ? (
         <Link
           aria-label="Next Page"
-          href={handleChangePage(status, page + 2)}
+          href={handleChangePage(page + 2, status)}
           onClick={() => {
             handleNextPage();
           }}
@@ -143,7 +152,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
         <Link
           aria-label="Next Page"
           ref={nextPageRef}
-          href={handleChangePage(status, page + 1)}
+          href={handleChangePage(page + 1, status)}
           onClick={() => {
             handleNextPage();
           }}
@@ -155,7 +164,7 @@ export default function Paginate({ status, totalPages, page }: Props) {
         {page <= totalPages - 3 ? (
           <Link
             aria-label="Next Page"
-            href={handleChangePage(status, totalPages)}
+            href={handleChangePage(totalPages, status)}
             onClick={() => {
               handleNextPage();
             }}

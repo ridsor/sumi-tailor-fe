@@ -109,7 +109,7 @@ const initialState: {
   ordersFinished: {
     data: [],
     pagination: {
-      limit: 5,
+      limit: 8,
       total: 1,
     },
     loading: true,
@@ -117,7 +117,7 @@ const initialState: {
   ordersUnfinished: {
     data: [],
     pagination: {
-      limit: 5,
+      limit: 8,
       total: 1,
     },
     loading: true,

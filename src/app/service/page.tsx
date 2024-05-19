@@ -34,7 +34,7 @@ const ServicePage = () => {
     <main>
       <section className="bg-[#E4EEDD]">
         <div className="container">
-          <div className="px-4 pb-16 pt-36">
+          <div className="px-4 py-36">
             <h2 className="mb-2 text-3xl text-center font-pt-serif">
               Layanan Menjahit Kami - Bentuk Keinginan Fashion Anda
             </h2>
