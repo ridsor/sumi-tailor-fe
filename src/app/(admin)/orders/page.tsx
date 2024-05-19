@@ -40,6 +40,7 @@ export default function OrdersPage() {
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [action, setAction] = useState<boolean>(true);
 
   const toggleOrderModal = () => {
     setOrderModal((prev) => !prev);
@@ -50,11 +51,16 @@ export default function OrdersPage() {
 
     setSearchTimeout(
       setTimeout(() => {
+        handleAction();
         const params = new URLSearchParams(searchParams.toString());
         params.set("s", value);
         router.push(pathname + "?" + params.toString());
       }, 1000)
     );
+  };
+
+  const handleAction = () => {
+    setAction(true);
   };
 
   useEffect(() => {
@@ -79,16 +85,18 @@ export default function OrdersPage() {
         })
       );
 
-      if (ordersFinished.pagination.page != ofpage) {
+      if (ordersFinished.pagination.page != ofpage || action) {
         dispatch(handlePageOrderFinished({ page: ofpage, limit, search }));
       }
 
-      if (ordersUnfinished.pagination.page != oupage) {
+      if (ordersUnfinished.pagination.page != oupage || action) {
         dispatch(handlePageOrderUnfinished({ page: oupage, limit, search }));
       }
+
+      setAction(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, dispatch, isLoading]);
+  }, [searchParams, isLoading]);
 
   return (
     <main>
@@ -103,7 +111,11 @@ export default function OrdersPage() {
               className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
               <FaPlus />
             </button>
-            <OrderInput modal={isOrderModal} toggleModal={toggleOrderModal} />
+            <OrderInput
+              modal={isOrderModal}
+              toggleModal={toggleOrderModal}
+              action={handleAction}
+            />
             <div className="relative">
               <h2 className="text-2xl font-bold mb-3">Daftar Pesanan</h2>
               <div className="flex sm:items-center mb-3 gap-3 flex-col sm:flex-row justify-between">

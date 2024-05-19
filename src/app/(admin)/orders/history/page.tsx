@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa6";
-import OrderInput from "@/app/(admin)/orders/OrderInput";
 import OrderList from "@/app/(admin)/orders/history/OrderList";
 import OrderSearch from "@/app/(admin)/orders/OrderSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -32,18 +30,16 @@ export default function OrdersPage() {
   const orders = useAppSelector((state) => state.orderHistory.orders);
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
-  const [isOrderModal, setOrderModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
-
-  const toggleOrderModal = () => {
-    setOrderModal((prev) => !prev);
-  };
+  const [action, setAction] = useState<boolean>(true);
 
   const handleOrderSearch = (value: string) => {
     clearTimeout(searchTimeout);
 
     setSearchTimeout(
       setTimeout(() => {
+        setAction(true);
+
         const params = new URLSearchParams(searchParams.toString());
         params.set("s", value);
         router.push(pathname + "?" + params.toString());
@@ -64,27 +60,20 @@ export default function OrdersPage() {
       const search = searchParams.get("s") || "";
 
       dispatch(changePage(page));
-      if (orders.pagination.page != page) {
+      if (orders.pagination.page != page || action) {
         dispatch(handlePageOrderHistory({ page: page, limit, search }));
       }
+
+      setAction(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, dispatch, isLoading]);
+  }, [searchParams, isLoading]);
 
   return (
     <main>
       <section className="py-16">
         <div className="container">
           <article className="px-4">
-            <button
-              aria-label="Add Order"
-              onClick={() => {
-                toggleOrderModal();
-              }}
-              className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
-              <FaPlus />
-            </button>
-            <OrderInput modal={isOrderModal} toggleModal={toggleOrderModal} />
             <div className="relative">
               <h2 className="text-2xl font-bold mb-3">Riwayat Pesanan</h2>
               <div className="mb-3">

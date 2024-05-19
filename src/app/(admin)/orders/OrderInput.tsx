@@ -29,6 +29,7 @@ type Validate = OrderInput;
 interface Props {
   toggleModal: () => void;
   modal: boolean;
+  action: () => void;
 }
 
 export default function OrderInput(props: Props) {
@@ -259,6 +260,8 @@ export default function OrderInput(props: Props) {
         return;
       }
 
+      props.action();
+
       if (
         searchParams.get("oupage") != null &&
         searchParams.get("oupage") != "1"
@@ -268,6 +271,7 @@ export default function OrderInput(props: Props) {
         const search = searchParams.get("s") || "";
         dispatch(handlePageOrderUnfinished({ page: 1, search }));
       }
+
       if (
         searchParams.get("ofpage") != null &&
         searchParams.get("ofpage") != "1"

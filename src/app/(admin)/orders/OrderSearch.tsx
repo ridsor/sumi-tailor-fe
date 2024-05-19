@@ -7,7 +7,7 @@ type Props = {
   value: string;
 };
 
-export default function OrdedrSearch(props: Props) {
+export default function OrderSearch(props: Props) {
   return (
     <div className="search relative w-full max-w-[400px]">
       <input
