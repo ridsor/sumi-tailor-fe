@@ -3,18 +3,15 @@
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import OrderInput from "@/app/(admin)/orders/OrderInput";
-import OrderList from "@/app/(admin)/orders/OrderList";
-import OrderSearch from "./OrderSearch";
+import OrderList from "@/app/(admin)/orders/history/OrderList";
+import OrderSearch from "@/app/(admin)/orders/OrderSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   changePage,
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
-import history_icon from "@/assets/img/icons/history.png";
-import Image from "next/image";
-import Link from "next/link";
+  handlePageOrderHistory,
+} from "@/lib/redux/features/orderHistorySlice";
+import "../style.css";
 
 interface OrderInput {
   item_code: string;
@@ -32,10 +29,7 @@ export default function OrdersPage() {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
 
-  const ordersFinished = useAppSelector((state) => state.orders.ordersFinished);
-  const ordersUnfinished = useAppSelector(
-    (state) => state.orders.ordersUnfinished
-  );
+  const orders = useAppSelector((state) => state.orderHistory.orders);
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
@@ -61,30 +55,17 @@ export default function OrdersPage() {
     if (isLoading) {
       setLoading(false);
     } else {
-      const ofpage = searchParams.has("ofpage")
-        ? Number(searchParams.get("ofpage"))
-        : 1;
-      const oupage = searchParams.has("oupage")
-        ? Number(searchParams.get("oupage"))
+      const page = searchParams.has("page")
+        ? Number(searchParams.get("page"))
         : 1;
       const limit = searchParams.has("limit")
         ? Number(searchParams.get("limit"))
         : 8;
       const search = searchParams.get("s") || "";
 
-      dispatch(
-        changePage({
-          ordersFinished: ofpage,
-          ordersUnfinished: oupage,
-        })
-      );
-
-      if (ordersFinished.pagination.page != ofpage) {
-        dispatch(handlePageOrderFinished({ page: ofpage, limit, search }));
-      }
-
-      if (ordersUnfinished.pagination.page != oupage) {
-        dispatch(handlePageOrderUnfinished({ page: oupage, limit, search }));
+      dispatch(changePage(page));
+      if (orders.pagination.page != page) {
+        dispatch(handlePageOrderHistory({ page: page, limit, search }));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -105,24 +86,14 @@ export default function OrdersPage() {
             </button>
             <OrderInput modal={isOrderModal} toggleModal={toggleOrderModal} />
             <div className="relative">
-              <h2 className="text-2xl font-bold mb-3">Daftar Pesanan</h2>
-              <div className="flex sm:items-center mb-3 gap-3 flex-col sm:flex-row justify-between">
+              <h2 className="text-2xl font-bold mb-3">Riwayat Pesanan</h2>
+              <div className="mb-3">
                 <OrderSearch
                   onSearch={handleOrderSearch}
                   value={searchParams.get("s") || ""}
                 />
-                <Link
-                  href="/orders/history"
-                  className="rounded-md flex items-center px-5 py-2 gap-2 font-semibold hover:bg-[rgba(0,0,0,.1)] justify-center bg-gray-100">
-                  <Image src={history_icon} alt="" width={32} height={32} />
-                  <span>Riwayat Pesanan</span>
-                </Link>
               </div>
-              <OrderList
-                isLoading={isLoading}
-                ordersFinished={ordersFinished}
-                ordersUnfinished={ordersUnfinished}
-              />
+              <OrderList isLoading={isLoading} orders={orders} />
             </div>
           </article>
         </div>

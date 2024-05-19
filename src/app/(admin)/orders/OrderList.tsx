@@ -54,6 +54,7 @@ export default function OrderList(props: Props) {
           )}
           <Pagination
             status="isProcess"
+            className="mt-3"
             totalPages={Math.ceil(
               Number(props.ordersUnfinished.pagination.total) /
                 Number(props.ordersUnfinished.pagination.limit)
@@ -79,6 +80,7 @@ export default function OrderList(props: Props) {
           )}
           <Pagination
             status="isFinished"
+            className="mt-3"
             totalPages={Math.ceil(
               Number(props.ordersFinished.pagination.total) /
                 Number(props.ordersFinished.pagination.limit)

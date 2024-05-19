@@ -3,14 +3,9 @@ export default function loading() {
     <main>
       <section>
         <div className="container animate-pulse border-4 h-screen flex flex-col max-h-[1080px] min-h-[508px]">
-          <div className="flex justify-between mx-4 my-2 items-center">
-            <div className="rounded-md h-[30px] bg-[#bdc3c7] w-[180px]" />
-            <div className="rounded-md h-[44px] bg-[#bdc3c7] w-[44px]" />
-          </div>
+          <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2 mx-4" />
           <div className="border-five border-b"></div>
           <div className="px-4">
-            <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
-            <div className="border-five border-b"></div>
             <div className="flex justify-between">
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
@@ -39,7 +34,6 @@ export default function loading() {
               <div className=" rounded-md h-[20px] bg-[#bdc3c7] w-[100px] my-2" />
               <div className=" rounded-md h-[20px] bg-[#bdc3c7] w-[100px]" />
             </div>
-            <div className=" rounded-md h-[40px] bg-[#bdc3c7] w-[160px] mx-auto mt-5" />
           </div>
         </div>
       </section>

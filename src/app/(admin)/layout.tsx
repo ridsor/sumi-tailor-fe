@@ -4,7 +4,13 @@ import Aside from "@/components/layouts/UserLayout/Aside";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const enableNavbar = ["/dashboard", "/profile", "/accounts", "/orders"];
+const enableNavbar = [
+  "/dashboard",
+  "/profile",
+  "/accounts",
+  "/orders",
+  "/orders/history",
+];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
