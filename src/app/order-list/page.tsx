@@ -24,7 +24,6 @@ export default function OrdersPage() {
   const pathname = usePathname();
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
-  const [isOrderModal, setOrderModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [action, setAction] = useState<boolean>(true);
 
@@ -54,11 +53,7 @@ export default function OrdersPage() {
     },
     loading: true,
   });
-
-  const toggleOrderModal = () => {
-    setOrderModal((prev) => !prev);
-  };
-
+  
   const handleOrderSearch = (value: string) => {
     clearTimeout(searchTimeout);
 
