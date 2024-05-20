@@ -1,16 +1,18 @@
 import { FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
-import { createOrder } from "@/services/orders";
+import { OrderType } from "@/lib/redux/features/ordersSlice";
+import { editOrder } from "@/services/orders";
 import cloud_upload_outlined from "@/assets/img/icons/cloud-upload-outlined.svg";
 import Image from "next/image";
 import { SlideshowLightbox } from "lightbox.js-react";
@@ -27,16 +29,23 @@ export type OrderInput = {
 type Validate = OrderInput;
 
 interface Props {
+  isModal: boolean;
   toggleModal: () => void;
-  modal: boolean;
-  action: () => void;
+  order: OrderType & {
+    item_code: string;
+  };
+  setOrder: Dispatch<
+    SetStateAction<{
+      loading: boolean;
+      data: OrderType & {
+        item_code: string;
+      };
+    }>
+  >;
 }
 
 export default function OrderInput(props: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
   const [InputLoading, setInputLoading] = useState<boolean>(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
@@ -167,29 +176,25 @@ export default function OrderInput(props: Props) {
     // image
     try {
       image = image as File;
-      if (!image) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "Foto pesanan tidak boleh kosong",
-        }));
-        result = true;
-      } else if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "Berkas tidak mendukung",
-        }));
-        result = true;
-      } else if (image.size > 5 * 1000 * 1024) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "File harus kurang dari 5mb",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          image: "",
-        }));
+      if (image) {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "Berkas tidak mendukung",
+          }));
+          result = true;
+        } else if (image.size > 5 * 1000 * 1024) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "File harus kurang dari 5mb",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            image: "",
+          }));
+        }
       }
     } catch (e) {
       console.error(e);
@@ -198,8 +203,8 @@ export default function OrderInput(props: Props) {
     return result;
   };
 
-  const resetInput = () => {
-    setImagePreviewUrl("");
+  const resetInput = useCallback(() => {
+    setImagePreviewUrl(`${props.order.image}`);
     if (imageRef.current) {
       imageRef.current.value = "";
     }
@@ -211,15 +216,16 @@ export default function OrderInput(props: Props) {
       note: "",
       image: "",
     });
+
     setInputs({
-      name: "",
-      no_hp: "",
-      address: "",
-      price: "",
-      note: "",
+      name: props.order.name,
+      no_hp: props.order.no_hp,
+      address: props.order.address,
+      price: props.order.price != null ? String(props.order.price) : "",
+      note: props.order.note,
       image: "",
     });
-  };
+  }, [props]);
 
   const onSubmitEventHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -246,40 +252,18 @@ export default function OrderInput(props: Props) {
       formData.append("note", inputs.note);
       formData.append("image", inputs.image as File);
 
-      const createResponse = await createOrder(formData);
+      const editResponse = await editOrder(props.order.item_code, formData);
 
-      if (createResponse?.status != "success") {
+      if (editResponse?.status != "success") {
         console.error("Failed to input");
-        if (typeof createResponse?.errors.no_hp != "undefined") {
+        if (typeof editResponse?.errors.no_hp != "undefined") {
           setValidate((prev) => ({
             ...prev,
-            no_hp: createResponse?.errors.no_hp,
+            no_hp: editResponse?.errors.no_hp,
           }));
         }
         setInputLoading(false);
         return;
-      }
-
-      props.action();
-
-      if (
-        searchParams.get("oupage") != null &&
-        searchParams.get("oupage") != "1"
-      ) {
-        router.push("/orders");
-      } else {
-        const search = searchParams.get("s") || "";
-        dispatch(handlePageOrderUnfinished({ page: 1, search }));
-      }
-
-      if (
-        searchParams.get("ofpage") != null &&
-        searchParams.get("ofpage") != "1"
-      ) {
-        router.push("/orders");
-      } else {
-        const search = searchParams.get("s") || "";
-        dispatch(handlePageOrderFinished({ page: 1, search }));
       }
 
       withReactContent(Swal)
@@ -296,6 +280,11 @@ export default function OrderInput(props: Props) {
           showConfirmButton: false,
           timer: 500,
         });
+
+      props.setOrder({
+        loading: false,
+        data: editResponse.data,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -335,13 +324,13 @@ export default function OrderInput(props: Props) {
   };
 
   useEffect(() => {
-    if (props.modal) {
+    if (props.isModal) {
       resetInput();
     }
-  }, [props.modal]);
+  }, [props.isModal, resetInput]);
 
   return (
-    <Modal active={props.modal} openclose={props.toggleModal}>
+    <Modal active={props.isModal} openclose={props.toggleModal}>
       <div className="container max-w-full">
         <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
           Buat Pesanan
@@ -501,18 +490,29 @@ export default function OrderInput(props: Props) {
                 <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400 lightbox-image">
                   <SlideshowLightbox
                     showControls={false}
-                    lightboxIdentifier="lightbox-create-order"
+                    lightboxIdentifier="lightbox-edit-order"
                     framework="next"
                     fullScreen={true}
                     modalClose="clickOutside"
-                    images={[{ src: imagePreviewUrl, alt: "Foto Pesanan" }]}>
+                    images={[
+                      {
+                        src: imagePreviewUrl.includes("http")
+                          ? imagePreviewUrl
+                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`,
+                        alt: "Foto Pesanan",
+                      },
+                    ]}>
                     <Image
-                      src={imagePreviewUrl}
+                      src={
+                        imagePreviewUrl.includes("http")
+                          ? imagePreviewUrl
+                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`
+                      }
                       alt="Foto Pesanan"
                       width={250}
                       height={250}
-                      className="w-full h-auto object-cover"
-                      data-lightboxjs="lightbox-create-order"
+                      className="!w-full !h-full object-cover object-center"
+                      data-lightboxjs="lightbox-edit-order"
                       quality={50}
                     />
                   </SlideshowLightbox>

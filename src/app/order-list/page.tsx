@@ -53,7 +53,7 @@ export default function OrdersPage() {
     },
     loading: true,
   });
-
+  
   const handleOrderSearch = (value: string) => {
     clearTimeout(searchTimeout);
 
