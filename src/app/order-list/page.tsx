@@ -2,19 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import OrderInput from "@/app/(admin)/orders/OrderInput";
-import OrderList from "@/app/(admin)/orders/OrderList";
+import OrderList from "@/app/order-list/OrderList";
 import OrderSearch from "./OrderSearch";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import {
-  changePage,
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
-import history_icon from "@/assets/img/icons/history.png";
-import Image from "next/image";
-import Link from "next/link";
+import { getOrders } from "@/services/orders";
+import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
 
 interface OrderInput {
   item_code: string;
@@ -29,18 +21,39 @@ interface OrderInput {
 export default function OrdersPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const pathname = usePathname();
-
-  const ordersFinished = useAppSelector((state) => state.orders.ordersFinished);
-  const ordersUnfinished = useAppSelector(
-    (state) => state.orders.ordersUnfinished
-  );
 
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [isOrderModal, setOrderModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [action, setAction] = useState<boolean>(true);
+
+  const [ordersFinished, setOrdersFinished] = useState<{
+    data: OrderType[];
+    pagination: PaginationType;
+    loading: boolean;
+  }>({
+    data: [],
+    pagination: {
+      limit: 8,
+      total: 1,
+      page: 1,
+    },
+    loading: true,
+  });
+  const [ordersUnfinished, setOrdersUnfinished] = useState<{
+    data: OrderType[];
+    pagination: PaginationType;
+    loading: boolean;
+  }>({
+    data: [],
+    pagination: {
+      limit: 8,
+      total: 1,
+      page: 1,
+    },
+    loading: true,
+  });
 
   const toggleOrderModal = () => {
     setOrderModal((prev) => !prev);
@@ -63,34 +76,55 @@ export default function OrdersPage() {
     setAction(true);
   };
 
+  const handlePageOrder = async ({
+    page,
+    limit,
+    search = "",
+    status,
+  }: {
+    page: number;
+    search?: string;
+    limit?: number;
+    status: "isProcess" | "isFinished";
+  }) => {
+    const res = await getOrders({ page, limit, status, search });
+
+    if (status === "isProcess") {
+      setOrdersUnfinished({
+        data: res.data,
+        pagination: res.pagination,
+        loading: false,
+      });
+    } else if (status === "isFinished") {
+      setOrdersFinished({
+        data: res.data,
+        pagination: res.pagination,
+        loading: false,
+      });
+    }
+  };
+
   useEffect(() => {
     if (isLoading) {
       setLoading(false);
     } else {
-      const ofpage = searchParams.has("ofpage")
-        ? Number(searchParams.get("ofpage"))
-        : 1;
-      const oupage = searchParams.has("oupage")
-        ? Number(searchParams.get("oupage"))
+      const page = searchParams.has("page")
+        ? Number(searchParams.get("page"))
         : 1;
       const limit = searchParams.has("limit")
         ? Number(searchParams.get("limit"))
         : 8;
       const search = searchParams.get("s") || "";
 
-      dispatch(
-        changePage({
-          ordersFinished: ofpage,
-          ordersUnfinished: oupage,
-        })
-      );
-
-      if (ordersFinished.pagination.page != ofpage || action) {
-        dispatch(handlePageOrderFinished({ page: ofpage, limit, search }));
-      }
-
-      if (ordersUnfinished.pagination.page != oupage || action) {
-        dispatch(handlePageOrderUnfinished({ page: oupage, limit, search }));
+      try {
+        if (ordersUnfinished?.pagination.page != page || action) {
+          handlePageOrder({ page, search, limit, status: "isProcess" });
+        }
+        if (ordersFinished?.pagination.page != page || action) {
+          handlePageOrder({ page, search, limit, status: "isFinished" });
+        }
+      } catch (e) {
+        console.error(e);
       }
 
       setAction(false);
@@ -103,19 +137,6 @@ export default function OrdersPage() {
       <section className="py-36">
         <div className="container">
           <article className="px-4">
-            <button
-              aria-label="Add Order"
-              onClick={() => {
-                toggleOrderModal();
-              }}
-              className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
-              <FaPlus />
-            </button>
-            <OrderInput
-              modal={isOrderModal}
-              toggleModal={toggleOrderModal}
-              action={handleAction}
-            />
             <div className="relative">
               <h2 className="text-2xl font-bold mb-3">Daftar Pesanan</h2>
               <div className="flex sm:items-center mb-3 gap-3 flex-col sm:flex-row justify-between">
@@ -123,12 +144,6 @@ export default function OrdersPage() {
                   onSearch={handleOrderSearch}
                   value={searchParams.get("s") || ""}
                 />
-                <Link
-                  href="/orders/history"
-                  className="rounded-md flex items-center px-5 py-2 gap-2 font-semibold hover:bg-[rgba(0,0,0,.1)] justify-center bg-gray-100">
-                  <Image src={history_icon} alt="" width={32} height={32} />
-                  <span>Riwayat Pesanan</span>
-                </Link>
               </div>
               <OrderList
                 isLoading={isLoading}
