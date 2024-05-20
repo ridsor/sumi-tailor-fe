@@ -87,6 +87,18 @@ export default function OrdersPage() {
     limit?: number;
     status: "isProcess" | "isFinished";
   }) => {
+    if (status === "isProcess") {
+      setOrdersUnfinished((prev) => ({
+        ...prev,
+        loading: true,
+      }));
+    } else if (status === "isFinished") {
+      setOrdersFinished((prev) => ({
+        ...prev,
+        loading: true,
+      }));
+    }
+
     const res = await getOrders({ page, limit, status, search });
 
     if (status === "isProcess") {
@@ -108,8 +120,11 @@ export default function OrdersPage() {
     if (isLoading) {
       setLoading(false);
     } else {
-      const page = searchParams.has("page")
-        ? Number(searchParams.get("page"))
+      const ofpage = searchParams.has("ofpage")
+        ? Number(searchParams.get("ofpage"))
+        : 1;
+      const oupage = searchParams.has("oupage")
+        ? Number(searchParams.get("oupage"))
         : 1;
       const limit = searchParams.has("limit")
         ? Number(searchParams.get("limit"))
@@ -117,11 +132,16 @@ export default function OrdersPage() {
       const search = searchParams.get("s") || "";
 
       try {
-        if (ordersUnfinished?.pagination.page != page || action) {
-          handlePageOrder({ page, search, limit, status: "isProcess" });
+        if (ordersUnfinished?.pagination.page != oupage || action) {
+          handlePageOrder({ page: oupage, search, limit, status: "isProcess" });
         }
-        if (ordersFinished?.pagination.page != page || action) {
-          handlePageOrder({ page, search, limit, status: "isFinished" });
+        if (ordersFinished?.pagination.page != ofpage || action) {
+          handlePageOrder({
+            page: ofpage,
+            search,
+            limit,
+            status: "isFinished",
+          });
         }
       } catch (e) {
         console.error(e);
