@@ -200,6 +200,7 @@ export default function OrderInput(props: Props) {
 
   const resetInput = () => {
     setImagePreviewUrl("");
+
     if (imageRef.current) {
       imageRef.current.value = "";
     }

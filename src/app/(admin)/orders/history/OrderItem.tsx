@@ -12,9 +12,7 @@ interface Props {
 export default function OrderItem(props: Props) {
   const images = [
     {
-      src: props.order.image.startsWith("http")
-        ? props.order.image
-        : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`,
+      src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`,
       alt: props.order.name,
     },
   ];
