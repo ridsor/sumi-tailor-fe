@@ -105,21 +105,33 @@ export const getOrderHistory = async ({
   limit = 5,
   status,
   search,
+  search,
 }: {
   page?: number;
   limit?: number;
+  limit?: number;
   status: string;
+  search: string;
   search: string;
 }): Promise<{
   data: OrderType[];
   pagination: PaginationType;
+  data: OrderType[];
+  pagination: PaginationType;
 }> => {
+  const refreshToken = await getToken();
+
   const refreshToken = await getToken();
 
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
       `/api/orders/history?status=${status}&page=${page}&limit=${limit}&search=${search}`,
     {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
+      },
       method: "GET",
       credentials: "include",
       headers: {
@@ -132,14 +144,20 @@ export const getOrderHistory = async ({
   );
 
   if (!res.ok && res.status != 200) {
+  if (!res.ok && res.status != 200) {
     throw new Error("Failed to fetch data");
   }
 
   const orders = await res.json();
+  const orders = await res.json();
 
   return {
     data: orders.data,
+    data: orders.data,
     pagination: {
+      page: orders.page,
+      limit: orders.limit,
+      total: orders.total,
       page: orders.page,
       limit: orders.limit,
       total: orders.total,
