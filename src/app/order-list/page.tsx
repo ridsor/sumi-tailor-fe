@@ -99,7 +99,13 @@ export default function OrdersPage() {
       }));
     }
 
-    const res = await getOrders({ page, limit, status, search });
+    const res = await getOrders({
+      page,
+      limit,
+      status,
+      search,
+      type: "client",
+    });
 
     if (status === "isProcess") {
       setOrdersUnfinished({

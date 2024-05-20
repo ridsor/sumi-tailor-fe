@@ -9,15 +9,19 @@ export const getOrders = async ({
   limit = 5,
   status,
   search,
+  type,
 }: {
   page?: number;
   limit?: number;
   status: string;
   search: string;
+  type?: string;
 }): Promise<{
   data: OrderType[];
   pagination: PaginationType;
 }> => {
+  let revalidate = type !== "client" ? 3600 * 24 : 30;
+
   const refreshToken = await getToken();
 
   const res = await fetch(
@@ -30,7 +34,7 @@ export const getOrders = async ({
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate,
       },
     }
   );
