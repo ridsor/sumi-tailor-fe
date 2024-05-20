@@ -204,7 +204,9 @@ export default function OrderInput(props: Props) {
   };
 
   const resetInput = useCallback(() => {
-    setImagePreviewUrl(`${props.order.image}`);
+    setImagePreviewUrl(
+      `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`
+    );
     if (imageRef.current) {
       imageRef.current.value = "";
     }
@@ -496,18 +498,12 @@ export default function OrderInput(props: Props) {
                     modalClose="clickOutside"
                     images={[
                       {
-                        src: imagePreviewUrl.includes("http")
-                          ? imagePreviewUrl
-                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`,
+                        src: imagePreviewUrl,
                         alt: "Foto Pesanan",
                       },
                     ]}>
                     <Image
-                      src={
-                        imagePreviewUrl.includes("http")
-                          ? imagePreviewUrl
-                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`
-                      }
+                      src={imagePreviewUrl}
                       alt="Foto Pesanan"
                       width={250}
                       height={250}

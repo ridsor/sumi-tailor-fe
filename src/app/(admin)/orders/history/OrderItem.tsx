@@ -12,15 +12,13 @@ interface Props {
 export default function OrderItem(props: Props) {
   const images = [
     {
-      src: props.order.image.startsWith("http")
-        ? props.order.image
-        : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`,
+      src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${props.order.image}`,
       alt: props.order.name,
     },
   ];
 
   return (
-    <div className="order flex border rounded-md shadow-sm relative mb-3">
+    <div className="order flex border rounded-md shadow-sm relative mb-3 w-full sm:w-1/2">
       <Link
         href={`/orders/history/${props.order.item_code}`}
         className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10 hover:bg-[rgba(0,0,0,.1)]"
