@@ -81,14 +81,6 @@
   background-color: #0f0f0f;
   color: #fff;
 }
-.orders.unfinished > div:last-child,
-.orders.finished > div:last-child {
-  margin-top: 0.75rem /* 12px */;
-}
-.orders.finished > div:first-child,
-.orders.unfinished > div:first-child {
-  margin-bottom: 0.75rem /* 12px */;
-}
 
 .nextpage-animation {
   animation: nextpage 200ms;

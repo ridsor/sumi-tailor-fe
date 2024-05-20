@@ -7,7 +7,7 @@ type Props = {
   active: boolean;
   openclose: () => void;
   bg?: string;
-  size?: string;
+  size?: number;
 };
 
 export default function Modal({
@@ -15,7 +15,7 @@ export default function Modal({
   active,
   openclose,
   bg,
-  size = "max-w-[500px]",
+  size = 800,
 }: Props) {
   useEffect(() => {
     if (active) {
@@ -34,7 +34,9 @@ export default function Modal({
         className="absolute top-0 left-0 right-0 bottom-0 z-10"
         onClick={() => openclose()}></div>
       <div className="w-full h-full overflow-auto py-5">
-        <div className={`${size} mx-auto w-full flex items-center min-h-full`}>
+        <div
+          className={`mx-auto w-full flex items-center min-h-full`}
+          style={{ maxWidth: size }}>
           <div
             className={`w-full rounded-md min-h-fit shadow-md relative z-20 ${
               !bg ? "bg-white" : ""

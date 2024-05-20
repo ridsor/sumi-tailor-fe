@@ -10,7 +10,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { getUser } from "@/lib/redux/features/userSlice";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import ProfileLoading from "./loading";
 
 type Input = {
   name: string;
@@ -91,23 +90,25 @@ const ProfilePage = () => {
 
     try {
       image = image as File;
-      if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "Berkas tidak mendukung",
-        }));
-        result = true;
-      } else if (image.size > 1 * 1000 * 1024) {
-        setValidate((prev) => ({
-          ...prev,
-          image: "File harus kurang dari 1024",
-        }));
-        result = true;
-      } else {
-        setValidate((prev) => ({
-          ...prev,
-          image: "",
-        }));
+      if (image) {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/)) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "Berkas tidak mendukung",
+          }));
+          result = true;
+        } else if (image.size > 1 * 1000 * 1024) {
+          setValidate((prev) => ({
+            ...prev,
+            image: "File harus kurang dari 1024",
+          }));
+          result = true;
+        } else {
+          setValidate((prev) => ({
+            ...prev,
+            image: "",
+          }));
+        }
       }
     } catch (e) {
       console.error(e);
@@ -125,12 +126,6 @@ const ProfilePage = () => {
     try {
       const token = await getToken();
 
-      if (token.status != "success") {
-        console.error("Failed to input");
-        setInputLoading(false);
-        return;
-      }
-
       const formData = new FormData();
       formData.append("name", inputs.name);
       formData.append("email", inputs.email);
@@ -141,7 +136,6 @@ const ProfilePage = () => {
         {
           method: "POST",
           body: formData,
-          credentials: "include",
           headers: {
             Authorization: "Bearer " + token.authorization.access_token,
           },

@@ -1,0 +1,21 @@
+import OrdersLoading from "@/app/order-list/OrdersLoading";
+
+export default function loading() {
+  return (
+    <main>
+      <section className="py-36 animate-pulse">
+        <div className="container">
+          <article className="px-4">
+            <div className=" rounded-md h-[32px] bg-[#bdc3c7] w-[250px] mb-3" />
+            <div className=" rounded-md h-[32px] bg-[#bdc3c7] w-[350px] mb-3  " />
+            <div className="flex justify-between  mb-7 w-fit gap-3">
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[71px]  " />
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[71px]" />
+            </div>
+            <OrdersLoading />
+          </article>
+        </div>
+      </section>
+    </main>
+  );
+}

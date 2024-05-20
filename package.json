@@ -1,6 +1,6 @@
 {
   "name": "sumi-tailor",
-  "version": "2.11.2",
+  "version": "2.51.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -15,6 +15,7 @@
     "glob-to-regexp": "^0.4.1",
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
+    "lightbox.js-react": "^1.0.7",
     "next": "14.0.4",
     "react": "^18",
     "react-apexcharts": "^1.4.1",
