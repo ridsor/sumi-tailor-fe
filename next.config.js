@@ -6,14 +6,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "8000",
-        pathname: "/**",
-      },
-      {
         protocol: "https",
-        hostname: "via.placeholder.com",
+        hostname: "sumitailor.ridsor.my.id",
         port: "",
         pathname: "/**",
       },

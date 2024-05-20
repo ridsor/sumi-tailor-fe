@@ -47,9 +47,7 @@ export default function DetailOrder() {
 
   const images = [
     {
-      src: order.data.image.startsWith("http")
-        ? order.data.image
-        : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${order.data.image}`,
+      src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${order.data.image}`,
       alt: order.data.name,
     },
   ];
