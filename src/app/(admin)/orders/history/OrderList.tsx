@@ -20,7 +20,7 @@ export default function OrderList(props: Props) {
   ) : (
     <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
       {props.orders.data.length > 0 ? (
-        <div className="columns-[350px] lg:columns-2 gap-3">
+        <div className="flex flex-wrap">
           {props.orders.data.map((order) => (
             <OrderItem key={order.item_code} order={order} />
           ))}
