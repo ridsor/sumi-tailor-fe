@@ -3,6 +3,7 @@ import React from "react";
 import OrdersLoading from "../OrdersLoading";
 import OrderItem from "@/app/(admin)/orders/history/OrderItem";
 import Paginate from "@/components/fragments/Pagination";
+import "yet-another-react-lightbox/styles.css";
 import { OrderHistory } from "@/lib/redux/features/orderHistorySlice";
 
 interface Props {
