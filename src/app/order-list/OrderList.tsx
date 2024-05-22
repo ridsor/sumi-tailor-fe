@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "./style.css";
 import Order from "./OrderItem";
 import Pagination from "@/components/fragments/Pagination";
-import "lightbox.js-react/dist/index.css";
+import "yet-another-react-lightbox/styles.css";
 import OrdersLoading from "./OrdersLoading";
 import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
 

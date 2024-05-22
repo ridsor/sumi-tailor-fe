@@ -3,14 +3,15 @@
 import { OrderType } from "@/lib/redux/features/ordersSlice";
 import { getDay, getMonth, getTime, getYear } from "@/utils/order";
 import "@/app/(admin)/orders/style.css";
-import "lightbox.js-react/dist/index.css";
+import "yet-another-react-lightbox/styles.css";
 import { useEffect, useState } from "react";
 import { getOrderHistoryById } from "@/services/orders";
 import { useParams } from "next/navigation";
 import Loading from "./loading";
-import { SlideshowLightbox } from "lightbox.js-react";
 import Image from "next/image";
 import NotFound from "@/app/(admin)/orders/history/[item_code]/NotFound";
+import Lightbox from "yet-another-react-lightbox";
+import NextJsImage from "@/components/fragments/NextJsImage";
 
 export default function DetailOrder() {
   const params = useParams<{ item_code: string }>();
@@ -36,10 +37,12 @@ export default function DetailOrder() {
     },
   });
 
-  const images = [
+  const [openLightbox, setOpenLightbox] = useState<boolean>(false);
+
+  const slides = [
     {
       src: `${process.env.NEXT_PUBLIC_API_URL}/order-images/${order.data.image}`,
-      alt: order.data.name,
+      alt: `${order.data.name}-${order.data.item_code}`,
     },
   ];
 
@@ -115,27 +118,30 @@ export default function DetailOrder() {
           </div>
           <div className="p-4 border-t-8 flex-1 flex flex-col">
             <div className="lightbox-image min-w-[150px] w-[150px] h-[150px] relative z-20 overflow-hidden rounded-sm mb-3">
-              <SlideshowLightbox
-                showControls={false}
-                lightboxIdentifier={order.data.item_code}
-                framework="next"
-                fullScreen={true}
-                modalClose="clickOutside"
-                images={images}>
-                {images.map((image, i) => (
-                  <Image
-                    key={i}
-                    src={image.src}
-                    alt={image.alt}
-                    width={300}
-                    height={300}
-                    priority
-                    className="w-full h-auto object-cover"
-                    data-lightboxjs={order.data.item_code}
-                    quality={50}
-                  />
-                ))}
-              </SlideshowLightbox>
+              <button
+                type="button"
+                onClick={() => setOpenLightbox(true)}
+                className="w-full h-full">
+                <Image
+                  src={slides[0].src}
+                  alt={slides[0].alt}
+                  width={250}
+                  height={250}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+              <Lightbox
+                open={openLightbox}
+                close={() => setOpenLightbox(false)}
+                slides={slides}
+                render={{
+                  slide: NextJsImage,
+                  iconNext: () => null,
+                  iconPrev: () => null,
+                }}
+                noScroll={{ disabled: true }}
+                carousel={{ finite: true }}
+              />
             </div>
             <div
               className="border flex flex-col rounded-md py-2 px-3 border-five flex-1"

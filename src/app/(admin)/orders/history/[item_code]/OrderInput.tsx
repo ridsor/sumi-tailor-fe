@@ -15,7 +15,8 @@ import { OrderType } from "@/lib/redux/features/ordersSlice";
 import { editOrder } from "@/services/orders";
 import cloud_upload_outlined from "@/assets/img/icons/cloud-upload-outlined.svg";
 import Image from "next/image";
-import { SlideshowLightbox } from "lightbox.js-react";
+import Lightbox from "yet-another-react-lightbox";
+import NextJsImage from "@/components/fragments/NextJsImage";
 
 export type OrderInput = {
   name: string;
@@ -57,6 +58,7 @@ export default function OrderInput(props: Props) {
     note: "",
     image: "",
   });
+  const [openLightbox, setOpenLightbox] = useState<boolean>(false);
 
   const [validate, setValidate] = useState<Validate>({
     name: "",
@@ -488,34 +490,30 @@ export default function OrderInput(props: Props) {
               />
               {imagePreviewUrl ? (
                 <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400 lightbox-image">
-                  <SlideshowLightbox
-                    showControls={false}
-                    lightboxIdentifier="lightbox-edit-order"
-                    framework="next"
-                    fullScreen={true}
-                    modalClose="clickOutside"
-                    images={[
-                      {
-                        src: imagePreviewUrl.includes("http")
-                          ? imagePreviewUrl
-                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`,
-                        alt: "Foto Pesanan",
-                      },
-                    ]}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenLightbox(true)}
+                    className="w-full h-full">
                     <Image
-                      src={
-                        imagePreviewUrl.includes("http")
-                          ? imagePreviewUrl
-                          : `${process.env.NEXT_PUBLIC_API_URL}/order-images/${imagePreviewUrl}`
-                      }
-                      alt="Foto Pesanan"
+                      src={imagePreviewUrl}
+                      alt={""}
                       width={250}
                       height={250}
-                      className="!w-full !h-full object-cover object-center"
-                      data-lightboxjs="lightbox-edit-order"
-                      quality={50}
+                      className="w-full h-full object-cover"
                     />
-                  </SlideshowLightbox>
+                  </button>
+                  <Lightbox
+                    open={openLightbox}
+                    close={() => setOpenLightbox(false)}
+                    slides={[{ src: imagePreviewUrl, alt: "" }]}
+                    render={{
+                      slide: NextJsImage,
+                      iconNext: () => null,
+                      iconPrev: () => null,
+                    }}
+                    noScroll={{ disabled: true }}
+                    carousel={{ finite: true }}
+                  />
                 </div>
               ) : (
                 <>
