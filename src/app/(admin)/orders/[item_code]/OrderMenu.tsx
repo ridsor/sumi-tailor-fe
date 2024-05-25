@@ -82,7 +82,7 @@ export default function OrderMenu(props: Props) {
         });
 
       if (result.isConfirmed) {
-        const isDelete = cancelOrder(item_code);
+        const isDelete = await cancelOrder(item_code);
         if (!isDelete) {
           return;
         }
@@ -102,8 +102,8 @@ export default function OrderMenu(props: Props) {
           });
 
         setTimeout(async () => {
-          await dispatch(handlePageOrderUnfinished({ page: 1, limit: 8 }));
-          await dispatch(handlePageOrderFinished({ page: 1, limit: 8 }));
+          dispatch(handlePageOrderUnfinished({ page: 1, limit: 8 }));
+          dispatch(handlePageOrderFinished({ page: 1, limit: 8 }));
 
           router.push("/orders");
         }, 500);

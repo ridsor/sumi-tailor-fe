@@ -20,5 +20,6 @@ export const getDashboard = async () => {
   }
 
   const result = await res.json();
+
   return result;
 };

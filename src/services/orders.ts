@@ -263,6 +263,8 @@ export const cancelOrder = async (item_code: string) => {
     console.error("Failed to cancel");
     return;
   }
+
+  return response.json();
 };
 
 export const changeStatusOrder = async (item_code: string) => {
