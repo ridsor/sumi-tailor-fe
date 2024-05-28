@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { getToken } from "./token";
 
 export interface User {
@@ -20,7 +21,7 @@ export const getUsers = async (search: string = ""): Promise<User[]> => {
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 60,
       },
     }
   );
@@ -32,4 +33,32 @@ export const getUsers = async (search: string = ""): Promise<User[]> => {
   const users = await res.json();
 
   return users.data;
+};
+
+export const editProfile = async (user_id: string, formData: FormData) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    (process.env.NEXT_PUBLIC_API_URL as string) + "/api/users/" + user_id,
+    {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: "Bearer " + token?.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.status == 400) {
+    return response.json();
+  }
+
+  if (response.status != 200) {
+    console.error("Failed to edited");
+    return;
+  }
+
+  revalidateTag("auth");
+
+  return response.json();
 };

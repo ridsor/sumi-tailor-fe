@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { getToken } from "./token";
+import { revalidateTag } from "next/cache";
 
 export interface InputsLogin {
   email: string;
@@ -34,13 +35,15 @@ export const login = async (inputs: InputsLogin) => {
       sameSite: "lax",
     });
 
+    revalidateTag("auth");
+
     return json;
   }
 };
 
 export const logout = async () => {
   cookies().delete("refreshToken");
-  
+
   const token = await getToken();
 
   const response = await fetch(
@@ -55,6 +58,7 @@ export const logout = async () => {
   );
 
   if (response.ok) {
+    revalidateTag("auth");
     return response.json();
   }
 };
@@ -68,7 +72,8 @@ export const fetchAuth = async () => {
         Authorization: "Bearer " + cookies().get("refreshToken")?.value,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 1500,
+        tags: ["auth"],
       },
       credentials: "include",
     }

@@ -10,11 +10,10 @@ import Link from "next/link";
 import Image from "next/image";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import user_img from "@/assets/img/user-img.svg";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { clearUser, getUser } from "@/lib/redux/features/userSlice";
-import { logout } from "@/services/auth";
+import { fetchAuth, logout } from "@/services/auth";
+import { UserType } from "@/types/user";
 
 interface Props {
   isSidebar: boolean;
@@ -22,12 +21,17 @@ interface Props {
 }
 
 export default function Aside({ isSidebar, setSidebar }: Props) {
-  const dispatch = useAppDispatch();
   const pathname = usePathname();
   const router = useRouter();
 
-  const user = useAppSelector((state) => state.user);
   const [isLoadingLogout, setLoadingLogout] = useState<boolean>(false);
+  const [user, setUser] = useState<UserType | undefined>();
+
+  useEffect(() => {
+    fetchAuth().then((result) => {
+      setUser(result.data);
+    });
+  }, []);
 
   const handleLogout = useCallback(async () => {
     setLoadingLogout(true);
@@ -44,14 +48,9 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
       console.log(e);
     }
 
-    dispatch(clearUser());
     router.push("/");
     setLoadingLogout(false);
-  }, [router, dispatch]);
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
+  }, [router]);
 
   return (
     <aside
@@ -113,8 +112,8 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                   } user-img aspect-square mx-auto mb-1`}>
                   <Image
                     src={
-                      user.image
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${user.image}`
+                      user?.image
+                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${user?.image}`
                         : user_img
                     }
                     width={70}
@@ -127,7 +126,7 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 {isSidebar ? (
                   <>
                     <div className="user-name text-center font-semibold">
-                      {user.name}
+                      {user?.name}
                     </div>
                   </>
                 ) : (

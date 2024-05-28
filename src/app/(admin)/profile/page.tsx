@@ -6,10 +6,11 @@ import FormProfilPassword from "./FormProfilePassword";
 import Image from "next/image";
 import { FaExclamationCircle } from "react-icons/fa";
 import { getToken } from "@/services/token";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getUser } from "@/lib/redux/features/userSlice";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { editProfile } from "@/services/user";
+import { fetchAuth } from "@/services/auth";
+import { UserType } from "@/types/user";
 
 type Input = {
   name: string;
@@ -24,9 +25,7 @@ type Validate = {
 };
 
 const ProfilePage = () => {
-  const dispatch = useAppDispatch();
   const imageRef = useRef<HTMLInputElement>(null);
-  const user = useAppSelector((state) => state.user);
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
   const [inputs, setInputs] = useState<Input>({
@@ -40,6 +39,30 @@ const ProfilePage = () => {
   });
   const [isInputLoading, setInputLoading] = useState<boolean>(false);
   const [isChangePassword, setChangePassword] = useState<boolean>(false);
+  const [user, setUser] = useState<UserType>({
+    id: "",
+    email: "",
+    image: "",
+    name: "",
+    role: "",
+  });
+
+  useEffect(() => {
+    fetchAuth().then((result) => {
+      setUser(result.data);
+
+      setInputs((prev) => ({
+        ...prev,
+        name: result.data.name,
+        email: result.data.email,
+      }));
+      if (result.data.image) {
+        setImagePreviewUrl(
+          process.env.NEXT_PUBLIC_API_URL + "/images/" + result.data.image
+        );
+      }
+    });
+  }, []);
 
   const onValidate = ({ name, email, image }: Input): boolean => {
     let result = false;
@@ -124,28 +147,16 @@ const ProfilePage = () => {
     setInputLoading(true);
 
     try {
-      const token = await getToken();
-
       const formData = new FormData();
       formData.append("name", inputs.name);
       formData.append("email", inputs.email);
       formData.append("image", (inputs.image as File) || "");
       formData.append("profile", "true");
-      const response = await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/users/" + user.id,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: "Bearer " + token.authorization.access_token,
-          },
-        }
-      );
 
-      if (response.status != 200) {
+      const result = await editProfile(user?.id ?? "", formData);
+
+      if (result.status != "success") {
         console.error("Failed to input");
-        const result = await response.json();
-        console.log(result);
         if (typeof result.errors.email != "undefined") {
           setValidate((prev) => ({ ...prev, email: result.errors.email }));
         }
@@ -153,9 +164,6 @@ const ProfilePage = () => {
         setInputLoading(false);
         return;
       }
-      const result = await response.json();
-
-      dispatch(getUser());
 
       withReactContent(Swal)
         .mixin({
@@ -200,23 +208,6 @@ const ProfilePage = () => {
   const handleImageClick = () => {
     imageRef.current?.click();
   };
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
-
-  useEffect(() => {
-    setInputs((prev) => ({
-      ...prev,
-      name: user.name,
-      email: user.email,
-    }));
-    if (user.image) {
-      setImagePreviewUrl(
-        process.env.NEXT_PUBLIC_API_URL + "/images/" + user.image
-      );
-    }
-  }, [user]);
 
   return (
     <>

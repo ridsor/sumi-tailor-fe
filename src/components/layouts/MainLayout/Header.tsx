@@ -1,27 +1,23 @@
 "use client";
-import { getUser } from "@/lib/redux/features/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+
+import { fetchAuth } from "@/services/auth";
+import { UserType } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaBars, FaUser } from "react-icons/fa6";
 
 const Header = () => {
   const pathname = usePathname();
-  const dispatch = useAppDispatch();
-
-  const user = useAppSelector((state) => state.user);
   const [hamburger, setHamburger] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<UserType | undefined>();
 
   useEffect(() => {
-    if (!isLoading) {
-      dispatch(getUser());
-    } else {
-      setLoading(false);
-    }
-  }, [isLoading, dispatch]);
+    fetchAuth().then((result) => {
+      setUser(result?.data);
+    });
+  }, []);
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50">
@@ -110,7 +106,7 @@ const Header = () => {
           <div className="order-2 ml-auto right lg:order-3 lg:ml-0">
             <Link
               aria-label="Halaman User"
-              href={user.id !== "" ? "/dashboard" : "/login"}
+              href={user ? "/dashboard" : "/login"}
               className="bg-white p-3 rounded-full block active:ring ring-[rgba(255,255,255,.3)]">
               <FaUser className="fill-two" size="1.2rem" />
             </Link>

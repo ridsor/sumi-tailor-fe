@@ -1,27 +1,24 @@
 "use server";
 
-import { OrderType, PaginationType } from "@/lib/redux/features/ordersSlice";
+import { PaginateType } from "@/types/paginate";
 import { getToken } from "./token";
-import { cookies } from "next/headers";
+import { revalidateTag } from "next/cache";
+import { OrderHistoryType, OrderType } from "@/types/order";
 
 export const getOrders = async ({
   page = 1,
-  limit = 5,
+  limit = 8,
   status,
   search,
-  type,
 }: {
   page?: number;
   limit?: number;
   status: string;
   search: string;
-  type?: string;
 }): Promise<{
   data: OrderType[];
-  pagination: PaginationType;
+  paginate: PaginateType;
 }> => {
-  let revalidate = type !== "client" ? 3600 * 24 : 30;
-
   const refreshToken = await getToken();
 
   const res = await fetch(
@@ -34,7 +31,8 @@ export const getOrders = async ({
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate,
+        revalidate: 60,
+        tags: ["order"],
       },
     }
   );
@@ -47,7 +45,7 @@ export const getOrders = async ({
 
   return {
     data: orders.data,
-    pagination: {
+    paginate: {
       page: orders.page,
       limit: orders.limit,
       total: orders.total,
@@ -56,8 +54,7 @@ export const getOrders = async ({
 };
 
 export const getOrderById = async (
-  item_code: string,
-  token: string = ""
+  item_code: string
 ): Promise<OrderType | undefined> => {
   const refreshToken = await getToken();
 
@@ -69,7 +66,8 @@ export const getOrderById = async (
         Authorization: "Bearer " + refreshToken?.authorization.access_token,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 60,
+        tags: ["order"],
       },
     }
   );
@@ -82,7 +80,7 @@ export const getOrderById = async (
 
 export const getOrderHistoryById = async (
   item_code: string
-): Promise<OrderType | undefined> => {
+): Promise<OrderHistoryType | undefined> => {
   const refreshToken = await getToken();
 
   const res = await fetch(
@@ -93,7 +91,8 @@ export const getOrderHistoryById = async (
         Authorization: "Bearer " + refreshToken?.authorization.access_token,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 60,
+        tags: ["order_history"],
       },
     }
   );
@@ -107,22 +106,20 @@ export const getOrderHistoryById = async (
 export const getOrderHistory = async ({
   page = 1,
   limit = 5,
-  status,
   search,
 }: {
   page?: number;
   limit?: number;
-  status: string;
   search: string;
 }): Promise<{
-  data: OrderType[];
-  pagination: PaginationType;
+  data: OrderHistoryType[];
+  paginate: PaginateType;
 }> => {
   const refreshToken = await getToken();
 
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_URL +
-      `/api/orders/history?status=${status}&page=${page}&limit=${limit}&search=${search}`,
+      `/api/orders/history?page=${page}&limit=${limit}&search=${search}`,
     {
       method: "GET",
       credentials: "include",
@@ -130,7 +127,8 @@ export const getOrderHistory = async ({
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 60,
+        tags: ["order_history"],
       },
     }
   );
@@ -143,68 +141,12 @@ export const getOrderHistory = async ({
 
   return {
     data: orders.data,
-    pagination: {
+    paginate: {
       page: orders.page,
       limit: orders.limit,
       total: orders.total,
     },
   };
-};
-
-export const getRegisterOrder = async () => {
-  const token = await getToken();
-
-  if (token.status !== "success") {
-    throw new Error("Failed to fetch");
-  }
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/register-order`,
-    {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: "Bearer " + token.authorization.access_token,
-        Cookie: ("refreshToken=" +
-          cookies().get("refreshToken")?.value) as string,
-      },
-    }
-  );
-
-  if (res.status != 200) {
-    throw new Error("Failed to fetch");
-  }
-
-  const register_order = await res.json();
-  return register_order.data.register_order_token;
-};
-
-export const resetRegisterOrder = async () => {
-  const token = await getToken();
-
-  if (token.status !== "success") {
-    throw new Error("Failed to fetch");
-  }
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/register-order`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: "Bearer " + token.authorization.access_token,
-        Cookie: ("refreshToken=" +
-          cookies().get("refreshToken")?.value) as string,
-      },
-    }
-  );
-
-  if (res.status != 200) {
-    throw new Error("Failed to fetch");
-  }
-
-  const register_order = await res.json();
-  return register_order.data.token;
 };
 
 export const createOrder = async (formData: FormData) => {
@@ -221,9 +163,18 @@ export const createOrder = async (formData: FormData) => {
     }
   );
 
-  if (response.json) {
+  if (response.status == 400) {
     return response.json();
   }
+
+  if (response.status != 201) {
+    console.error("Failed to created");
+    return;
+  }
+
+  revalidateTag("order");
+
+  return response.json();
 };
 
 export const editOrder = async (item_code: string, formData: FormData) => {
@@ -241,6 +192,7 @@ export const editOrder = async (item_code: string, formData: FormData) => {
   );
 
   if (response.json) {
+    revalidateTag("order");
     return response.json();
   }
 };
@@ -263,6 +215,9 @@ export const cancelOrder = async (item_code: string) => {
     console.error("Failed to cancel");
     return;
   }
+
+  revalidateTag("order");
+  revalidateTag("order_history");
 
   return response.json();
 };
@@ -288,4 +243,33 @@ export const changeStatusOrder = async (item_code: string) => {
     console.error("Failed to cancel");
     return;
   }
+
+  revalidateTag("order");
+
+  return response.json();
+};
+
+export const orderConfirmation = async (item_code: string) => {
+  const token = await getToken();
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${item_code}/confirm`,
+    {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        Authorization: "Bearer " + token?.authorization.access_token,
+      },
+    }
+  );
+
+  if (response.status != 200) {
+    console.error("Failed to input");
+    return;
+  }
+
+  revalidateTag("order");
+  revalidateTag("order_history");
+
+  return response.json();
 };

@@ -4,19 +4,13 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken } from "@/services/token";
-import { useAppDispatch } from "@/lib/redux/hooks";
-import {
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
+import { orderConfirmation } from "@/services/orders";
 
 interface Props {
   item_code: string;
 }
 
 export default function OrderConfirmation(props: Props) {
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,30 +37,8 @@ export default function OrderConfirmation(props: Props) {
       if (result.isConfirmed) {
         setLoading(true);
 
-        const token = await getToken();
-
-        if (token.status != "success") {
-          console.error("Failed to logout");
-          setLoading(false);
-          return;
-        }
-
-        const confirmResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${props.item_code}/confirm`,
-          {
-            method: "PUT",
-            credentials: "include",
-            headers: {
-              Authorization: "Bearer " + token.authorization.access_token,
-            },
-          }
-        );
-
-        if (confirmResponse.status != 200) {
-          console.error("Failed to input");
-          setLoading(false);
-          return;
-        }
+        const result = await orderConfirmation(props.item_code);
+        if (!result) return;
 
         withReactContent(Swal)
           .mixin({
@@ -84,13 +56,9 @@ export default function OrderConfirmation(props: Props) {
           });
 
         setTimeout(async () => {
-          await dispatch(handlePageOrderUnfinished({ page: 1, limit: 8 }));
-          await dispatch(handlePageOrderFinished({ page: 1, limit: 8 }));
-
           setLoading(false);
           router.push("/orders");
         }, 500);
-      } else {
       }
     } catch (e) {
       console.error(e);

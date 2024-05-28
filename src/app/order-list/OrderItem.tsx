@@ -1,9 +1,9 @@
 import { getDay, getMonth, getTime, getYear } from "@/utils/order";
-import { OrderType } from "@/lib/redux/features/ordersSlice";
 import Lightbox from "yet-another-react-lightbox";
 import React, { useState } from "react";
 import NextJsImage from "@/components/fragments/NextJsImage";
 import Image from "next/image";
+import { OrderType } from "@/types/order";
 
 interface Props {
   order: OrderType;
@@ -33,6 +33,7 @@ export default function OrderItem(props: Props) {
               width={250}
               height={250}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </button>
           <Lightbox

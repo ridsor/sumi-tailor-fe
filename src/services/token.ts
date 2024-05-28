@@ -11,7 +11,7 @@ export const getToken = async () => {
         Authorization: "Bearer " + cookies().get("refreshToken")?.value,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 60,
       },
     }
   );
