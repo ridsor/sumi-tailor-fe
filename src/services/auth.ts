@@ -75,7 +75,6 @@ export const fetchAuth = async () => {
         revalidate: 1500,
         tags: ["auth"],
       },
-      credentials: "include",
     }
   );
 

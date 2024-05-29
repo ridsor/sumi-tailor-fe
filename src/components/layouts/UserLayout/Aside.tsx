@@ -18,20 +18,14 @@ import { UserType } from "@/types/user";
 interface Props {
   isSidebar: boolean;
   setSidebar: (value: boolean) => void;
+  user: UserType;
 }
 
-export default function Aside({ isSidebar, setSidebar }: Props) {
+export default function Aside({ isSidebar, setSidebar, user }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
   const [isLoadingLogout, setLoadingLogout] = useState<boolean>(false);
-  const [user, setUser] = useState<UserType | undefined>();
-
-  useEffect(() => {
-    fetchAuth().then((result) => {
-      setUser(result.data);
-    });
-  }, []);
 
   const handleLogout = useCallback(async () => {
     setLoadingLogout(true);

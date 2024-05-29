@@ -1,41 +1,25 @@
-"use client";
+import Auth from "@/components/fragments/Auth";
+import { fetchAuth } from "@/services/auth";
+import { UserType } from "@/types/user";
 
-import Aside from "@/components/layouts/UserLayout/Aside";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  let user: UserType = {
+    id: "",
+    name: "",
+    email: "",
+    image: "",
+    role: "",
+  };
 
-const enableNavbar = [
-  "/dashboard",
-  "/profile",
-  "/accounts",
-  "/orders",
-  "/orders/history",
-];
+  try {
+    user = await fetchAuth().then((result) => result?.data);
+  } catch (e) {
+    console.error(e);
+  }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-
-  const [isSidebar, setSidebar] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (window.innerWidth >= 640) {
-      setSidebar(true);
-    }
-  }, []);
-
-  return enableNavbar.includes(pathname) ? (
-    <>
-      <main
-        className={`${
-          isSidebar ? "md:left-[250px] md:w-[calc(100%-250px)]" : ""
-        } left-[60px] w-[calc(100%-60px)] relative bg-three min-h-screen h-fit`}>
-        {children}
-      </main>
-      {enableNavbar.includes(pathname) && (
-        <Aside isSidebar={isSidebar} setSidebar={setSidebar} />
-      )}
-    </>
-  ) : (
-    children
-  );
+  return <Auth user={user}>{children}</Auth>;
 }
