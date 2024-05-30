@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     apple: ["/apple-touch-icon.png"],
     shortcut: ["/apple-touch-icon.png"],
   },
-  title: "Sumi Tailor",
+  title: "Sumi Tailor · Cek Pesanan Anda",
   description:
     "Temukan solusi ideal untuk gaya pakaian Anda! Tim penjahit kami siap membantu Anda mengatasi kesulitan dengan pakaian yang tidak pas. Dengan keahlian dan pengalaman kami, kami menciptakan pakaian yang disesuaikan dengan bentuk dan gaya tubuh unik Anda. Mulailah mewujudkan impian mode Anda sekarang!",
   authors: [
