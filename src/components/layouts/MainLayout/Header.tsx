@@ -5,19 +5,12 @@ import { UserType } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars, FaUser } from "react-icons/fa6";
 
-const Header = () => {
+const Header = ({ auth }: { auth?: UserType }) => {
   const pathname = usePathname();
   const [hamburger, setHamburger] = useState<boolean>(false);
-  const [user, setUser] = useState<UserType | undefined>();
-
-  useEffect(() => {
-    fetchAuth().then((result) => {
-      setUser(result?.data);
-    });
-  }, []);
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50">
@@ -106,7 +99,7 @@ const Header = () => {
           <div className="order-2 ml-auto right lg:order-3 lg:ml-0">
             <Link
               aria-label="Halaman User"
-              href={user ? "/dashboard" : "/login"}
+              href={auth ? "/dashboard" : "/login"}
               className="bg-white p-3 rounded-full block active:ring ring-[rgba(255,255,255,.3)]">
               <FaUser className="fill-two" size="1.2rem" />
             </Link>
