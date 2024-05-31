@@ -10,10 +10,10 @@ const GalleryItem = (props: Props) => {
       <Image
         src={`/image/gallery${props.image}.jpg`}
         alt={`gallery${props.image}`}
-        priority
         width={200}
         height={200}
         className="w-full rounded-xl"
+        loading="lazy"
       />
     </div>
   );

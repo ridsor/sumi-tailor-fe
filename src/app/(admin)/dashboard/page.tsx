@@ -8,7 +8,7 @@ const DashboardChart = dynamic(() => import("./DashbordCharts"), {
   ssr: false,
 });
 
-export const revalidate = 0;
+export const revalidate = 3600 * 24;
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

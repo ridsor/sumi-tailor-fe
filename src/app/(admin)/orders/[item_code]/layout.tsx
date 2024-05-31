@@ -1,17 +1,18 @@
 import { getOrderById } from "@/services/orders";
+import { OrderType } from "@/types/order";
 import { Metadata } from "next";
 
 export const generateMetadata = async ({
   params,
-  searchParams,
 }: {
   params: { item_code: string };
-  searchParams: { [key: string]: string | string[] | undefined };
 }): Promise<Metadata> => {
-  const order = await getOrderById(
-    params.item_code,
-    searchParams?.token as string
-  ).catch((e) => console.error(e));
+  let order: OrderType | undefined;
+  try {
+    order = await getOrderById(params.item_code);
+  } catch (e) {
+    console.error(e);
+  }
 
   let title = "Sumi Tailor";
   if (typeof order != "undefined") title = "Sumi Tailor · " + order.name;

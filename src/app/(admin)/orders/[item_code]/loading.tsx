@@ -11,19 +11,19 @@ export default function loading() {
           <div className="px-4">
             <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
             <div className="border-five border-b"></div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
             </div>
