@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import user_img from "@/assets/img/user-img.svg";
 import { fetchAuth, logout } from "@/services/auth";
 import { UserType } from "@/types/user";
+import { signOut } from "next-auth/react";
 
 interface Props {
   isSidebar: boolean;
@@ -30,11 +31,16 @@ export default function Aside({ isSidebar, setSidebar, user }: Props) {
   const handleLogout = useCallback(async () => {
     setLoadingLogout(true);
 
+    await signOut({
+      redirect: false,
+    });
+
     try {
       const response = await logout();
 
       if (response?.status != "success") {
         console.error("Failed to logout");
+
         setLoadingLogout(false);
         return;
       }

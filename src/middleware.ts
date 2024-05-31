@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchAuth } from "./services/auth";
 import { routeFiltering } from "./utils/middleware";
+import { getToken } from "next-auth/jwt";
 
 export const protectedRoutes = [
   "/dashboard",
@@ -16,9 +16,9 @@ export async function middleware(request: NextRequest) {
 
   try {
     if (routeFiltering(pathname, protectedRoutes)) {
-      const user = await fetchAuth();
+      const token = await getToken({ req: request });
 
-      if (user?.status != "success") {
+      if (!token) {
         return NextResponse.redirect(
           new URL("/login?callbackUrl=" + pathname, request.url)
         );
@@ -26,9 +26,9 @@ export async function middleware(request: NextRequest) {
     }
 
     if (authRoutes.includes(pathname)) {
-      const user = await fetchAuth();
+      const token = await getToken({ req: request });
 
-      if (user?.status == "success") {
+      if (token) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     }

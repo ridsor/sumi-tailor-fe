@@ -1,8 +1,9 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { getToken } from "./token";
 import { revalidateTag } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOption } from "@/app/api/auth/[...nextauth]/route";
 
 export interface InputsLogin {
   email: string;
@@ -22,19 +23,8 @@ export const login = async (inputs: InputsLogin) => {
     }
   );
 
-  const json = await res.json();
-
   if (res.ok) {
-    // set refreshToken
-    cookies().set({
-      name: "refreshToken",
-      value: json.refresh_token.token,
-      secure: true,
-      httpOnly: true,
-      path: "/",
-      sameSite: "lax",
-    });
-
+    const json = await res.json();
     revalidateTag("auth");
 
     return json;
@@ -42,8 +32,6 @@ export const login = async (inputs: InputsLogin) => {
 };
 
 export const logout = async () => {
-  cookies().delete("refreshToken");
-
   const token = await getToken();
 
   const response = await fetch(
@@ -52,7 +40,7 @@ export const logout = async () => {
       method: "PUT",
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${token.authorization.access_token}`,
+        Authorization: `Bearer ${token?.authorization.access_token}`,
       },
     }
   );
@@ -64,15 +52,16 @@ export const logout = async () => {
 };
 
 export const fetchAuth = async () => {
+  const session = await getServerSession(authOption);
   const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/me",
     {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + cookies().get("refreshToken")?.value,
+        Authorization: `Bearer ${session?.user.refreshToken}`,
       },
       next: {
-        revalidate: 1500,
+        revalidate: 60,
         tags: ["auth"],
       },
     }
