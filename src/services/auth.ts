@@ -44,7 +44,6 @@ export const logout = async () => {
     }
   );
 
-  console.log(token);
   if (response.ok) {
     revalidateTag("auth");
     return response.json();
