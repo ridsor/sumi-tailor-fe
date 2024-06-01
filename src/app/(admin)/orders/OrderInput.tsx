@@ -256,7 +256,6 @@ export default function OrderInput() {
         if (response.status === 400) {
           createResponse = await response.json();
         }
-
         if (typeof createResponse?.errors.no_hp != "undefined") {
           setValidate((prev) => ({
             ...prev,
