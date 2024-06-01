@@ -10,33 +10,37 @@ import Link from "next/link";
 import Image from "next/image";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import user_img from "@/assets/img/user-img.svg";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { clearUser, getUser } from "@/lib/redux/features/userSlice";
-import { logout } from "@/services/auth";
+import { fetchAuth, logout } from "@/services/auth";
+import { UserType } from "@/types/user";
+import { signOut } from "next-auth/react";
 
 interface Props {
   isSidebar: boolean;
   setSidebar: (value: boolean) => void;
+  user: UserType;
 }
 
-export default function Aside({ isSidebar, setSidebar }: Props) {
-  const dispatch = useAppDispatch();
+export default function Aside({ isSidebar, setSidebar, user }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const user = useAppSelector((state) => state.user);
   const [isLoadingLogout, setLoadingLogout] = useState<boolean>(false);
 
   const handleLogout = useCallback(async () => {
     setLoadingLogout(true);
+
+    await signOut({
+      redirect: false,
+    });
 
     try {
       const response = await logout();
 
       if (response?.status != "success") {
         console.error("Failed to logout");
+
         setLoadingLogout(false);
         return;
       }
@@ -44,14 +48,9 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
       console.log(e);
     }
 
-    dispatch(clearUser());
     router.push("/");
     setLoadingLogout(false);
-  }, [router, dispatch]);
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
+  }, [router]);
 
   return (
     <aside
@@ -113,8 +112,8 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                   } user-img aspect-square mx-auto mb-1`}>
                   <Image
                     src={
-                      user.image
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${user.image}`
+                      user?.image
+                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${user?.image}`
                         : user_img
                     }
                     width={70}
@@ -127,7 +126,7 @@ export default function Aside({ isSidebar, setSidebar }: Props) {
                 {isSidebar ? (
                   <>
                     <div className="user-name text-center font-semibold">
-                      {user.name}
+                      {user?.name}
                     </div>
                   </>
                 ) : (

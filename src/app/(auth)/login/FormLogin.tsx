@@ -1,6 +1,7 @@
 "use client";
 
-import { InputsLogin, login } from "@/services/auth";
+import { InputsLogin } from "@/services/auth";
+import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -32,16 +33,22 @@ export default function FormLogin() {
     }
 
     try {
-      const res = await login(inputsLogin);
-      if (res?.status != "success") {
+      const res = await signIn("credentials", {
+        email: inputsLogin.email,
+        password: inputsLogin.password,
+        remember: inputsLogin.remember_me,
+        redirect: false,
+      });
+
+      if (res?.error) {
         setValidate({ email: "Email", password: "Password" });
-        console.log(res.message);
         setLoading(false);
         return;
       }
-
-      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-      router.push(callbackUrl);
+      if (res?.ok) {
+        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+        router.push(callbackUrl);
+      }
     } catch (e) {
       console.error(e);
       setLoading(false);

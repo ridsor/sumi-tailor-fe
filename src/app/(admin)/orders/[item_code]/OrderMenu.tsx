@@ -1,12 +1,6 @@
 "use client";
 
 import {
-  OrderType,
-  changePage,
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
-import {
   FaArrowRotateLeft,
   FaCircleCheck,
   FaEllipsisVertical,
@@ -16,32 +10,40 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { cancelOrder, changeStatusOrder } from "@/services/orders";
 import { FaTimesCircle } from "react-icons/fa";
-import { User } from "@/lib/redux/features/userSlice";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { OrderType } from "@/types/order";
+import OrderInput from "./OrderInput";
 
 interface Props {
-  order: OrderType & { item_code: string };
-  user: User;
-  toggleModal: () => void;
-  onChangeStatus: () => void;
+  order: OrderType;
 }
 
 export default function OrderMenu(props: Props) {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const [orderMenu, setOrderMenu] = useState<boolean>(false);
+  const [loadingAction, setLoadingAction] = useState({
+    statusChange: false,
+    cancel: false,
+  });
+
+  const [isModal, setModal] = useState<boolean>(false);
+
+  const toggleModal = () => {
+    setModal((prev) => !prev);
+  };
 
   const handleStatusChange = async (item_code: string) => {
+    setLoadingAction((prev) => ({
+      ...prev,
+      statusChange: true,
+    }));
+
     try {
-      const isChange = changeStatusOrder(item_code);
+      const isChange = await changeStatusOrder(item_code);
       if (!isChange) {
         return;
       }
-
-      props.onChangeStatus();
 
       withReactContent(Swal)
         .mixin({
@@ -60,6 +62,11 @@ export default function OrderMenu(props: Props) {
     } catch (e) {
       console.error(e);
     }
+
+    setLoadingAction((prev) => ({
+      ...prev,
+      statusChange: false,
+    }));
   };
 
   const handleCancelOrder = async (item_code: string) => {
@@ -82,7 +89,12 @@ export default function OrderMenu(props: Props) {
         });
 
       if (result.isConfirmed) {
-        const isDelete = cancelOrder(item_code);
+        setLoadingAction((prev) => ({
+          ...prev,
+          cancel: true,
+        }));
+
+        const isDelete = await cancelOrder(item_code);
         if (!isDelete) {
           return;
         }
@@ -102,15 +114,17 @@ export default function OrderMenu(props: Props) {
           });
 
         setTimeout(async () => {
-          await dispatch(handlePageOrderUnfinished({ page: 1, limit: 8 }));
-          await dispatch(handlePageOrderFinished({ page: 1, limit: 8 }));
-
           router.push("/orders");
         }, 500);
       }
     } catch (e) {
       console.error(e);
     }
+
+    setLoadingAction((prev) => ({
+      ...prev,
+      cancel: false,
+    }));
   };
 
   return (
@@ -140,7 +154,9 @@ export default function OrderMenu(props: Props) {
                   className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
                   onClick={() => handleStatusChange(props.order.item_code)}>
                   <FaArrowRotateLeft />
-                  Pesanan Diproses
+                  {!loadingAction.statusChange
+                    ? "Pesanan Diproses"
+                    : "Loading..."}
                 </button>
               </li>
             ) : (
@@ -149,14 +165,16 @@ export default function OrderMenu(props: Props) {
                   className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
                   onClick={() => handleStatusChange(props.order.item_code)}>
                   <FaCircleCheck />
-                  Pesanan Selesai
+                  {!loadingAction.statusChange
+                    ? "Pesanan Selesai"
+                    : "Loading..."}
                 </button>
               </li>
             )}
             <li>
               <button
                 className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
-                onClick={() => props.toggleModal()}>
+                onClick={() => toggleModal()}>
                 <FaPenToSquare />
                 Edit
               </button>
@@ -166,12 +184,17 @@ export default function OrderMenu(props: Props) {
                 className="hover:bg-[#F8F8F8] p-2 w-full text-left flex items-center gap-x-2"
                 onClick={() => handleCancelOrder(props.order.item_code)}>
                 <FaTimesCircle />
-                Batalkan
+                {!loadingAction.cancel ? "Batalkan" : "Loading..."}
               </button>
             </li>
           </ul>
         </div>
       </div>
+      <OrderInput
+        isModal={isModal}
+        toggleModal={toggleModal}
+        order={props.order}
+      />
     </>
   );
 }

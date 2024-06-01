@@ -1,17 +1,20 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { authOption } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 export const getToken = async () => {
+  const session = await getServerSession(authOption);
+
   const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/refresh",
     {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + cookies().get("refreshToken")?.value,
+        Authorization: "Bearer " + session?.user.refreshToken,
       },
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 60,
       },
     }
   );

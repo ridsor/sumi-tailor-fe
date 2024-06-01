@@ -12,7 +12,7 @@ export const getDashboard = async () => {
       Authorization: `Bearer ${refreshToken.authorization.access_token}`,
     },
     next: {
-      revalidate: 3600 * 24,
+      revalidate: 3600 * 12,
     },
   });
   if (!res.ok && res.status != 200) {
@@ -20,5 +20,6 @@ export const getDashboard = async () => {
   }
 
   const result = await res.json();
+
   return result;
 };
