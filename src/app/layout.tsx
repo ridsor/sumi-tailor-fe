@@ -2,17 +2,8 @@ import "./globals.css";
 import { josenfin_sans, quicksand } from "@/fonts";
 import WrapperLayout from "./WrapperLayout";
 import { Metadata } from "next";
-import { Session, getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOption } from "./api/auth/[...nextauth]/route";
-
-const enableNavbar = [
-  "/",
-  "/about",
-  "/gallery",
-  "/service",
-  "/login",
-  "/order-list",
-];
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -44,9 +35,8 @@ export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-  params: { session: Session };
 }) {
-  let session = await getServerSession(authOption);
+  const session = await getServerSession(authOption);
 
   return (
     <html lang="en">
