@@ -1,14 +1,11 @@
 import { FaArrowDownLong, FaArrowUpLong } from "react-icons/fa6";
 import { abbreviateNumber, getMonthForChart } from "@/utils/dashboard";
 import dynamic from "next/dynamic";
-import { ApexOptions } from "apexcharts";
 import { Metadata } from "next";
 import { getDashboard } from "@/services/dashboard";
 const DashboardChart = dynamic(() => import("./DashbordCharts"), {
   ssr: false,
 });
-
-export const revalidate = 3600 * 24;
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -45,7 +42,7 @@ export default async function DashboardPage() {
   const total_income =
     dashboard?.data.map((x: { total_income: number }) => x.total_income) || [];
   const chartOrder: {
-    options: ApexOptions;
+    options: any;
     series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
   } = {
     series: [
@@ -75,7 +72,7 @@ export default async function DashboardPage() {
   };
 
   const chartIncome: {
-    options: ApexOptions;
+    options: any;
     series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
   } = {
     series: [

@@ -1,10 +1,10 @@
 import { getDay, getMonth, getTime, getYear } from "@/utils/order";
-import { OrderType } from "@/lib/redux/features/ordersSlice";
 import Link from "next/link";
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import { useState } from "react";
 import NextJsImage from "@/components/fragments/NextJsImage";
+import { OrderType } from "@/types/order";
 
 interface Props {
   order: OrderType;

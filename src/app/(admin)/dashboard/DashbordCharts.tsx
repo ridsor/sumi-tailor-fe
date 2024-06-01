@@ -1,16 +1,15 @@
 "use client";
 
 import { abbreviateNumber } from "@/utils/dashboard";
-import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 
 interface Props {
   chartOrder: {
-    options: ApexOptions;
+    options: any;
     series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
   };
   chartIncome: {
-    options: ApexOptions;
+    options: any;
     series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
   };
 }
@@ -18,12 +17,12 @@ interface Props {
 export default function ChartDashboard(props: Props) {
   props.chartOrder.options.yaxis = {
     labels: {
-      formatter: (value) => value.toFixed(0),
+      formatter: (value: number) => value.toFixed(0),
     },
   };
   props.chartIncome.options.yaxis = {
     labels: {
-      formatter: (value) => "Rp. " + abbreviateNumber(value),
+      formatter: (value: number) => "Rp. " + abbreviateNumber(value),
     },
   };
 
