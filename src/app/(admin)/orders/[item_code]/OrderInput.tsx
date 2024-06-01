@@ -268,7 +268,7 @@ export default function OrderInput(props: Props) {
           timer: 500,
         });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     props.toggleModal();

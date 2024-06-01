@@ -41,7 +41,7 @@ export default function Aside({ isSidebar, setSidebar, session }: Props) {
         return;
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     await signOut({

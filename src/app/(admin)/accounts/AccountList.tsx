@@ -91,7 +91,7 @@ export default function AdminList(props: Props) {
               position: "top-end",
               icon: "error",
               showConfirmButton: false,
-              timer: 1000,
+              timer: 500,
             });
         }
       }
