@@ -162,7 +162,7 @@ export const createOrder = async (formData: FormData) => {
       },
     }
   );
-
+  console.log(response,token,(process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders");
   if (response.status == 400) {
     return response.json();
   }
