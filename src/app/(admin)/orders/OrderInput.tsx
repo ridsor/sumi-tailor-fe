@@ -237,25 +237,8 @@ export default function OrderInput() {
       formData.append("note", inputs.note);
       formData.append("image", inputs.image as File);
 
-      const token = await getToken();
-
-      const response = await fetch(
-        (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: "Bearer " + token?.authorization.access_token,
-          },
-        }
-      );
-
-      if (response?.status != 201) {
-        let createResponse;
-
-        if (response.status === 400) {
-          createResponse = await response.json();
-        }
+      const createResponse = await createOrder(formData);
+      if (createResponse?.status != "success") {
         if (typeof createResponse?.errors.no_hp != "undefined") {
           setValidate((prev) => ({
             ...prev,
@@ -281,8 +264,6 @@ export default function OrderInput() {
         setInputLoading(false);
         return;
       }
-
-      createOrder();
 
       setModal(false);
 
