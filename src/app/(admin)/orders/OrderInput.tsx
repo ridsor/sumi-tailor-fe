@@ -237,7 +237,6 @@ export default function OrderInput() {
       formData.append("image", inputs.image as File);
 
       const createResponse = await createOrder(formData);
-      console.log(createResponse);
       if (createResponse?.status != "success") {
         if (typeof createResponse?.errors.no_hp != "undefined") {
           setValidate((prev) => ({
