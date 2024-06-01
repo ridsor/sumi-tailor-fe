@@ -1,7 +1,7 @@
 "use client";
 
 import Aside from "@/components/layouts/UserLayout/Aside";
-import { UserType } from "@/types/user";
+import { Session } from "next-auth";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -15,10 +15,10 @@ const enableNavbar = [
 
 export default function Auth({
   children,
-  user,
+  session,
 }: {
   children: React.ReactNode;
-  user: UserType;
+  session: Session | null;
 }) {
   const pathname = usePathname();
 
@@ -39,7 +39,11 @@ export default function Auth({
         {children}
       </main>
       {enableNavbar.includes(pathname) && (
-        <Aside isSidebar={isSidebar} setSidebar={setSidebar} user={user} />
+        <Aside
+          isSidebar={isSidebar}
+          setSidebar={setSidebar}
+          session={session}
+        />
       )}
     </>
   ) : (
