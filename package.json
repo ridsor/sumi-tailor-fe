@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.2.1",
     "apexcharts": "^3.45.2",
     "glob-to-regexp": "^0.4.1",
+    "micromatch": "^4.0.7",
     "next": "14.0.4",
     "next-auth": "^4.24.7",
     "react": "^18",
@@ -28,8 +29,6 @@
     "yet-another-react-lightbox": "^3.18.0"
   },
   "devDependencies": {
-    "@types/google.maps": "^3.55.0",
-    "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
