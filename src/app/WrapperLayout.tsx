@@ -3,7 +3,6 @@
 import Header from "@/components/layouts/MainLayout/Header";
 import { usePathname } from "next/navigation";
 import Footer from "@/components/layouts/MainLayout/Footer";
-import { UserType } from "@/types/user";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 // import ReduxProvider from "@/components/fragments/ReduxProvider";
@@ -19,17 +18,15 @@ const enableNavbar = [
 
 export default function WrapperLayout({
   children,
-  auth,
   session,
 }: {
   children: React.ReactNode;
-  auth?: UserType;
-  session: Session;
+  session: Session | null;
 }) {
   const pathname = usePathname();
   return (
-    <SessionProvider session={session}>
-      {enableNavbar.includes(pathname) && <Header auth={auth} />}
+    <SessionProvider>
+      {enableNavbar.includes(pathname) && <Header session={session} />}
       {children}
       {enableNavbar.includes(pathname) && <Footer />}
     </SessionProvider>

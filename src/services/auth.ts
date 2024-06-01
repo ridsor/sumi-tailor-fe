@@ -24,10 +24,9 @@ export const login = async (inputs: InputsLogin) => {
   );
 
   if (res.ok) {
-    const json = await res.json();
     revalidateTag("auth");
 
-    return json;
+    return res.json();
   }
 };
 
@@ -45,6 +44,7 @@ export const logout = async () => {
     }
   );
 
+  console.log(token);
   if (response.ok) {
     revalidateTag("auth");
     return response.json();

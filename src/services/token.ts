@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 
 export const getToken = async () => {
   const session = await getServerSession(authOption);
+  console.log(session);
 
   const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/auth/refresh",

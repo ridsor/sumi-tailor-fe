@@ -10,19 +10,19 @@ import Link from "next/link";
 import Image from "next/image";
 import sumi_tailor from "@/assets/img/icons/sumi-tailor-v2.png";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import user_img from "@/assets/img/user-img.svg";
-import { fetchAuth, logout } from "@/services/auth";
-import { UserType } from "@/types/user";
 import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
+import { logout } from "@/services/auth";
 
 interface Props {
   isSidebar: boolean;
   setSidebar: (value: boolean) => void;
-  user: UserType;
+  session: Session | null;
 }
 
-export default function Aside({ isSidebar, setSidebar, user }: Props) {
+export default function Aside({ isSidebar, setSidebar, session }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -30,10 +30,6 @@ export default function Aside({ isSidebar, setSidebar, user }: Props) {
 
   const handleLogout = useCallback(async () => {
     setLoadingLogout(true);
-
-    await signOut({
-      redirect: false,
-    });
 
     try {
       const response = await logout();
@@ -47,6 +43,10 @@ export default function Aside({ isSidebar, setSidebar, user }: Props) {
     } catch (e) {
       console.log(e);
     }
+
+    await signOut({
+      redirect: false,
+    });
 
     router.push("/");
     setLoadingLogout(false);
@@ -112,8 +112,8 @@ export default function Aside({ isSidebar, setSidebar, user }: Props) {
                   } user-img aspect-square mx-auto mb-1`}>
                   <Image
                     src={
-                      user?.image
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${user?.image}`
+                      session?.user.image
+                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${session?.user.image}`
                         : user_img
                     }
                     width={70}
@@ -126,7 +126,7 @@ export default function Aside({ isSidebar, setSidebar, user }: Props) {
                 {isSidebar ? (
                   <>
                     <div className="user-name text-center font-semibold">
-                      {user?.name}
+                      {session?.user.name}
                     </div>
                   </>
                 ) : (
