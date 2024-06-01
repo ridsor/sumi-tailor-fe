@@ -150,19 +150,20 @@ export const getOrderHistory = async ({
 };
 
 export const createOrder = async (formData: FormData) => {
-  const token = await getToken();
+  const refreshToken = await getToken();
 
   const response = await fetch(
     (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
     {
       method: "POST",
       body: formData,
+      credentials: "include",
       headers: {
-        Authorization: "Bearer " + token?.authorization.access_token,
+        Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
     }
   );
-  console.log(response,token,(process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders");
+  
   if (response.status == 400) {
     return response.json();
   }
