@@ -1,10 +1,9 @@
-import { UserType } from "@/types/user";
 import "./globals.css";
 import { josenfin_sans, quicksand } from "@/fonts";
-import { fetchAuth } from "@/services/auth";
 import WrapperLayout from "./WrapperLayout";
 import { Metadata } from "next";
-import { Session } from "next-auth";
+import { Session, getServerSession } from "next-auth";
+import { authOption } from "./api/auth/[...nextauth]/route";
 
 const enableNavbar = [
   "/",
@@ -43,27 +42,18 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params: { session },
 }: {
   children: React.ReactNode;
   params: { session: Session };
 }) {
-  let auth: UserType | undefined;
-
-  try {
-    auth = await fetchAuth().then((result) => result?.data);
-  } catch (e) {
-    console.error(e);
-  }
+  let session = await getServerSession(authOption);
 
   return (
     <html lang="en">
       <body
         suppressHydrationWarning={true}
         className={`${quicksand.variable} ${josenfin_sans.variable}`}>
-        <WrapperLayout auth={auth} session={session}>
-          {children}
-        </WrapperLayout>
+        <WrapperLayout session={session}>{children}</WrapperLayout>
       </body>
     </html>
   );
