@@ -149,32 +149,8 @@ export const getOrderHistory = async ({
   };
 };
 
-export const createOrder = async (formData: FormData) => {
-  const token = await getToken();
-
-  const response = await fetch(
-    (process.env.NEXT_PUBLIC_API_URL as string) + "/api/orders",
-    {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: "Bearer " + token?.authorization.access_token,
-      },
-    }
-  );
-
-  if (response.status == 400) {
-    return response.json();
-  }
-
-  if (response.status != 201) {
-    console.error("Failed to created");
-    return;
-  }
-
+export const createOrder = async () => {
   revalidateTag("order");
-
-  return response.json();
 };
 
 export const editOrder = async (item_code: string, formData: FormData) => {
