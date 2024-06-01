@@ -1,13 +1,13 @@
 import { getDay, getMonth, getTime, getYear } from "@/utils/order";
 import Link from "next/link";
 import Image from "next/image";
-import { OrderHistory } from "@/lib/redux/features/orderHistorySlice";
 import Lightbox from "yet-another-react-lightbox";
 import NextJsImage from "@/components/fragments/NextJsImage";
 import { useState } from "react";
+import { OrderHistoryType } from "@/types/order";
 
 interface Props {
-  order: OrderHistory;
+  order: OrderHistoryType;
 }
 
 export default function OrderItem(props: Props) {
@@ -21,7 +21,7 @@ export default function OrderItem(props: Props) {
   ];
 
   return (
-    <div className="order flex border rounded-md shadow-sm relative mb-3 w-full sm:w-1/2">
+    <div className="order flex border rounded-md shadow-sm relative mb-3 w-full sm:w-[calc(50%-6px)]">
       <Link
         href={`/orders/history/${props.order.item_code}`}
         className="absolute top-0 bottom-0 left-0 right-0 bg-transparent rounded-md z-10 hover:bg-[rgba(0,0,0,.1)]"

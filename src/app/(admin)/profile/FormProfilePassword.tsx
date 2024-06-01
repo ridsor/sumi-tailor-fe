@@ -1,9 +1,9 @@
-import { User } from "@/lib/redux/features/userSlice";
 import { getToken } from "@/services/token";
 import { SetStateAction, useCallback, useState } from "react";
 import { FaExclamationCircle } from "react-icons/fa";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { UserType } from "@/types/user";
 
 type Input = {
   password: string;
@@ -13,7 +13,7 @@ type Input = {
 type Validate = Input;
 
 interface Props {
-  user: User;
+  user: UserType;
   isChangePassword: boolean;
   setChangePassword: (value: SetStateAction<boolean>) => void;
 }

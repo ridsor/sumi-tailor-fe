@@ -1,0 +1,73 @@
+import { getOrders } from "@/services/orders";
+import { OrderType } from "@/types/order";
+import { PaginateType } from "@/types/paginate";
+import dynamic from "next/dynamic";
+const OrderList = dynamic(() => import("./OrderList"), { ssr: false });
+
+export default async function WrapperOrderList({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const ofpage = isNaN(Number(searchParams["ofpage"]))
+    ? 1
+    : Number(searchParams["ofpage"]);
+
+  const oupage = isNaN(Number(searchParams["oupage"]))
+    ? 1
+    : Number(searchParams["oupage"]);
+
+  const limit = isNaN(Number(searchParams["limit"]))
+    ? 8
+    : Number(searchParams["limit"]);
+
+  const search = searchParams["s"] ?? "";
+
+  let ordersFinished: {
+    data: OrderType[];
+    paginate: PaginateType;
+  } = {
+    data: [],
+    paginate: {
+      page: 1,
+      limit: 8,
+      total: 1,
+    },
+  };
+  let ordersUnfinished: {
+    data: OrderType[];
+    paginate: PaginateType;
+  } = {
+    data: [],
+    paginate: {
+      page: 1,
+      limit: 8,
+      total: 1,
+    },
+  };
+
+  try {
+    ordersUnfinished = await getOrders({
+      page: oupage,
+      limit,
+      status: "isProcess",
+      search: search as string,
+    });
+
+    ordersFinished = await getOrders({
+      page: ofpage,
+      limit,
+      status: "isFinished",
+      search: search as string,
+    });
+  } catch (e) {
+    console.error(e);
+  }
+
+  return (
+    <OrderList
+      ordersFinished={ordersFinished}
+      ordersUnfinished={ordersUnfinished}
+    />
+  );
+}

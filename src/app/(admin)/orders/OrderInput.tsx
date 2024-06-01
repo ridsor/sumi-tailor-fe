@@ -1,15 +1,12 @@
-import { FaXmark } from "react-icons/fa6";
+"use client";
+
+import { FaPlus, FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { useRouter } from "next/navigation";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {
-  handlePageOrderFinished,
-  handlePageOrderUnfinished,
-} from "@/lib/redux/features/ordersSlice";
 import { createOrder } from "@/services/orders";
 import cloud_upload_outlined from "@/assets/img/icons/cloud-upload-outlined.svg";
 import Image from "next/image";
@@ -27,18 +24,11 @@ export type OrderInput = {
 
 type Validate = OrderInput;
 
-interface Props {
-  toggleModal: () => void;
-  modal: boolean;
-  action: () => void;
-}
-
-export default function OrderInput(props: Props) {
+export default function OrderInput() {
   const imageRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
   const router = useRouter();
 
+  const [isModal, setModal] = useState<boolean>(false);
   const [openLightbox, setOpenLightbox] = useState<boolean>(false);
   const [InputLoading, setInputLoading] = useState<boolean>(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
@@ -262,27 +252,7 @@ export default function OrderInput(props: Props) {
         return;
       }
 
-      props.action();
-
-      if (
-        searchParams.get("oupage") != null &&
-        searchParams.get("oupage") != "1"
-      ) {
-        router.push("/orders");
-      } else {
-        const search = searchParams.get("s") || "";
-        dispatch(handlePageOrderUnfinished({ page: 1, search }));
-      }
-
-      if (
-        searchParams.get("ofpage") != null &&
-        searchParams.get("ofpage") != "1"
-      ) {
-        router.push("/orders");
-      } else {
-        const search = searchParams.get("s") || "";
-        dispatch(handlePageOrderFinished({ page: 1, search }));
-      }
+      setModal(false);
 
       withReactContent(Swal)
         .mixin({
@@ -302,7 +272,6 @@ export default function OrderInput(props: Props) {
       console.log(e);
     }
 
-    props.toggleModal();
     setInputLoading(false);
   };
 
@@ -337,216 +306,43 @@ export default function OrderInput(props: Props) {
   };
 
   useEffect(() => {
-    if (props.modal) {
+    if (isModal) {
       resetInput();
     }
-  }, [props.modal]);
+  }, [isModal]);
 
   return (
-    <Modal active={props.modal} openclose={props.toggleModal}>
-      <div className="container max-w-full">
-        <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
-          Buat Pesanan
-          <button
-            className="absolute top-1/2 -translate-y-1/2 right-3"
-            aria-label="Exit Modal"
-            onClick={() => props.toggleModal()}>
-            <FaXmark />
-          </button>
-        </div>
-        <form method="post" className="p-4" onSubmit={onSubmitEventHandler}>
-          <div className="form-input mb-3 relative">
-            <input
-              type="text"
-              placeholder="Nama"
-              name="name"
-              className={`${
-                validate.name ? "border-fail pr-11 relative" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
-              onChange={onChangeEventHandler}
-              value={inputs.name}
-            />
-            {validate.name ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.name}</span>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
+    <>
+      <button
+        aria-label="Add Order"
+        onClick={() => setModal(true)}
+        className="fixed bottom-5 right-5 p-3 border border-white bg-two text-white rounded-md text-xl hover:bg-four focus:ring focus:ring-[rgba(179,203,166,.5)] z-40">
+        <FaPlus />
+      </button>
+      <Modal active={isModal} openclose={() => setModal((prev) => !prev)}>
+        <div className="container max-w-full">
+          <div className="title-modal font-semibold text-xl px-3 py-2 border-b relative">
+            Buat Pesanan
+            <button
+              className="absolute top-1/2 -translate-y-1/2 right-3"
+              aria-label="Exit Modal"
+              onClick={() => setModal(false)}>
+              <FaXmark />
+            </button>
           </div>
-          <div className="form-input mb-3 relative">
-            <input
-              type="text"
-              placeholder="No Handphone"
-              name="no_hp"
-              className={`${
-                validate.no_hp ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
-              onChange={onChangeEventHandler}
-              value={inputs.no_hp}
-            />
-            {validate.no_hp ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.no_hp}</span>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="form-input mb-3 relative">
-            <input
-              type="text"
-              placeholder="Alamat"
-              name="address"
-              className={`${
-                validate.address ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
-              onChange={onChangeEventHandler}
-              value={inputs.address}
-            />
-            {validate.address ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.address}</span>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="form-input mb-3 relative">
-            <input
-              type="text"
-              placeholder="Harga"
-              name="price"
-              className={`${
-                validate.price ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
-              onChange={onChangeEventHandler}
-              value={inputs.price}
-            />
-            {validate.price ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.price}</span>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="form-input mb-3 relative">
-            <textarea
-              name="note"
-              placeholder="Catatan"
-              rows={4}
-              className={`${
-                validate.note ? "border-fail pr-11" : ""
-              } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
-              onChange={onChangeEventHandler}
-              value={inputs.note}></textarea>
-            {validate.note ? (
-              <div className="absolute top-0 right-0 left-0 bottom-0">
-                <button
-                  type={"button"}
-                  className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
-                  <FaExclamationCircle />
-                </button>
-                <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                  <span>{validate.note}</span>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="form-input mb-8 relative">
-            <div
-              className={`${
-                validate.image ? "border-fail" : "bg-[#F4F4F4]"
-              } border-dashed flex flex-col items-center border-2  p-4`}>
+          <form method="post" className="p-4" onSubmit={onSubmitEventHandler}>
+            <div className="form-input mb-3 relative">
               <input
-                ref={imageRef}
-                type="file"
-                placeholder="Foto Pesanan"
-                name="image"
-                id="image"
-                accept="image/png, image/jpeg, image/jpg"
-                onChange={onChangeEventHandlerImage}
-                hidden
+                type="text"
+                placeholder="Nama"
+                name="name"
+                className={`${
+                  validate.name ? "border-fail pr-11 relative" : ""
+                } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
+                onChange={onChangeEventHandler}
+                value={inputs.name}
               />
-              {imagePreviewUrl ? (
-                <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400 lightbox-image">
-                  <button
-                    type="button"
-                    onClick={() => setOpenLightbox(true)}
-                    className="w-full h-full">
-                    <Image
-                      src={imagePreviewUrl}
-                      alt={""}
-                      width={250}
-                      height={250}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                  <Lightbox
-                    open={openLightbox}
-                    close={() => setOpenLightbox(false)}
-                    slides={[
-                      {
-                        src: imagePreviewUrl,
-                        alt: "",
-                      },
-                    ]}
-                    render={{
-                      slide: NextJsImage,
-                      iconNext: () => null,
-                      iconPrev: () => null,
-                    }}
-                    noScroll={{ disabled: true }}
-                    carousel={{ finite: true }}
-                  />
-                </div>
-              ) : (
-                <>
-                  <Image src={cloud_upload_outlined} alt="" />
-                  <p className="text-[#afafaf] font-semibold text-base">
-                    Upload Foto Pesanan (JPG, JPEG, PNG)
-                  </p>
-                </>
-              )}
-              <button
-                type="button"
-                onClick={handleImageClick}
-                id="btn_upload_image"
-                className="block text-two font-semibold  bg-white border mt-4 rounded-[5px] border-[#d4d4d4] py-[10px] px-[17px] relative z-50">
-                Browse File
-              </button>
-              {validate.image ? (
+              {validate.name ? (
                 <div className="absolute top-0 right-0 left-0 bottom-0">
                   <button
                     type={"button"}
@@ -554,21 +350,202 @@ export default function OrderInput(props: Props) {
                     <FaExclamationCircle />
                   </button>
                   <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
-                    <span>{validate.image as string}</span>
+                    <span>{validate.name}</span>
                   </div>
                 </div>
               ) : (
                 ""
               )}
             </div>
-          </div>
-          <div className="form-input">
-            <button className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold">
-              {InputLoading ? "Loading..." : "Simpan"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </Modal>
+            <div className="form-input mb-3 relative">
+              <input
+                type="text"
+                placeholder="No Handphone"
+                name="no_hp"
+                className={`${
+                  validate.no_hp ? "border-fail pr-11" : ""
+                } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
+                onChange={onChangeEventHandler}
+                value={inputs.no_hp}
+              />
+              {validate.no_hp ? (
+                <div className="absolute top-0 right-0 left-0 bottom-0">
+                  <button
+                    type={"button"}
+                    className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                    <FaExclamationCircle />
+                  </button>
+                  <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                    <span>{validate.no_hp}</span>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="form-input mb-3 relative">
+              <input
+                type="text"
+                placeholder="Alamat"
+                name="address"
+                className={`${
+                  validate.address ? "border-fail pr-11" : ""
+                } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
+                onChange={onChangeEventHandler}
+                value={inputs.address}
+              />
+              {validate.address ? (
+                <div className="absolute top-0 right-0 left-0 bottom-0">
+                  <button
+                    type={"button"}
+                    className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                    <FaExclamationCircle />
+                  </button>
+                  <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                    <span>{validate.address}</span>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="form-input mb-3 relative">
+              <input
+                type="text"
+                placeholder="Harga"
+                name="price"
+                className={`${
+                  validate.price ? "border-fail pr-11" : ""
+                } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
+                onChange={onChangeEventHandler}
+                value={inputs.price}
+              />
+              {validate.price ? (
+                <div className="absolute top-0 right-0 left-0 bottom-0">
+                  <button
+                    type={"button"}
+                    className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                    <FaExclamationCircle />
+                  </button>
+                  <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                    <span>{validate.price}</span>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="form-input mb-3 relative">
+              <textarea
+                name="note"
+                placeholder="Catatan"
+                rows={4}
+                className={`${
+                  validate.note ? "border-fail pr-11" : ""
+                } w-full border rounded-sm py-2 px-3 relative z-10 outline-two`}
+                onChange={onChangeEventHandler}
+                value={inputs.note}></textarea>
+              {validate.note ? (
+                <div className="absolute top-0 right-0 left-0 bottom-0">
+                  <button
+                    type={"button"}
+                    className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                    <FaExclamationCircle />
+                  </button>
+                  <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                    <span>{validate.note}</span>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="form-input mb-8 relative">
+              <div
+                className={`${
+                  validate.image ? "border-fail" : "bg-[#F4F4F4]"
+                } border-dashed flex flex-col items-center border-2  p-4`}>
+                <input
+                  ref={imageRef}
+                  type="file"
+                  placeholder="Foto Pesanan"
+                  name="image"
+                  id="image"
+                  accept="image/png, image/jpeg, image/jpg"
+                  onChange={onChangeEventHandlerImage}
+                  hidden
+                />
+                {imagePreviewUrl ? (
+                  <div className="min-w-[100px] w-[100px] h-[100px] relative z-20 overflow-hidden rounded-sm bg-gray-400 lightbox-image">
+                    <button
+                      type="button"
+                      onClick={() => setOpenLightbox(true)}
+                      className="w-full h-full">
+                      <Image
+                        src={imagePreviewUrl}
+                        alt={""}
+                        width={250}
+                        height={250}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                    <Lightbox
+                      open={openLightbox}
+                      close={() => setOpenLightbox(false)}
+                      slides={[
+                        {
+                          src: imagePreviewUrl,
+                          alt: "",
+                        },
+                      ]}
+                      render={{
+                        slide: NextJsImage,
+                        iconNext: () => null,
+                        iconPrev: () => null,
+                      }}
+                      noScroll={{ disabled: true }}
+                      carousel={{ finite: true }}
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <Image src={cloud_upload_outlined} alt="" />
+                    <p className="text-[#afafaf] font-semibold text-base">
+                      Upload Foto Pesanan (JPG, JPEG, PNG)
+                    </p>
+                  </>
+                )}
+                <button
+                  type="button"
+                  onClick={handleImageClick}
+                  id="btn_upload_image"
+                  className="block text-two font-semibold  bg-white border mt-4 rounded-[5px] border-[#d4d4d4] py-[10px] px-[17px] relative z-50">
+                  Browse File
+                </button>
+                {validate.image ? (
+                  <div className="absolute top-0 right-0 left-0 bottom-0">
+                    <button
+                      type={"button"}
+                      className="text-fail block absolute top-1/2 -translate-y-1/2 right-4 peer z-20">
+                      <FaExclamationCircle />
+                    </button>
+                    <div className="validate-message absolute right-12 top-1/2 -translate-y-1/2 z-20 max-w-full w-fit bg-fail text-white px-2 py-1 rounded-md before:content-[''] before:block before:absolute before:left-[calc(100%-1rem)] before:top-1/2 before:-translate-y-1/2 before:w-5 before:h-5 before:bg-fail before:-rotate-[36deg] before:skew-x-[20deg] before:-z-10 opacity-0 pointer-events-none transition-all peer-focus:opacity-100 peer-focus:pointer-events-auto peer-hover:opacity-100 peer-hover:pointer-events-auto">
+                      <span>{validate.image as string}</span>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+            <div className="form-input">
+              <button className="w-full bg-two px-3 py-2 text-white rounded-sm font-semibold">
+                {InputLoading ? "Loading..." : "Simpan"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+    </>
   );
 }

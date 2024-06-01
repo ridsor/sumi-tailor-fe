@@ -44,7 +44,7 @@ export default function NextJsImage({ slide, offset, rect }: any) {
         fill
         alt=""
         src={slide}
-        loading="eager"
+        loading="lazy"
         draggable={false}
         placeholder={slide.blurDataURL ? "blur" : undefined}
         style={{

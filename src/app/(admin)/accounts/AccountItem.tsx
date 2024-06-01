@@ -1,42 +1,37 @@
 "use client";
 
-import { useContext } from "react";
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
-import { AccountModalContext } from "./page";
-import { User } from "@/services/user";
-import { useAppSelector } from "@/lib/redux/hooks";
+import { UserType } from "@/types/user";
+import { Input } from "./AccountList";
 
 interface Props {
-  user: User;
-  onDelete: (id: string) => Promise<void>;
+  user: UserType;
+  auth: UserType;
   no: number;
+  onDelete: (id: string) => Promise<void>;
+  setInputs: (value: Input) => void;
+  toggleModal: () => void;
 }
 
 export default function AdminItem(props: Props) {
-  const user = useAppSelector((state) => state.user);
-  const { toggleModal, setAccountInput, setInputAction } =
-    useContext(AccountModalContext);
-
   return (
     <tr className="border-b">
       <td className="px-2 text-center">{props.no}</td>
       <td className="px-2">{props.user.name}</td>
       <td className="px-2">{props.user.email}</td>
-      {user.role === "super admin" && (
+      {props.auth.role === "super admin" && (
         <td className="align-middle px-2">
           <div className="flex">
             <button
               className="bg-yellow-500 px-2 py-2  rounded-md text-white mr-1"
               aria-label="Edit account"
               onClick={() => {
-                toggleModal();
-                setInputAction("edit");
-                setAccountInput({
-                  id: props.user.id,
-                  name: props.user.name,
-                  email: props.user.email,
+                props.setInputs({
+                  type: "edit",
+                  data: props.user,
                 });
+                props.toggleModal();
               }}>
               <FaEdit />
             </button>

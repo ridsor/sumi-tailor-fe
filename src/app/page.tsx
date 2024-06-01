@@ -1,5 +1,4 @@
 import { FaArrowRightLong } from "react-icons/fa6";
-
 import home1 from "@/assets/img/home1.png";
 import Link from "next/link";
 import Image from "next/image";
