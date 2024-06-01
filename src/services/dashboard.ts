@@ -7,9 +7,8 @@ export const getDashboard = async () => {
 
   const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/dashboard`, {
     method: "GET",
-    credentials: "include",
     headers: {
-      Authorization: `Bearer ${refreshToken.authorization.access_token}`,
+      Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
     },
     next: {
       revalidate: 3600 * 12,
