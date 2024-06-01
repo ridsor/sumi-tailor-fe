@@ -2,7 +2,6 @@ import OrderConfirmation from "./OrderConfirmation";
 import { getDay, getMonth, getTime, getYear } from "@/utils/order";
 import OrderMenu from "./OrderMenu";
 import "@/app/(admin)/orders/style.css";
-
 import { getOrderById } from "@/services/orders";
 import { OrderType } from "@/types/order";
 import OrderImage from "./OrderImage";
