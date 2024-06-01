@@ -4,7 +4,6 @@ import { FaPlus, FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { createOrder } from "@/services/orders";
@@ -26,7 +25,6 @@ type Validate = OrderInput;
 
 export default function OrderInput() {
   const imageRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   const [isModal, setModal] = useState<boolean>(false);
   const [openLightbox, setOpenLightbox] = useState<boolean>(false);
@@ -239,14 +237,28 @@ export default function OrderInput() {
       formData.append("image", inputs.image as File);
 
       const createResponse = await createOrder(formData);
-
       if (createResponse?.status != "success") {
-        console.error("Failed to input");
         if (typeof createResponse?.errors.no_hp != "undefined") {
           setValidate((prev) => ({
             ...prev,
             no_hp: createResponse?.errors.no_hp,
           }));
+        } else {
+          withReactContent(Swal)
+            .mixin({
+              customClass: {
+                popup: "max-w-[200px] w-full h-[100px]",
+                icon: "!scale-50 -translate-y-8",
+                title: "text-sm -translate-y-[4.5rem]",
+              },
+              buttonsStyling: false,
+            })
+            .fire({
+              position: "top-end",
+              icon: "error",
+              showConfirmButton: false,
+              timer: 500,
+            });
         }
         setInputLoading(false);
         return;
@@ -269,7 +281,7 @@ export default function OrderInput() {
           timer: 500,
         });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     setInputLoading(false);

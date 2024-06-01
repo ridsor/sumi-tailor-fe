@@ -11,12 +11,12 @@ import {
 } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import { OrderType } from "@/lib/redux/features/ordersSlice";
 import { editOrder } from "@/services/orders";
 import cloud_upload_outlined from "@/assets/img/icons/cloud-upload-outlined.svg";
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import NextJsImage from "@/components/fragments/NextJsImage";
+import { OrderType } from "@/types/order";
 
 export type OrderInput = {
   name: string;
@@ -32,15 +32,11 @@ type Validate = OrderInput;
 interface Props {
   isModal: boolean;
   toggleModal: () => void;
-  order: OrderType & {
-    item_code: string;
-  };
+  order: OrderType;
   setOrder: Dispatch<
     SetStateAction<{
       loading: boolean;
-      data: OrderType & {
-        item_code: string;
-      };
+      data: OrderType;
     }>
   >;
 }
@@ -288,7 +284,7 @@ export default function OrderInput(props: Props) {
         data: editResponse.data,
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     props.toggleModal();
