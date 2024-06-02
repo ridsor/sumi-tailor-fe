@@ -173,6 +173,8 @@ export const createOrder = async (formData: FormData) => {
   }
 
   revalidateTag("order");
+
+  return response.json();
 };
 
 export const editOrder = async (item_code: string, formData: FormData) => {
