@@ -1,13 +1,20 @@
 import Auth from "@/components/fragments/Auth";
-import { getServerSession } from "next-auth";
-import { authOption } from "../api/auth/[...nextauth]/route";
+import { fetchAuth } from "@/services/auth";
+import { UserType } from "@/types/user";
+import { redirect } from "next/navigation";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  let session = await getServerSession(authOption);
+  let auth: UserType | undefined;
 
-  return <Auth session={session}>{children}</Auth>;
+  try {
+    auth = await fetchAuth().then((result) => result?.data);
+  } catch (e) {
+    console.error(e);
+  }
+
+  return <Auth auth={auth}>{children}</Auth>;
 }
