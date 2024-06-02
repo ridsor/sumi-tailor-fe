@@ -2,8 +2,8 @@ import "./globals.css";
 import { josenfin_sans, quicksand } from "@/fonts";
 import WrapperLayout from "./WrapperLayout";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOption } from "./api/auth/[...nextauth]/route";
+import { fetchAuth } from "@/services/auth";
+import { UserType } from "@/types/user";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -36,14 +36,20 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOption);
+  let auth: UserType | undefined;
+
+  try {
+    auth = await fetchAuth().then((result) => result?.data);
+  } catch (e) {
+    console.error(e);
+  }
 
   return (
     <html lang="en">
       <body
         suppressHydrationWarning={true}
         className={`${quicksand.variable} ${josenfin_sans.variable}`}>
-        <WrapperLayout session={session}>{children}</WrapperLayout>
+        <WrapperLayout auth={auth}>{children}</WrapperLayout>
       </body>
     </html>
   );

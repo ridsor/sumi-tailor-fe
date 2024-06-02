@@ -1,13 +1,13 @@
 "use client";
 
-import { Session } from "next-auth";
+import { UserType } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaBars, FaUser } from "react-icons/fa6";
 
-const Header = ({ session }: { session: Session | null }) => {
+const Header = ({ auth }: { auth?: UserType }) => {
   const pathname = usePathname();
   const [hamburger, setHamburger] = useState<boolean>(false);
 
@@ -98,7 +98,7 @@ const Header = ({ session }: { session: Session | null }) => {
           <div className="order-2 ml-auto right lg:order-3 lg:ml-0">
             <Link
               aria-label="Halaman User"
-              href={session?.user ? "/dashboard" : "/login"}
+              href={auth ? "/dashboard" : "/login"}
               className="bg-white p-3 rounded-full block active:ring ring-[rgba(255,255,255,.3)]">
               <FaUser className="fill-two" size="1.2rem" />
             </Link>
