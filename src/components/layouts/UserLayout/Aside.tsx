@@ -13,16 +13,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import user_img from "@/assets/img/user-img.svg";
 import { signOut } from "next-auth/react";
-import { Session } from "next-auth";
 import { logout } from "@/services/auth";
+import { UserType } from "@/types/user";
 
 interface Props {
   isSidebar: boolean;
   setSidebar: (value: boolean) => void;
-  session: Session | null;
+  auth?: UserType;
 }
 
-export default function Aside({ isSidebar, setSidebar, session }: Props) {
+export default function Aside({ isSidebar, setSidebar, auth }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -85,7 +85,7 @@ export default function Aside({ isSidebar, setSidebar, session }: Props) {
           <article
             className={`bg-[#E4EEDD] w-full h-full grid px-2 py-4 overflow-auto rounded-tr-2xl rounded-br-2xl`}>
             <div>
-              <div className="brand flex items-center mb-3">
+              <Link href="/" className="brand flex items-center mb-3">
                 <div>
                   <Image
                     src={sumi_tailor}
@@ -103,7 +103,7 @@ export default function Aside({ isSidebar, setSidebar, session }: Props) {
                 ) : (
                   ""
                 )}
-              </div>
+              </Link>
               <hr className="border-top border-[#d7d3cc] mb-3" />
               <div className={`${isSidebar ? "px-2" : ""} user-profile mb-2`}>
                 <div
@@ -112,8 +112,8 @@ export default function Aside({ isSidebar, setSidebar, session }: Props) {
                   } user-img aspect-square mx-auto mb-1`}>
                   <Image
                     src={
-                      session?.user.image
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${session?.user.image}`
+                      auth?.image
+                        ? `${process.env.NEXT_PUBLIC_API_URL}/images/${auth?.image}`
                         : user_img
                     }
                     width={70}
@@ -126,7 +126,7 @@ export default function Aside({ isSidebar, setSidebar, session }: Props) {
                 {isSidebar ? (
                   <>
                     <div className="user-name text-center font-semibold">
-                      {session?.user.name}
+                      {auth?.name}
                     </div>
                   </>
                 ) : (

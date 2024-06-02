@@ -38,47 +38,51 @@ export default function OrderList(props: Props) {
     <Slider {...sliderSettings}>
       <div className="orders unfinished !flex flex-col gap-2 w-full pb-10 p-1">
         {props.ordersUnfinished.data.length > 0 ? (
-          <div className="columns-[350px] lg:columns-2 gap-3">
-            {props.ordersUnfinished.data.map((order) => (
-              <Order key={order.item_code} order={order} />
-            ))}
-          </div>
+          <>
+            <div className="columns-[350px] lg:columns-2 gap-3">
+              {props.ordersUnfinished.data.map((order) => (
+                <Order key={order.item_code} order={order} />
+              ))}
+            </div>
+            <Paginate
+              status="isProcess"
+              className="mt-3"
+              totalPages={Math.ceil(
+                Number(props.ordersUnfinished.paginate.total) /
+                  Number(props.ordersUnfinished.paginate.limit)
+              )}
+              page={Number(props.ordersUnfinished.paginate.page)}
+            />
+          </>
         ) : (
           <h2 className="font-semibold text-base my-10 text-center">
             Data Pesanan tidak ditemukan
           </h2>
         )}
-        <Paginate
-          status="isProcess"
-          className="mt-3"
-          totalPages={Math.ceil(
-            Number(props.ordersUnfinished.paginate.total) /
-              Number(props.ordersUnfinished.paginate.limit)
-          )}
-          page={Number(props.ordersUnfinished.paginate.page)}
-        />
       </div>
       <div className="orders finished !flex flex-col gap-2 pb-10 w-full p-1">
         {props.ordersFinished.data.length > 0 ? (
-          <div className="columns-[350px] lg:columns-2 gap-3">
-            {props.ordersFinished.data.map((order) => (
-              <Order key={order.item_code} order={order} />
-            ))}
-          </div>
+          <>
+            <div className="columns-[350px] lg:columns-2 gap-3">
+              {props.ordersFinished.data.map((order) => (
+                <Order key={order.item_code} order={order} />
+              ))}
+            </div>
+            <Paginate
+              status="isFinished"
+              className="mt-3"
+              totalPages={Math.ceil(
+                Number(props.ordersFinished.paginate.total) /
+                  Number(props.ordersFinished.paginate.limit)
+              )}
+              page={Number(props.ordersFinished.paginate.page)}
+            />
+          </>
         ) : (
           <h2 className="font-semibold text-base my-10 text-center">
             Data Pesanan tidak ditemukan
           </h2>
         )}
-        <Paginate
-          status="isFinished"
-          className="mt-3"
-          totalPages={Math.ceil(
-            Number(props.ordersFinished.paginate.total) /
-              Number(props.ordersFinished.paginate.limit)
-          )}
-          page={Number(props.ordersFinished.paginate.page)}
-        />
       </div>
     </Slider>
   );
