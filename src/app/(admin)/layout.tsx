@@ -1,6 +1,7 @@
 import Auth from "@/components/fragments/Auth";
 import { fetchAuth } from "@/services/auth";
 import { UserType } from "@/types/user";
+import { redirect } from "next/navigation";
 
 export default async function Layout({
   children,

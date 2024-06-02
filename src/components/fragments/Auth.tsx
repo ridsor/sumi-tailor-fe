@@ -2,6 +2,7 @@
 
 import Aside from "@/components/layouts/UserLayout/Aside";
 import { UserType } from "@/types/user";
+import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -29,6 +30,10 @@ export default function Auth({
       setSidebar(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!auth) signOut();
+  }, [auth]);
 
   return enableNavbar.includes(pathname) ? (
     <>
