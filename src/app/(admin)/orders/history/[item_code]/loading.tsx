@@ -6,21 +6,21 @@ export default function loading() {
           <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2 mx-4" />
           <div className="border-five border-b"></div>
           <div className="px-4">
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
               <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
             </div>
-            <div className="flex justify-between">
-              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
-              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
+            <div className="flex justify-between gap-2">
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
             </div>
-            <div className="flex justify-between">
-              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
-              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
+            <div className="flex justify-between gap-2">
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
             </div>
-            <div className="flex justify-between">
-              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
-              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] mb-2" />
+            <div className="flex justify-between gap-2">
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
+              <div className=" rounded-md h-[30px] bg-[#bdc3c7] w-[160px] my-2" />
             </div>
           </div>
           <div className="p-4 border-t-8 flex-1 flex flex-col">
