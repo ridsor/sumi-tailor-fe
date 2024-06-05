@@ -26,7 +26,11 @@ export const authOption: NextAuthOptions = {
 
           const result = await login(payload);
           if (result.status === "success") {
-            if (result.refresh_token.expires_in != "7200") {
+            if (result.refresh_token.expires_in == "7200") {
+              authOption.session = {
+                maxAge: Number(result.refresh_token.expires_in),
+              };
+            } else {
               authOption.session = {
                 maxAge: Number(result.refresh_token.expires_in),
               };
