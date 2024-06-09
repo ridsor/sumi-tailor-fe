@@ -1,6 +1,6 @@
 ## Sumi Tailor
 
-[http://sumitailor.ridsor.my.id](http://sumitailor.ridsor.my.id)
+[https://sumitailor.ridsor.my.id](https://sumitailor.ridsor.my.id)
 
 Selamat Datang di Sumi Tailor
 Kami Tempat Fashion Bertemu Kesempurnaan!
