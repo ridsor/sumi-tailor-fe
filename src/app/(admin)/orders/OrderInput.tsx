@@ -12,6 +12,7 @@ import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import NextJsImage from "@/components/fragments/NextJsImage";
 import { getToken } from "@/services/token";
+import { compressImage } from "@/utils/order";
 
 export type OrderInput = {
   name: string;
@@ -297,18 +298,19 @@ export default function OrderInput() {
     }));
   };
 
-  const onChangeEventHandlerImage = (
+  const onChangeEventHandlerImage = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const files = e.target.files;
+    const newImage = await compressImage(files?.item(0) as File, 800, 0.7);
 
     setInputs((prev) => ({
       ...prev,
-      [e.target.name]: files?.item(0),
+      [e.target.name]: newImage,
     }));
 
     try {
-      setImagePreviewUrl(URL.createObjectURL(files?.item(0) as File));
+      setImagePreviewUrl(URL.createObjectURL(newImage as Blob));
     } catch (e) {
       console.error(e);
     }
