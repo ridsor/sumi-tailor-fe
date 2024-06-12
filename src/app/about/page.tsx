@@ -38,7 +38,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-            <h2 className="mb-8 text-3xl font-bold lg:text-5xl">About Us</h2>
+            <h2 className="mb-8 text-3xl font-bold lg:text-4xl">Tentang Kami</h2>
             <p className="first-letter:ml-6 lg:first-letter:ml-0 ml-0 mb-5 lg:ml-[calc(6rem+18rem)] font-pt-serif tracking-wide text-base before:content-[''] relative lg:before:block before:w-4 lg:before:w-9 before:border before:border-[#3d3d3d] before:absolute before:top-3 before:left-0 lg:before:-left-12 leading-7">
               Selamat datang di <span className="font-bold">Sumi Tailor</span>,
               di mana kreativitas bertemu keahlian! Dengan hasrat untuk fashion

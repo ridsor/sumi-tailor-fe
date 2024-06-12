@@ -1,6 +1,8 @@
 import OrderSearch from "@/app/(admin)/orders/OrderSearch";
 import "../style.css";
 import WrapperOrderList from "./WrapperOrderList";
+import OrdersLoading from "./OrdersLoading";
+import { Suspense } from "react";
 
 export default function OrdersPage({
   searchParams,
@@ -17,7 +19,10 @@ export default function OrdersPage({
               <div className="mb-3">
                 <OrderSearch />
               </div>
-              <WrapperOrderList searchParams={searchParams} />
+              {/* <OrdersLoading /> */}
+              <Suspense fallback={<OrdersLoading />}>
+                <WrapperOrderList searchParams={searchParams} />
+              </Suspense>
             </div>
           </article>
         </div>

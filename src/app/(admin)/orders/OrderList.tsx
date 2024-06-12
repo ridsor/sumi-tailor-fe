@@ -44,15 +44,17 @@ export default function OrderList(props: Props) {
                 <Order key={order.item_code} order={order} />
               ))}
             </div>
-            <Pagination
-              status="isProcess"
-              className="mt-3"
-              totalPages={Math.ceil(
-                Number(props.ordersUnfinished.paginate.total) /
-                  Number(props.ordersUnfinished.paginate.limit)
-              )}
-              page={Number(props.ordersUnfinished.paginate.page)}
-            />
+            {props.ordersUnfinished.paginate.total > 1 && (
+              <Pagination
+                status="isProcess"
+                className="mt-3"
+                totalPages={Math.ceil(
+                  Number(props.ordersUnfinished.paginate.total) /
+                    Number(props.ordersUnfinished.paginate.limit)
+                )}
+                page={Number(props.ordersUnfinished.paginate.page)}
+              />
+            )}
           </>
         ) : (
           <h2 className="font-semibold text-base my-10 text-center">
@@ -68,15 +70,17 @@ export default function OrderList(props: Props) {
                 <Order key={order.item_code} order={order} />
               ))}
             </div>
-            <Pagination
-              status="isFinished"
-              className="mt-3"
-              totalPages={Math.ceil(
-                Number(props.ordersFinished.paginate.total) /
-                  Number(props.ordersFinished.paginate.limit)
-              )}
-              page={Number(props.ordersFinished.paginate.page)}
-            />
+            {props.ordersFinished.paginate.total > 1 && (
+              <Pagination
+                status="isFinished"
+                className="mt-3"
+                totalPages={Math.ceil(
+                  Number(props.ordersFinished.paginate.total) /
+                    Number(props.ordersFinished.paginate.limit)
+                )}
+                page={Number(props.ordersFinished.paginate.page)}
+              />
+            )}
           </>
         ) : (
           <h2 className="font-semibold text-base my-10 text-center">
