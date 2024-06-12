@@ -24,16 +24,14 @@ export default function OrderList(props: Props) {
               <OrderItem key={order.item_code} order={order} />
             ))}
           </div>
-          {props.orders.paginate.total > 1 && (
-            <Paginate
-              className="mt-3"
-              totalPages={Math.ceil(
-                Number(props.orders.paginate.total) /
-                  Number(props.orders.paginate.limit)
-              )}
-              page={Number(props.orders.paginate.page)}
-            />
-          )}
+          <Paginate
+            className="mt-3"
+            totalPages={Math.ceil(
+              Number(props.orders.paginate.total) /
+                Number(props.orders.paginate.limit)
+            )}
+            page={Number(props.orders.paginate.page)}
+          />
         </>
       ) : (
         <h2 className="font-semibold text-base my-10 text-center">
