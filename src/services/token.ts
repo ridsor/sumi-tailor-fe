@@ -14,7 +14,7 @@ export const getToken = async () => {
         Authorization: "Bearer " + session?.user.refreshToken,
       },
       next: {
-        revalidate: 60,
+        tags: ["auth"],
       },
     }
   );
