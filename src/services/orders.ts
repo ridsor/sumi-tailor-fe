@@ -31,7 +31,6 @@ export const getOrders = async ({
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 60,
         tags: ["order"],
       },
     }
@@ -66,7 +65,6 @@ export const getOrderById = async (
         Authorization: "Bearer " + refreshToken?.authorization.access_token,
       },
       next: {
-        revalidate: 60,
         tags: ["order"],
       },
     }
@@ -91,7 +89,6 @@ export const getOrderHistoryById = async (
         Authorization: "Bearer " + refreshToken?.authorization.access_token,
       },
       next: {
-        revalidate: 60,
         tags: ["order_history"],
       },
     }
@@ -127,7 +124,6 @@ export const getOrderHistory = async ({
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 60,
         tags: ["order_history"],
       },
     }

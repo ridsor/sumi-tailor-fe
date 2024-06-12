@@ -4,7 +4,6 @@ import { getToken } from "./token";
 import { revalidateTag } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOption } from "@/app/api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
 
 export interface InputsLogin {
   email: string;
@@ -61,7 +60,6 @@ export const fetchAuth = async () => {
         Authorization: `Bearer ${session?.user.refreshToken}`,
       },
       next: {
-        revalidate: 60,
         tags: ["auth"],
       },
     }
