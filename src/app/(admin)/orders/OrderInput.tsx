@@ -520,8 +520,8 @@ export default function OrderInput() {
                       <Image
                         src={imagePreviewUrl}
                         alt={""}
-                        width={250}
-                        height={250}
+                        width={400}
+                        height={400}
                         className="w-full h-full object-cover"
                       />
                     </button>

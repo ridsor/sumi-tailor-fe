@@ -35,8 +35,8 @@ export default function OrderItem(props: Props) {
             <Image
               src={slides[0].src}
               alt={slides[0].alt}
-              width={250}
-              height={250}
+              width={400}
+              height={400}
               className="w-full h-full object-cover"
             />
           </button>

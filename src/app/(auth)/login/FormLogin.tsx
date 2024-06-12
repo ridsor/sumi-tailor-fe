@@ -114,7 +114,7 @@ export default function FormLogin() {
           htmlFor="email"
           className={`${
             validate.email ? "text-fail" : "text-two"
-          } absolute -top-2 left-3 bg-three px-2 text-[13px] font-bold`}>
+          } absolute -top-2 left-3 bg-three px-2 text-[13px] font-bold rounded-md`}>
           {validate.email ? validate.email : "Email"}
         </label>
       </div>
@@ -132,7 +132,7 @@ export default function FormLogin() {
           htmlFor="password"
           className={`${
             validate.password ? "text-fail" : "text-two"
-          } absolute -top-2 left-3 bg-three px-2 text-[13px] font-bold`}>
+          } absolute -top-2 left-3 bg-three px-2 text-[13px] font-bold rounded-md`}>
           {validate.password ? validate.password : "Password"}
         </label>
       </div>
