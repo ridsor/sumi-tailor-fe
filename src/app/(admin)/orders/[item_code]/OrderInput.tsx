@@ -342,7 +342,6 @@ export default function OrderInput(props: Props) {
       }
     }
   };
-
   useEffect(() => {
     if (props.isModal) {
       resetInput();

@@ -1,6 +1,6 @@
 ## Sumi Tailor
 
-[http://localhost:3000](http://localhost:3000)
+[https://sumitailor.my.id](https://sumitailor.my.id)
 
 Selamat Datang di Sumi Tailor
 Kami Tempat Fashion Bertemu Kesempurnaan!
