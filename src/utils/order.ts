@@ -56,7 +56,7 @@ export const compressImage = (
   minWitdh: number,
   quality: number
 ) => {
-  return new Promise((res) => {
+  return new Promise<File>((res) => {
     const urlFile = URL.createObjectURL(file);
     const image = new Image();
     image.src = urlFile;
