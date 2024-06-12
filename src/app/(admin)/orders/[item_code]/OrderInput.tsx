@@ -10,6 +10,7 @@ import Image from "next/image";
 import NextJsImage from "@/components/fragments/NextJsImage";
 import Lightbox from "yet-another-react-lightbox";
 import { OrderType } from "@/types/order";
+import { compressImage } from "@/utils/order";
 
 export type OrderInput = {
   name: string;
@@ -249,6 +250,22 @@ export default function OrderInput(props: Props) {
             no_hp: editResponse?.errors.no_hp,
           }));
         }
+
+        withReactContent(Swal)
+          .mixin({
+            customClass: {
+              popup: "max-w-[200px] w-full h-[100px]",
+              icon: "!scale-50 -translate-y-8",
+              title: "text-sm -translate-y-[4.5rem]",
+            },
+            buttonsStyling: false,
+          })
+          .fire({
+            position: "top-end",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 500,
+          });
         setInputLoading(false);
         return;
       }
@@ -284,18 +301,19 @@ export default function OrderInput(props: Props) {
     }));
   };
 
-  const onChangeEventHandlerImage = (
+  const onChangeEventHandlerImage = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = e.target.files;
-
-    setInputs((prev) => ({
-      ...prev,
-      [e.target.name]: files?.item(0),
-    }));
-
     try {
-      setImagePreviewUrl(URL.createObjectURL(files?.item(0) as File));
+      const files = e.target.files;
+      const newImage = await compressImage(files?.item(0) as File, 800, 0.7);
+
+      setInputs((prev) => ({
+        ...prev,
+        [e.target.name]: newImage,
+      }));
+
+      setImagePreviewUrl(URL.createObjectURL(newImage as Blob));
     } catch (e) {
       console.error(e);
     }
@@ -303,6 +321,26 @@ export default function OrderInput(props: Props) {
 
   const handleImageClick = () => {
     imageRef.current?.click();
+  };
+
+  const handleDrop = async (e: DragEvent) => {
+    e.preventDefault();
+    const droppedFiles = e.dataTransfer?.files as FileList;
+    if (droppedFiles.length > 0) {
+      const file = Array.from(droppedFiles)[0];
+      try {
+        const newImage = await compressImage(file, 800, 0.7);
+
+        setInputs((prev) => ({
+          ...prev,
+          image: newImage,
+        }));
+
+        setImagePreviewUrl(URL.createObjectURL(newImage as Blob));
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   useEffect(() => {
@@ -455,6 +493,8 @@ export default function OrderInput(props: Props) {
           </div>
           <div className="form-input mb-8 relative">
             <div
+              onDrop={handleDrop as any}
+              onDragOver={(e) => e.preventDefault()}
               className={`${
                 validate.image ? "border-fail" : "bg-[#F4F4F4]"
               } border-dashed flex flex-col items-center border-2  p-4`}>
@@ -477,8 +517,8 @@ export default function OrderInput(props: Props) {
                     <Image
                       src={imagePreviewUrl}
                       alt={""}
-                      width={250}
-                      height={250}
+                      width={400}
+                      height={400}
                       className="w-full h-full object-cover"
                     />
                   </button>

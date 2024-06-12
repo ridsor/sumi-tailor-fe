@@ -38,7 +38,27 @@ export default function OrderConfirmation(props: Props) {
         setLoading(true);
 
         const result = await orderConfirmation(props.item_code);
-        if (!result) return;
+        console.log(result);
+        if (!result) {
+          withReactContent(Swal)
+            .mixin({
+              customClass: {
+                popup: "max-w-[200px] w-full h-[100px]",
+                icon: "!scale-50 -translate-y-8",
+                title: "text-sm -translate-y-[4.5rem]",
+              },
+              buttonsStyling: false,
+            })
+            .fire({
+              position: "top-end",
+              icon: "error",
+              showConfirmButton: false,
+              timer: 500,
+            });
+
+          setLoading(false);
+          return;
+        }
 
         withReactContent(Swal)
           .mixin({
