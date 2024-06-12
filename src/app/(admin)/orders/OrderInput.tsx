@@ -3,7 +3,7 @@
 import { FaPlus, FaXmark } from "react-icons/fa6";
 import Modal from "@/components/fragments/Modal";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
+import { DragEvent, useEffect, useRef, useState } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { createOrder } from "@/services/orders";
@@ -11,7 +11,7 @@ import cloud_upload_outlined from "@/assets/img/icons/cloud-upload-outlined.svg"
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import NextJsImage from "@/components/fragments/NextJsImage";
-import { getToken } from "@/services/token";
+import { compressImage } from "@/utils/order";
 
 export type OrderInput = {
   name: string;
@@ -297,18 +297,19 @@ export default function OrderInput() {
     }));
   };
 
-  const onChangeEventHandlerImage = (
+  const onChangeEventHandlerImage = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = e.target.files;
-
-    setInputs((prev) => ({
-      ...prev,
-      [e.target.name]: files?.item(0),
-    }));
-
     try {
-      setImagePreviewUrl(URL.createObjectURL(files?.item(0) as File));
+      const files = e.target.files;
+      const newImage = await compressImage(files?.item(0) as File, 800, 0.7);
+
+      setInputs((prev) => ({
+        ...prev,
+        [e.target.name]: newImage,
+      }));
+
+      setImagePreviewUrl(URL.createObjectURL(newImage as Blob));
     } catch (e) {
       console.error(e);
     }
@@ -316,6 +317,26 @@ export default function OrderInput() {
 
   const handleImageClick = () => {
     imageRef.current?.click();
+  };
+
+  const handleDrop = async (e: DragEvent) => {
+    e.preventDefault();
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles.length > 0) {
+      const file = Array.from(droppedFiles)[0];
+      try {
+        const newImage = await compressImage(file, 800, 0.7);
+
+        setInputs((prev) => ({
+          ...prev,
+          image: newImage,
+        }));
+
+        setImagePreviewUrl(URL.createObjectURL(newImage as Blob));
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
   useEffect(() => {
@@ -477,7 +498,9 @@ export default function OrderInput() {
               <div
                 className={`${
                   validate.image ? "border-fail" : "bg-[#F4F4F4]"
-                } border-dashed flex flex-col items-center border-2  p-4`}>
+                } border-dashed flex flex-col items-center border-2  p-4`}
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}>
                 <input
                   ref={imageRef}
                   type="file"

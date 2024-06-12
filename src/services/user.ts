@@ -16,7 +16,6 @@ export const getUsers = async (search: string = ""): Promise<UserType[]> => {
         Authorization: `Bearer ${refreshToken?.authorization.access_token}`,
       },
       next: {
-        revalidate: 60,
         tags: ["user"],
       },
     }
