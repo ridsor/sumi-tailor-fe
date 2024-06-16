@@ -18,7 +18,7 @@ export default async function WrapperOrderList({
     : Number(searchParams["oupage"]);
 
   const limit = isNaN(Number(searchParams["limit"]))
-    ? 8
+    ? 6
     : Number(searchParams["limit"]);
 
   const search = searchParams["s"] ?? "";
