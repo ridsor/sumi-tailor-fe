@@ -42,7 +42,7 @@ export default function HomePage() {
             <div className="row h-auto px-4 flex flex-wrap">
               <article className="w-full lg:w-1/2">
                 <h2 className="mb-4 text-3xl lg:text-4xl tracking-wide font-one text-one">
-                  Sel amat Datang di{" "}
+                  Selamat Datang di{" "}
                   <span className="whitespace-nowrap">Sumi Tailor</span>
                   <br />
                   Kami Tempat Fashion Bertemu Kesempurnaan!

@@ -19,7 +19,6 @@ export default function OrdersPage({
               <div className="mb-3">
                 <OrderSearch />
               </div>
-              {/* <OrdersLoading /> */}
               <Suspense fallback={<OrdersLoading />}>
                 <WrapperOrderList searchParams={searchParams} />
               </Suspense>
