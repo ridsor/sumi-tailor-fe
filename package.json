@@ -1,6 +1,6 @@
 {
   "name": "sumi-tailor",
-  "version": "2.11.2",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,8 +10,15 @@
     "dummy": "json-server db.json -p 8000"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.1.0",
     "@reduxjs/toolkit": "^2.2.1",
     "apexcharts": "^3.45.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.1.6",
+    "framer-motion": "^11.2.13",
+    "gsap": "^3.12.5",
+    "lucide-react": "^0.403.0",
     "micromatch": "^4.0.7",
     "next": "14.0.4",
     "next-auth": "^4.24.7",
@@ -24,6 +31,8 @@
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.10.6",
     "sweetalert2-react-content": "^5.0.7",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "yet-another-react-lightbox": "^3.18.0"
   },
   "devDependencies": {

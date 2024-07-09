@@ -2,8 +2,8 @@ import { FaPhone } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer>
-      <div className="flex row bg-[#fff] text-one flex-wrap max-w-[1920px] w-full mx-auto">
+    <footer className="hidden lg:block">
+      {/* <div className="flex row bg-[#fff] text-one flex-wrap max-w-[1920px] w-full mx-auto">
         <article className="order-2 w-full lg:w-1/2 lg:order-1">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248.8549338008533!2d128.16671191355354!3d-3.6604171291839878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d6c8dc1bf97fa07%3A0xc63f2c19509a52d1!2sSumi%20Tailor!5e0!3m2!1sid!2sid!4v1689394716607!5m2!1sid!2sid"
@@ -29,10 +29,10 @@ const Footer = () => {
             </p>
           </div>
         </article>
-      </div>
-      <article className="bg-two text-three p-6">
+      </div> */}
+      <article className="bg-two text-three p-6 pb-[calc(70px+24px)] lg:pb-6">
         <p className="text-center">
-          Copyright &copy; 2023 Sumi Tailor. All Rights Reserved.
+          Copyright &copy; 2023 Sumi Tailor.<br className="lg:hidden"/> All Rights Reserved
         </p>
       </article>
     </footer>

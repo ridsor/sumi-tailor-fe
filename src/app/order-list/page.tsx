@@ -10,11 +10,11 @@ export default async function OrdersPage({
 }) {
   return (
     <main>
-      <section className="py-36">
+      <section className="pt-[125px] mb-[125px]">
         <div className="container">
           <article className="px-4">
             <div className="relative">
-              <h2 className="text-2xl font-bold mb-3">Daftar Pesanan</h2>
+              <h2 className="text-5xl font-bold mb-12 text-background lg:text-one text-center lg:text-left">Daftar Pesanan</h2>
               <div className="flex sm:items-center mb-3 gap-3 flex-col sm:flex-row justify-between">
                 <OrderSearch />
               </div>

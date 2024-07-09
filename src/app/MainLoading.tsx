@@ -1,7 +1,7 @@
 const MainLoading = () => {
   return (
     <main className="animate-pulse">
-      <section className="bg-three">
+      <section>
         <div className="container">
           <div className="row pt-36 min-h-[600px] h-auto px-4 flex flex-wrap">
             <article className="w-full lg:w-1/2">
