@@ -30,7 +30,7 @@ export default function WrapperLayout({
       {enableNavbar.includes(pathname) && <Header auth={auth} />}
       {children}
       {enableNavbar.includes(pathname) && <Footer />}
-      <BottomNavbar/>
+      {enableNavbar.includes(pathname) && <BottomNavbar />}
     </SessionProvider>
   );
 }
