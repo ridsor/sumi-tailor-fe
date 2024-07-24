@@ -25,7 +25,7 @@ export default async function WrapperOrderList({
     data: [],
     paginate: {
       page: 1,
-      limit: 8,
+      limit: 6,
       total: 1,
     },
   };
